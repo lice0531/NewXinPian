@@ -3989,7 +3989,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 item_4.setOnClickListener(v -> {
                     popupWindow.dismiss();
                     if (checkDelay()) return;
-                    startActivity(new Intent(ReisterMainPage_scan.this, SetDelayTime_suidao.class));
+                    Intent intent = new Intent(ReisterMainPage_scan.this, SetDelayTime_suidao.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("paiChoice", paiChoice);//用来判断是否需要展示注册功能
+                    bundle.putString("mRegion", mRegion);//用来判断是否需要展示注册功能
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 });
                 popupWindow.showAsDropDown(titleRight2);
                 break;

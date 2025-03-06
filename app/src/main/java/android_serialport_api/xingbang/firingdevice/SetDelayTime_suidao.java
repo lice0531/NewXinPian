@@ -238,19 +238,27 @@ public class SetDelayTime_suidao extends BaseActivity {
     private Handler mHandler_0 = new Handler();     // UI处理
     private String mOldTitle;   // 原标题
     private String mRegion;     // 区域
+    private int paiChoice = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_delay_time_suidao);
         ButterKnife.bind(this);
-        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
+        mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         getDenatorType();//获取最大延时
         initView();
         setData();//设置延时
         initHandle();
-
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            paiChoice = bundle.getInt("paiChoice");
+            mRegion = bundle.getString("mRegion");
+            Log.e("选中的区域", "mRegion: " + mRegion);
+            Log.e("选中的区域", "paiChoice: " + paiChoice);
+        }
 
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
@@ -266,7 +274,7 @@ public class SetDelayTime_suidao extends BaseActivity {
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
         // 设置标题区域
-        setTitleRegion(mRegion,-1);
+        setTitleRegion(mRegion, -1);
 
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
@@ -316,7 +324,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     // 设置标题区域
-                    setTitleRegion(mRegion,mListData.size());
+                    setTitleRegion(mRegion, mListData.size());
                     deTotalTxt.setText(getString(R.string.text_delay_total) + mListData.size());//"雷管总数量："
                     endNoTxt.setText("" + mListData.size());
                     break;
@@ -328,7 +336,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                     mAdapter.setListData(mListData, 1);
                     mAdapter.notifyDataSetChanged();
                     // 设置标题区域
-                    setTitleRegion(mRegion,mListData.size());
+                    setTitleRegion(mRegion, mListData.size());
                     break;
                 case 1005://按管壳码排序
                     mListData = new GreenDaoMaster().queryDetonatorRegionDesc(mRegion);
@@ -378,7 +386,7 @@ public class SetDelayTime_suidao extends BaseActivity {
             cursor.close();
         }
         maxSecond = Integer.parseInt(second);//类型转换异常
-        Log.e("隧道", "maxSecond: "+maxSecond );
+        Log.e("隧道", "maxSecond: " + maxSecond);
     }
 
     /**
@@ -406,7 +414,7 @@ public class SetDelayTime_suidao extends BaseActivity {
                 // 删除某一发雷管
                 new GreenDaoMaster().deleteDetonator(shellBlastNo);
                 Utils.deleteData(mRegion);//重新排序雷管
-                Utils.writeRecord("--删除雷管:"+shellBlastNo);
+                Utils.writeRecord("--删除雷管:" + shellBlastNo);
                 // 区域 更新视图
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1002));
                 pb_show = 0;
@@ -416,7 +424,7 @@ public class SetDelayTime_suidao extends BaseActivity {
         builder.setPositiveButton(getResources().getString(R.string.text_dialog_qd), (dialog, which) -> {
             String delay1 = et_delay.getText().toString();
             Utils.writeRecord("-单发修改延时:" + "-管壳码:" + shellBlastNo + "-延时:" + delay1);
-            if (delay1==null||delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
+            if (delay1 == null || delay1.trim().length() < 1 || maxSecond > 0 && Integer.parseInt(delay1) > maxSecond) {
                 show_Toast(getResources().getString(R.string.text_reister_tip8));
 
             } else if (maxSecond != 0 && Integer.parseInt(delay1) >= maxSecond) {
@@ -553,7 +561,6 @@ public class SetDelayTime_suidao extends BaseActivity {
     }
 
 
-
     /****
      * 校验数据
      */
@@ -649,10 +656,10 @@ public class SetDelayTime_suidao extends BaseActivity {
                             pb_show = 1;
                             runPbDialog();
                             saveData();
-                            int totalDelay=getTotalDelay();
-                            if(totalDelay>maxSecond){
-                                show_Toast(getResources().getString(R.string.text_setDelay_dialog5)+maxSecond+getResources().getString(R.string.text_setDelay_dialog6));
-                            }else {
+                            int totalDelay = getTotalDelay();
+                            if (totalDelay > maxSecond) {
+                                show_Toast(getResources().getString(R.string.text_setDelay_dialog5) + maxSecond + getResources().getString(R.string.text_setDelay_dialog6));
+                            } else {
                                 new Thread(() -> {
                                     for (int i = 1; i < 21; i++) {
                                         setSuidaoDelayTime(i);
@@ -699,25 +706,25 @@ public class SetDelayTime_suidao extends BaseActivity {
             startDelay = Integer.parseInt(setDelayTimeStartDelaytime1.getText().toString());
         }
         int a = startDelay +
-                Integer.parseInt(etDuanDelaytime1.getText().toString())+
-                Integer.parseInt(etDuanDelaytime2.getText().toString())+
-                Integer.parseInt(etDuanDelaytime3.getText().toString())+
-                Integer.parseInt(etDuanDelaytime4.getText().toString())+
-                Integer.parseInt(etDuanDelaytime5.getText().toString())+
-                Integer.parseInt(etDuanDelaytime6.getText().toString())+
-                Integer.parseInt(etDuanDelaytime7.getText().toString())+
-                Integer.parseInt(etDuanDelaytime8.getText().toString())+
-                Integer.parseInt(etDuanDelaytime9.getText().toString())+
-                Integer.parseInt(etDuanDelaytime10.getText().toString())+
-                Integer.parseInt(etDuanDelaytime11.getText().toString())+
-                Integer.parseInt(etDuanDelaytime12.getText().toString())+
-                Integer.parseInt(etDuanDelaytime13.getText().toString())+
-                Integer.parseInt(etDuanDelaytime14.getText().toString())+
-                Integer.parseInt(etDuanDelaytime15.getText().toString())+
-                Integer.parseInt(etDuanDelaytime16.getText().toString())+
-                Integer.parseInt(etDuanDelaytime17.getText().toString())+
-                Integer.parseInt(etDuanDelaytime18.getText().toString())+
-                Integer.parseInt(etDuanDelaytime19.getText().toString())+
+                Integer.parseInt(etDuanDelaytime1.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime2.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime3.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime4.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime5.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime6.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime7.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime8.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime9.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime10.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime11.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime12.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime13.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime14.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime15.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime16.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime17.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime18.getText().toString()) +
+                Integer.parseInt(etDuanDelaytime19.getText().toString()) +
                 Integer.parseInt(etDuanDelaytime20.getText().toString());
         return a;
     }
@@ -1044,37 +1051,37 @@ public class SetDelayTime_suidao extends BaseActivity {
     }
 
     private void setSuidaoDelay(int dangqianNum, int totalNum, int totaldelay, int duan) {
-        PaiData pai_sj = new GreenDaoMaster().queryPai(mRegion,duan);
-        if(pai_sj==null){
+        PaiData pai_sj = new GreenDaoMaster().queryPai(mRegion, duan);
+        if (pai_sj == null) {
             int maxPai = new GreenDaoMaster().getMaxPaiId(mRegion);
             QuYu quYu_choice = GreenDaoMaster.getQuyu(mRegion);
             PaiData paiData = new PaiData();
             paiData.setPaiId((maxPai + 1));
             paiData.setQyid(Integer.parseInt(mRegion));
-            paiData.setStartDelay(totaldelay+"");
-            paiData.setKongNum((totalNum-dangqianNum));
+            paiData.setStartDelay(totaldelay + "");
+            paiData.setKongNum((totalNum - dangqianNum));
             paiData.setKongDelay("0");
             paiData.setNeiDelay("0");
             paiData.setDiJian(false);
             paiData.setPaiDelay(quYu_choice.getPaiDelay());
-            paiData.setDelayMin(totaldelay+"");
-            paiData.setDelayMax(totaldelay+"");
-            paiData.setSum((totalNum-dangqianNum)+"");
+            paiData.setDelayMin(totaldelay + "");
+            paiData.setDelayMax(totaldelay + "");
+            paiData.setSum((totalNum - dangqianNum) + "");
             paiData.setFanZhuan(0);
             getDaoSession().getPaiDataDao().insert(paiData);
-            Log.e("新建排", "新建排pai: "+(maxPai + 1) );
-        }else {
+            Log.e("新建排", "新建排pai: " + (maxPai + 1));
+        } else {
             pai_sj.setQyid(Integer.parseInt(mRegion));
-            pai_sj.setStartDelay(totaldelay+"");
-            pai_sj.setKongNum((totalNum-dangqianNum));
+            pai_sj.setStartDelay(totaldelay + "");
+            pai_sj.setKongNum((totalNum - dangqianNum));
             pai_sj.setKongDelay("0");
             pai_sj.setNeiDelay("0");
-            pai_sj.setDelayMin(totaldelay+"");
-            pai_sj.setDelayMax(totaldelay+"");
-            pai_sj.setSum((totalNum-dangqianNum)+"");
+            pai_sj.setDelayMin(totaldelay + "");
+            pai_sj.setDelayMax(totaldelay + "");
+            pai_sj.setSum((totalNum - dangqianNum) + "");
             pai_sj.setFanZhuan(0);
             getDaoSession().getPaiDataDao().update(pai_sj);
-            Log.e("更新排", "更新排pai: "+pai_sj.getPaiId() );
+            Log.e("更新排", "更新排pai: " + pai_sj.getPaiId());
         }
         int start = dangqianNum + 1;//起始序号
         int no = 1;
@@ -1082,9 +1089,9 @@ public class SetDelayTime_suidao extends BaseActivity {
             ContentValues values = new ContentValues();
             values.put("delay", totaldelay);
 //            values.put("sithole", duan + "-" + no);
-            values.put("pai",duan);
-            values.put("blastserial",no);
-            db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "sithole =? and piece =? ", new String[]{String.valueOf(i),mRegion});
+            values.put("pai", duan);
+            values.put("blastserial", no);
+            db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "sithole =? and piece =? ", new String[]{String.valueOf(i), mRegion});
             no++;
         }
 
@@ -1347,7 +1354,7 @@ public class SetDelayTime_suidao extends BaseActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        getMenuInflater().inflate(R.menu.menu_main, menu);//选择区域
         return true;
     }
 
@@ -1388,7 +1395,7 @@ public class SetDelayTime_suidao extends BaseActivity {
     /**
      * 设置标题区域
      */
-    private void setTitleRegion(String region,int size) {
+    private void setTitleRegion(String region, int size) {
         String str;
         if (size == -1) {
             str = getResources().getString(R.string.text_list_piace) + region;
