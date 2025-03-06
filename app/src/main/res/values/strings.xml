@@ -388,7 +388,7 @@
     <string name="app_title">煋邦起爆系统   /</string>
     <string name="add_project_actv_hint">合同,项目,单位代码必填一项</string>
     <string name="add_project_jwd_hint">只能输入数字和逗号</string>
-    <string name="add_project_jwd">请输入数字和.</string>
+    <string name="add_project_jwd">请输入数字</string>
     <string name="qb_tip_err">错误:</string>
     <string name="text_qb_tip5">雷管是否起爆 (按1+3组合键起爆雷管)</string>
     <string name="text_qb_tip5_2">雷管是否起爆 (按1+5组合键起爆雷管)</string>

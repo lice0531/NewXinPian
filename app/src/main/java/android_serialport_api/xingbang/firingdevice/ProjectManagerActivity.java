@@ -277,6 +277,10 @@ public class ProjectManagerActivity extends BaseActivity {
         initAutoComplete("history_coordx", downAtCoordx);
         initAutoComplete("history_coordy", downAtCoordy);
         initAutoComplete("history_bprysfz", downAtBprysfz);
+        downAtHtid.addTextChangedListener(htbh_watcher);//长度监听
+        downAtXmbh.addTextChangedListener(xmbh_watcher);//长度监听
+        downAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
+        downAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
     }
 
     /**
@@ -764,6 +768,86 @@ public class ProjectManagerActivity extends BaseActivity {
         imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
 
+    TextWatcher htbh_watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 15) {
+                downAtHtid.setBackgroundColor(Color.GREEN);
+            } else {
+                downAtHtid.setBackgroundColor(Color.RED);
+            }
+        }
+    };
+    TextWatcher xmbh_watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 15) {
+                downAtXmbh.setBackgroundColor(Color.GREEN);
+            } else {
+                downAtXmbh.setBackgroundColor(Color.RED);
+            }
+        }
+    };
+
+    TextWatcher sfz_watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 18) {
+                downAtBprysfz.setBackgroundColor(Color.GREEN);
+            }else {
+                downAtBprysfz.setBackgroundColor(Color.RED);
+            }
+        }
+    };
+
+    TextWatcher dwdm_watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 13) {
+                downAtDwdm.setBackgroundColor(Color.GREEN);
+            } else {
+                downAtDwdm.setBackgroundColor(Color.RED);
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {
