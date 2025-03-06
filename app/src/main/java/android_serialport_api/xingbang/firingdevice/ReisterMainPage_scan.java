@@ -1760,6 +1760,15 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         duan_new = (int) MmkvUtils.getcode("duan", 1);
         Log.e(TAG, "返回当前页面-更新段位-duan_new: " + duan_new);
         btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
+        //恢复初始状态
+        cd_title.setVisibility(View.VISIBLE);
+        llEnd.setVisibility(View.GONE);
+        llStart.setVisibility(View.GONE);
+        llNum.setVisibility(View.GONE);
+        btnInputOk.setVisibility(View.GONE);
+        llSingle.setVisibility(View.GONE);
+        btnReturn.setVisibility(View.GONE);
+        btnScanReister.setVisibility(View.VISIBLE);
 
         flag_zhuce = true;//为了授权注册后,光标挪动到最后一位
         Log.e(TAG, "onRestart-flag_zhuce: " + flag_zhuce);

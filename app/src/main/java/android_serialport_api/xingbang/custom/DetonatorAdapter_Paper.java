@@ -88,7 +88,7 @@ public class DetonatorAdapter_Paper<T> extends RecyclerView.Adapter<DetonatorAda
                 holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
             }
             if (mLine == 4) {
-                holder.mTvSitHole.setText(detonatorBaseInfo.getDuan() +"-"+detonatorBaseInfo.getDuanNo());      // 段号
+                holder.mTvSitHole.setText(detonatorBaseInfo.getPai()+"-"+detonatorBaseInfo.getBlastserial() +"-"+detonatorBaseInfo.getDuanNo());     // 孔号
                 holder.mTvDelay.setText(detonatorBaseInfo.getDelay() + "");         // 延时
             }
             if ( mLine == 5) {

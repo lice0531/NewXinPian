@@ -1059,7 +1059,7 @@ public class SetDelayTime_suidao extends BaseActivity {
             paiData.setPaiId((maxPai + 1));
             paiData.setQyid(Integer.parseInt(mRegion));
             paiData.setStartDelay(totaldelay + "");
-            paiData.setKongNum((totalNum - dangqianNum));
+            paiData.setKongNum(1);
             paiData.setKongDelay("0");
             paiData.setNeiDelay("0");
             paiData.setDiJian(false);
@@ -1073,7 +1073,7 @@ public class SetDelayTime_suidao extends BaseActivity {
         } else {
             pai_sj.setQyid(Integer.parseInt(mRegion));
             pai_sj.setStartDelay(totaldelay + "");
-            pai_sj.setKongNum((totalNum - dangqianNum));
+            pai_sj.setKongNum(1);
             pai_sj.setKongDelay("0");
             pai_sj.setNeiDelay("0");
             pai_sj.setDelayMin(totaldelay + "");
