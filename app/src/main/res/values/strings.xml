@@ -597,11 +597,11 @@
     <string name="text_updata_sys_7">进行更新</string>
     <string name="text_updata_sys_8">不更新</string>
     <string name="text_firing_ssqb">授时起爆</string>
-    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_250305</string>
+    <string name="app_version_name" tools:ignore="MissingTranslation">M900_PT_TY_V2.1_250306</string>
     //通用
-    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_250305</string>
+    <string name="app_version_name2" tools:ignore="MissingTranslation">M900_PT_XJ_V2.1_250306</string>
     //华丰/金建华(新疆客户)
-    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_250305</string>
+    <string name="app_version_name3" tools:ignore="MissingTranslation">M900_PT_CQ_V2.1_250306</string>
     //重庆
     <string name="text_zijian_title">设备初始化中...</string>
     <string name="text_main_sbbh">设备编号：</string>
@@ -1083,6 +1083,7 @@
     <string name="text_mmts">友情提示:密码123</string>
     <string name="text_tip1">提示</string>
     <string name="text_tip2">当前排处于翻转状态,不能进行注册,删除,修改等操作,请复位后再进行操作.</string>
+    <string name="text_tip3">设置数量小于雷管数量,请检查一下每段数量,或再多设置一段.</string>
     <string name="text_plsc">批量上传</string>
     <string name="text_scts">上传提示</string>
     <string name="text_scshjl">是否上传选中的起爆记录?</string>
