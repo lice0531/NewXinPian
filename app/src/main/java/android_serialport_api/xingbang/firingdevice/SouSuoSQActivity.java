@@ -44,6 +44,7 @@ import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.PaiData;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,8 +105,8 @@ public class SouSuoSQActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sou_suo_sqactivity);
         ButterKnife.bind(this);
-
         setSupportActionBar(findViewById(R.id.toolbar));
+        AppLogUtils.writeAppLog("--进入授权注册页面--");
         // 原标题
         mOldTitle = getSupportActionBar().getTitle().toString();
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
@@ -242,6 +243,7 @@ public class SouSuoSQActivity extends BaseActivity {
                     hideInputKeyboard();//隐藏键盘,取消焦点
                     break;
                 case 2:
+                    AppLogUtils.writeAppLog("雷管重复,注册异常");
                     showUiToast(getResources().getString(R.string.text_lgvf));
                     break;
                 case 3:
@@ -254,6 +256,7 @@ public class SouSuoSQActivity extends BaseActivity {
                         mAdapter2.notifyDataSetChanged();
                     } catch (Exception e) {
                         show_Toast(getResources().getString(R.string.text_pxsb));
+                        AppLogUtils.writeAppLog("排序出差:" + e.getMessage());
                     }
                     break;
                 case 6:
@@ -322,6 +325,7 @@ public class SouSuoSQActivity extends BaseActivity {
                     break;
                 case 9:
                     showUiToast(getResources().getString(R.string.text_error_tip1));
+                    AppLogUtils.writeAppLog("管厂码不正确,注册异常");
                     break;
                 default:
                     break;

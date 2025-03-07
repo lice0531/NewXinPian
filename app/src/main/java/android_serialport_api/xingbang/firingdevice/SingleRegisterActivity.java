@@ -464,7 +464,6 @@ public class SingleRegisterActivity extends SerialPortActivity implements SrDena
      */
     private void doWithReceivData(String cmd, byte[] cmdBuf) {
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
-        AppLogUtils.writeAppXBLog(fromCommad);
         if (DefCommand.CMD_4_XBSTATUS_2.equals(cmd)) {//41开启总线电源指令
 //            sendOpenThread.exit = true;
 //            Log.e("是否检测桥丝", "qiaosi_set: " + qiaosi_set);
@@ -695,9 +694,8 @@ public class SingleRegisterActivity extends SerialPortActivity implements SrDena
             try {
 //					mOutputStream.write(mBuffer);
                 String str = Utils.bytesToHexFun(mBuffer);
-//                Utils.writeLog("Reister sendTo:" + str);
+                Utils.writeLog("->" + str);
                 Log.e("发送命令", str);
-                AppLogUtils.writeAppXBLog(str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
                 // TODO Auto-generated catch block

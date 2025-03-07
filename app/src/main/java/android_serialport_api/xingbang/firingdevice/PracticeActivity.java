@@ -73,6 +73,7 @@ import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.jilian.SyncActivity;
 import android_serialport_api.xingbang.jilian.SyncActivityYouxian;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
@@ -173,7 +174,8 @@ public class PracticeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice);
         ButterKnife.bind(this);
-// 标题栏
+        AppLogUtils.writeAppLog("进入辅助功能页面");
+        // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
@@ -555,6 +557,7 @@ public class PracticeActivity extends BaseActivity {
                     initDialog_shouquan();
                     return;
                 }
+                AppLogUtils.writeAppLog("点击了有线级联按钮");
                 String str5 = "起爆";
                 Log.e("验证2", "Yanzheng: " + Yanzheng);
                 Intent intent9;//金建华
@@ -571,6 +574,7 @@ public class PracticeActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.but_jilian_wifi://m900级联页面
+                AppLogUtils.writeAppLog("点击了热点级联按钮");
                 queryBeian();
                 //验证是否授权
                 if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
@@ -594,19 +598,22 @@ public class PracticeActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.but_version://进入级联页面
+                AppLogUtils.writeAppLog("点击了版本号按钮");
                 Intent intent11 = new Intent(this, SystemVersionActivity.class);//版本号
                 startActivity(intent11);
                 break;
             case R.id.but_sendMsg://进入数据互传页面
+                AppLogUtils.writeAppLog("点击了数据互传按钮");
                 Intent intent12 = new Intent(this, SendMsgActivity.class);//版本号
                 startActivity(intent12);
                 break;
             case R.id.but_rizhi://进入上传日志页面
+                AppLogUtils.writeAppLog("点击了上传文件按钮");
                 Intent intent13 = new Intent(this, RiZhiActivity.class);//日志
                 startActivity(intent13);
                 break;
             case R.id.but_pre://开启测试
-
+                AppLogUtils.writeAppLog("点击了测试电流按钮");
                 Intent intent2 = new Intent(this, TestICActivity.class);
                 startActivity(intent2);
                 break;
@@ -702,6 +709,7 @@ public class PracticeActivity extends BaseActivity {
                 startActivityForResult(intent, 1);
                 break;
             case R.id.btn_detail_log:
+                AppLogUtils.writeAppLog("点击了程序日志上传按钮");
                 Intent dlIntent = new Intent(this, AppDetailLogActivity.class);
                 startActivity(dlIntent);
                 break;
@@ -713,9 +721,11 @@ public class PracticeActivity extends BaseActivity {
                 loginToSetEnv();
                 break;
             case R.id.but_chakan:
+                AppLogUtils.writeAppLog("点击了查看雷管按钮");
                 startActivity(new Intent(this, QueryCurrentDetail.class));
                 break;
-                case R.id.but_delete:
+            case R.id.but_delete:
+                AppLogUtils.writeAppLog("点击了删除雷管按钮");
                 startActivity(new Intent(this, DelDenatorMainPage.class));
                 break;
         }

@@ -246,6 +246,7 @@ public class QueryHisDetail extends BaseActivity {
                         if (server_type2.equals("0") && server_type1.equals("0")) {
                             show_Toast(getResources().getString(R.string.text_his_scwz));
                         }
+                        AppLogUtils.writeAppXBLog("点击了上传按钮");
 //                modifyFactoryInfo(blastdate, pos,htbh,jd,wd,xmbh,dwdm);//用于确认上传信息()
                         pb_show = 1;
                         runPbDialog();//loading画面
@@ -892,8 +893,8 @@ public class QueryHisDetail extends BaseActivity {
      */
     private void upload(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm) {
         final String key = "jadl12345678912345678912";
-        String url = Utils.httpurl_upload_dl;//丹灵上传
-//        String url = Utils.httpurl_upload_test;//丹灵上传
+//        String url = Utils.httpurl_upload_dl;//丹灵上传
+        String url = Utils.httpurl_upload_test;//丹灵上传
 
         // 创建OkHttpClient.Builder对象
 //        OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -1179,6 +1180,7 @@ public class QueryHisDetail extends BaseActivity {
                 dialog.show();
                 break;
             case R.id.tv_cancel:
+                AppLogUtils.writeAppXBLog("点击了取消按钮");
                 layBottom.setVisibility(View.GONE);
                 hisAdapter.showCheckBox(false);
                 tv_check_all.setText(getResources().getString(R.string.text_qx));
@@ -1187,10 +1189,12 @@ public class QueryHisDetail extends BaseActivity {
                 break;
             case R.id.tv_check_all://全选
                 if (isSelectAll) {
+                    AppLogUtils.writeAppXBLog("点击了全选按钮");
                     tv_check_all.setText(getResources().getString(R.string.text_qxqx));
                     isSelectAll = false;
                     setAllItemChecked(true);
                 } else {
+                    AppLogUtils.writeAppXBLog("点击了取消全选按钮");
                     tv_check_all.setText(getResources().getString(R.string.text_qx));
                     isSelectAll = true;
                     setAllItemChecked(false);
@@ -1274,6 +1278,7 @@ public class QueryHisDetail extends BaseActivity {
                         //设置对话框的按钮
                         .setNeutralButton(getString(R.string.text_alert_cancel), (dialog1, which) -> dialog1.dismiss())
                         .setPositiveButton(getString(R.string.text_alert_sure), (dialog12, which) -> {
+                            AppLogUtils.writeAppXBLog("点击了批量上传按钮");
                             dialog12.dismiss();
                             dateList.clear();
                             List<DenatorHis_Main> list = getDaoSession().getDenatorHis_MainDao().queryBuilder().orderDesc(DenatorHis_MainDao.Properties.Id).list();
@@ -1317,6 +1322,7 @@ public class QueryHisDetail extends BaseActivity {
         if (index >= dateList.size()) {
             upload_all = false;
             Log.e("一键上传", "一键上传--所有数据已全部上传");
+            AppLogUtils.writeAppXBLog("上传已结束");
             show_Toast(getResources().getString(R.string.text_scjs));
             uploadIndex = 0;//重置上传下标
             pb_show = 0;

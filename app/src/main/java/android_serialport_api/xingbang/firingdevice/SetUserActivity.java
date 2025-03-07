@@ -42,6 +42,7 @@ import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.UserMain;
 import android_serialport_api.xingbang.services.UserLoad;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.Utils;
 
 /**
@@ -69,6 +70,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 		setContentView(R.layout.setenv_activity_user_main);
 		// 标题栏
 		setSupportActionBar(findViewById(R.id.toolbar));
+		AppLogUtils.writeAppLog("--进入用户管理页面--");
 		//扫描结束
 		//管壳号扫描分码--开始
 		et_user_name =  (EditText) this.findViewById(R.id.user_name);
@@ -143,6 +145,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 					GreenDaoMaster master = new GreenDaoMaster();
 					List<UserMain> list = master.queryAllUser();
 					if(list.size()==0){
+						AppLogUtils.writeAppLog("用户已添加,uName:" + user_name + "--pwd:" + user_pw);
 						insertDenator(user_name,user_pw);
 					}else {
 						show_Toast("只能设置一名用户");
@@ -237,6 +240,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 		switch (item.getItemId()) {
 			case 1:
 				Temp="删除";
+				AppLogUtils.writeAppLog("做了删除用户操作");
 				DeleteUser(id);
 				break;
 			case 2:
@@ -302,6 +306,7 @@ public class SetUserActivity extends BaseActivity  implements LoaderCallbacks<Cu
 				String b = password.getText().toString().trim();
 				String c = password_old.getText().toString().trim();
 				if(checkRepeatUser(a,c)){
+					AppLogUtils.writeAppLog("修改后的uName:" + a + "--pwd:" + b);
 					modifyPw(a,b);
 					show_Toast("修改成功");
 				}else {

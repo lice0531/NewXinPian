@@ -3887,6 +3887,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 TextView item_4 = popView.findViewById(R.id.item_4);
                 // 创建三个按钮并添加到布局中
                 item_1.setOnClickListener(v -> {
+                    AppLogUtils.writeAppXBLog("点击了手动输入按钮");
                     popupWindow.dismiss();
                     if (checkDelay()) return;
                     btnInputOk.setEnabled(true);
@@ -3917,6 +3918,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 });
                 item_2.setOnClickListener(v -> {
+                    AppLogUtils.writeAppXBLog("点击了单发注册按钮");
                     popupWindow.dismiss();
                     hideInputKeyboard();
                     if (checkDelay()) return;
@@ -3970,7 +3972,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     startActivity(intent);*/
                 });
                 item_3.setOnClickListener(v -> {
-
+                    AppLogUtils.writeAppXBLog("点击了授权注册按钮");
                     popupWindow.dismiss();
                     if (checkDelay()) return;
                     int mKong = 0;
@@ -3996,6 +3998,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     startActivity(intent);
                 });
                 item_4.setOnClickListener(v -> {
+                    AppLogUtils.writeAppXBLog("点击了隧道延时按钮");
                     popupWindow.dismiss();
                     if (checkDelay()) return;
                     Intent intent = new Intent(ReisterMainPage_scan.this, SetDelayTime_suidao.class);
@@ -4009,10 +4012,12 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 break;
             case R.id.tv_check_all:
                 if (isSelectAll) {
+                    AppLogUtils.writeAppXBLog("点击了全选按钮");
                     tv_check_all.setText(getResources().getString(R.string.text_qxqx));
                     isSelectAll = false;
                     setAllItemChecked(true);
                 } else {
+                    AppLogUtils.writeAppXBLog("点击了取消全选按钮");
                     tv_check_all.setText(getResources().getString(R.string.text_qx));
                     isSelectAll = true;
                     setAllItemChecked(false);
@@ -4020,6 +4025,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 break;
             case R.id.tv_cancel:
+                AppLogUtils.writeAppXBLog("点击了取消按钮");
                 check_gone = false;
                 zhuceAdapter.setCheckBox(true);
                 lay_bottom.setVisibility(View.GONE);
@@ -4029,6 +4035,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 setAllItemChecked(false);
                 break;
             case R.id.tv_delete:
+                AppLogUtils.writeAppXBLog("点击了多选删除雷管按钮");
                 if (choicepaiData.getFanZhuan() == 1) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(14));
                     return;
@@ -4146,12 +4153,14 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 break;
             case R.id.btn_pai://加排
+                AppLogUtils.writeAppXBLog("点击了加排按钮");
                 if (paiChoice == 0) {
                     paiChoice = 1;
                 }
                 createPai();
                 break;
             case R.id.btn_kong://加孔
+                AppLogUtils.writeAppXBLog("点击了加孔按钮");
                 if (choicepaiData.getFanZhuan() == 1) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(14));
                     return;
@@ -4161,6 +4170,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 insertSingleDenator("");
                 break;
             case R.id.btn_wei:
+                AppLogUtils.writeAppXBLog("点击了加位按钮");
                 if (choicepaiData.getFanZhuan() == 1) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(14));
                     return;
@@ -4241,6 +4251,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
                 break;
             case R.id.btn_scanReister:
+                AppLogUtils.writeAppXBLog("点击了扫码注册按钮");
 //                int d = getFan(duan_new);
 //                if (d == 1) {
 //                    show_Toast(getResources().getString(R.string.text_queryHis_dialog5));
@@ -4409,6 +4420,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 }
                 break;
             case R.id.btn_inputOk:
+                AppLogUtils.writeAppXBLog("点击了确定按钮");
                 if (f1_delay_data.length() < 1 || start_delay_data.length() < 1 || f2_delay_data.length() < 1 || groupList.size() == 0) {
                     mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
                     break;
@@ -4490,6 +4502,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
                 break;
             case R.id.btn_return:
+                AppLogUtils.writeAppXBLog("点击了返回按钮");
 //                closeThread();
 //                Intent intentTemp = new Intent();
 //                intentTemp.putExtra("backString", "");

@@ -96,7 +96,7 @@ public class QueryCurrentDetail extends BaseActivity {
         setContentView(R.layout.activity_query_currentinfo);
         ButterKnife.bind(this);
         initView();
-        AppLogUtils.writeAppLog("---进入查看雷管信息页面---");
+        AppLogUtils.writeAppLog("---进入查看雷管页面---");
 
         mHandler_ui.sendMessage(mHandler_ui.obtainMessage(1001));
     }

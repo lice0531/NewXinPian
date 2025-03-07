@@ -198,7 +198,6 @@ public class UpgradeActivity extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
-                AppLogUtils.writeAppXBLog("->:" + str);
 //                Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {

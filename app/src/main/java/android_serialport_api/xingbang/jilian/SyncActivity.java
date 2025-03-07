@@ -173,6 +173,7 @@ public class SyncActivity extends BaseActivity {
                     }
                     Log.e(TAG,"收到指令:" + response);
                     if (response.startsWith("A001")) {
+                        AppLogUtils.writeAppLog("接收到热点级联同步成功指令");
                         //同步成功
                         //收到服务器的同步确认指令
                         isTongBu = true;
@@ -181,6 +182,7 @@ public class SyncActivity extends BaseActivity {
                         btnTest.setEnabled(false);
                         btnTest.setText(getString(R.string.text_sync_tip3));
                     } else if (response.startsWith("A002")) {
+                        AppLogUtils.writeAppLog("接收到热点级联检测指令");
                         show_Toast(getString(R.string.text_sync_tip4));
                         String str5 = "级联起爆";
 //                        if (Yanzheng.equals("验证")) {
@@ -200,11 +202,13 @@ public class SyncActivity extends BaseActivity {
                             startActivityForResult(intent5, REQUEST_CODE_QIBAO);
 //                        }
                     } else if (response.startsWith("A003")) {
+                        AppLogUtils.writeAppLog("接收到热点级联充电指令");
 //                        show_Toast(getString(R.string.text_sync_tip5));
                         EventBus.getDefault().post(new FirstEvent("jixu"));
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
 //                        startActivityForResult(intent, REQUEST_CODE_CHONGDIAN);
                     } else if (response.startsWith("A004")) {
+                        AppLogUtils.writeAppLog("接收到热点级联起爆指令");
 //                        show_Toast(getString(R.string.text_sync_tip6));
                         EventBus.getDefault().post(new FirstEvent("qibao"));
 //                        Intent intent = new Intent(SyncActivity.this, FiringMainActivity.class);
@@ -215,11 +219,13 @@ public class SyncActivity extends BaseActivity {
 //                        }
 //                        startActivityForResult(intent, REQUEST_CODE_QIBAO);
                     } else if (response.startsWith("A005")) {
+                        AppLogUtils.writeAppLog("接收到热点级联退出级联指令");
                         writeData("B005" + MmkvUtils.getcode("ACode", ""));
                         EventBus.getDefault().post(new FirstEvent("finish"));
 //                        show_Toast("收到退出指令");
                         finish();
                     } else if (response.startsWith("A8")) {
+                        AppLogUtils.writeAppLog("接收到热点级联退出级联指令");
                         Log.e(TAG,"收到主控A8退出起爆页面指令了");
                         EventBus.getDefault().post(new FirstEvent("exitPage"));
                         //收到主控退到有线级联页面指令
@@ -533,6 +539,7 @@ public class SyncActivity extends BaseActivity {
                     show_Toast(getString(R.string.text_sync_szbh));
                     return;
                 }
+                AppLogUtils.writeAppLog("热点级联开始同步--设备号:" + MmkvUtils.getcode("ACode", ""));
                 btnTest.setText(getString(R.string.text_sync_tip8));
                 btnTest.setEnabled(false);
 

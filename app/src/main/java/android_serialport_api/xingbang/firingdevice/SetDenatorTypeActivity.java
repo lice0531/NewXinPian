@@ -236,6 +236,7 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
         String Temp = "";
         switch (item.getItemId()) {
             case 1:
+                AppLogUtils.writeAppLog("雷管最大延时已删除");
                 Temp = getString(R.string.text_tip_delete);//"删除";
                 String whereClause = "id=?";
                 String[] whereArgs = {String.valueOf(id)};
@@ -299,6 +300,7 @@ public class SetDenatorTypeActivity extends BaseActivity implements LoaderCallba
                     show_Toast(getResources().getString(R.string.text_error_tip63));
                     return;
                 }
+                AppLogUtils.writeAppLog("修改后的雷管最大延时:" + b);
                 modifyDenatorType(typeId, a, b, d);
                 getLoaderManager().restartLoader(1, null, SetDenatorTypeActivity.this);
                 //    将输入的用户名和密码打印出来

@@ -201,7 +201,7 @@ public class ProjectManagerActivity extends BaseActivity {
                                 }
                                 delShouQuan(proId,project_name);//删除方法
                                 SoundPlayUtils.play(1);
-                                AppLogUtils.writeAppLog("点击了删除项目");
+                                AppLogUtils.writeAppLog("点击了删除项目按钮");
                                 finish();
                             })
                             .create();
@@ -211,7 +211,7 @@ public class ProjectManagerActivity extends BaseActivity {
             } else {
 //                if (continueScanFlag == 0) {
 //                    continueScanFlag = 1;
-                AppLogUtils.writeAppLog("用户点击了扫码新增项目按钮");
+                AppLogUtils.writeAppLog("点击了扫码新增项目按钮");
                 if (scanBarThread != null) {
                         scanBarThread.exit = true;  // 终止线程thread
                         try {
@@ -409,6 +409,7 @@ public class ProjectManagerActivity extends BaseActivity {
     }
 
     private void tingzhiScan() {
+        AppLogUtils.writeAppLog("停止扫码");
         switch (Build.DEVICE) {
             case "T-QBZD-Z6":
             case "M900": {
@@ -464,6 +465,7 @@ public class ProjectManagerActivity extends BaseActivity {
         Log.e(TAG,"business: " + sbusiness);
         if (!TextUtils.isEmpty(sbusiness)) {
             SoundPlayUtils.play(1);
+            AppLogUtils.writeAppLog("扫码后项目信息已成功识别");
             if (sbusiness.startsWith("非营业性")) {
                 addGsxz.setSelection(0);
                 llXmxx.setVisibility(View.GONE);
@@ -488,6 +490,7 @@ public class ProjectManagerActivity extends BaseActivity {
                     downAtCoordx.setText(jd);
                     downAtCoordy.setText(wd);
                 } else {
+                    AppLogUtils.writeAppLog("扫码后项目信息经纬度识别出错:" + scoordxy);
                     Log.e(TAG,"经纬度出错:" + scoordxy);
                 }
             }
@@ -547,6 +550,7 @@ public class ProjectManagerActivity extends BaseActivity {
                 saveData();
                 break;
             case R.id.btn_down_ercode:
+                AppLogUtils.writeAppLog("点击二维码进入项目二维码页面");
                 String jwd = downAtCoordx.getText().toString().trim() + "," + downAtCoordy.getText().toString().trim();
                 Intent intent = new Intent(this,ProjectErCodeActivity.class);
                 intent.putExtra("htbh",downAtHtid.getText().toString().trim());
