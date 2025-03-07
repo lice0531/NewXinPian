@@ -40,6 +40,7 @@ import android_serialport_api.xingbang.custom.ShouQuanData;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,9 +100,10 @@ public class ShouQuanActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shou_quan);
         ButterKnife.bind(this);
-// 标题栏
+         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-//         获取 区域参数
+        AppLogUtils.writeAppLog("--进入授权信息页面--");
+        // 获取 区域参数
         mRegion = (String) SPUtils.get(this, Constants_SP.RegionCode, "1");
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -362,15 +364,18 @@ public class ShouQuanActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_check_all:
+                AppLogUtils.writeAppLog("点击了全选按钮");
                 setAllItemChecked();
                 break;
             case R.id.tv_input:
+                AppLogUtils.writeAppLog("点击了注册按钮");
                 inputLeiGuan();
                 break;
             case R.id.tv_ture:
                 setAllTureChecked();
                 break;
             case R.id.btn_ss_px:
+                AppLogUtils.writeAppLog("点击了排序按钮");
 //                if (paixu_flag) {
                 mHandler_UI.sendMessage(mHandler_UI.obtainMessage(3));
 //                    paixu_flag = false;

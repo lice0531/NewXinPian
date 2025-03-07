@@ -26,6 +26,7 @@ import android_serialport_api.xingbang.R;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.MessageBean;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -283,6 +284,7 @@ public class SetEnvMainActivity extends BaseActivity {
                     values.put("equ_no", "");//设备编号
                     show_Toast(getResources().getString(R.string.text_set_zhuyi));
                 }
+                AppLogUtils.writeAppLog("设置的起爆器编号:" + b);
                 db.update(DatabaseHelper.TABLE_NAME_USER_MESSQGE, values, "id=?", new String[]{"1"});
                 dialog.dismiss();
                 getUserMessage();

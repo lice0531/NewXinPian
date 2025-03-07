@@ -146,7 +146,7 @@ public class RiZhiActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_openFile2:
-
+                AppLogUtils.writeAppLog("点击了“打开XB程序文件夹下日志“按钮");
                 Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
                 Uri xbFolderUri2 = Uri.parse("content://com.android.externalstorage.documents/document/primary:XB程序日志");
                 intent2.putExtra(DocumentsContract.EXTRA_INITIAL_URI, xbFolderUri2);
@@ -156,6 +156,7 @@ public class RiZhiActivity extends BaseActivity {
                 break;
 
             case R.id.btn_openFile1:
+                AppLogUtils.writeAppLog("点击了“打开程序运行日志文件夹下日志“按钮");
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 //                    try {
 //                        Intent ine = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
@@ -226,6 +227,7 @@ public class RiZhiActivity extends BaseActivity {
                         show_Toast("经纬度为空，不能执行上传");
                         return;
                     }
+                    AppLogUtils.writeAppLog("点击了上传按钮");
                     pb_show = 1;
                     runPbDialog();//loading画面
                     upload_xingbang(blastdate, htbh, jd, wd, xmbh, dwdm, qbxm_name, log, log_cmd);//我们自己的网址

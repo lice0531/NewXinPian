@@ -116,6 +116,7 @@ public class SendMsgActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_msg);
         ButterKnife.bind(this);
+        AppLogUtils.writeAppLog("--进入了数据互传页面--");
         initHandle();
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
@@ -153,7 +154,7 @@ public class SendMsgActivity extends BaseActivity {
 //                        String leiguan = lg;//去除回车
                         Log.e("从客户端收到的雷管", "leiguan: " + leiguan);
                         Utils.writeRecord("--从客户端收到的雷管:" + leiguan);
-                        AppLogUtils.writeAppLog("--从客户端收到的雷管:" + leiguan);
+                        AppLogUtils.writeAppLog("--互传收到的雷管信息:" + leiguan);
                         if (leiguan != null) {
                             // 注册雷管
 //                            registerDetonator(leiguan);
@@ -226,6 +227,7 @@ public class SendMsgActivity extends BaseActivity {
                     break;
                 case 1003:
                     show_Toast("雷管数据已经存在于当前掌机中，无需重复注册。");
+                    AppLogUtils.writeAppLog("互传的雷管已经存在，不再重复注册");
                     break;
                 default:
                     break;
@@ -776,6 +778,7 @@ public class SendMsgActivity extends BaseActivity {
                                 show_Toast(getString(R.string.text_practice_tip6));
                                 return;
                             }
+                            AppLogUtils.writeAppLog("点击了发送雷管数据按钮");
                             long qySize = getDaoSession().getQuYuDao().queryBuilder().count();
                             //旧版本M900是没有区域表的，所以用区域表的数量来判断新旧版本
                             if (qySize > 0) {
@@ -878,6 +881,7 @@ public class SendMsgActivity extends BaseActivity {
                 break;
 
             case R.id.but_receive://接收
+                AppLogUtils.writeAppLog("点击了接收数据按钮");
                 if (revice_type) {
                     //创建接收文本消息的服务//作为接收端的手机，需要放开。
                     createStringServerSocket();
@@ -890,6 +894,7 @@ public class SendMsgActivity extends BaseActivity {
                 break;
 
             case R.id.btn_openFile:
+                AppLogUtils.writeAppLog("点击了打开本地文件管理读取雷管txt按钮");
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("text/plain");//txt文件
                 intent.addCategory(Intent.CATEGORY_OPENABLE);

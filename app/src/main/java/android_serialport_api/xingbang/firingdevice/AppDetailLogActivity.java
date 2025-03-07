@@ -113,7 +113,7 @@ public class AppDetailLogActivity extends BaseActivity {
         ButterKnife.bind(this);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
-        AppLogUtils.writeAppLog("--进入辅助功能-程序日志上传页面--");
+        AppLogUtils.writeAppLog("--进入程序日志上传页面--");
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getWritableDatabase();
         tipDlg = new LoadingDialog(AppDetailLogActivity.this);
@@ -193,6 +193,7 @@ public class AppDetailLogActivity extends BaseActivity {
                             show_Toast("经纬度为空，不能执行上传");
                             return;
                         }
+                        AppLogUtils.writeAppLog("日常日志点击了上传按钮");
                         pb_show = 1;
                         runPbDialog();//loading画面
                         upload_xingbang(1,position,blastdate, htbh, jd, wd, xmbh, dwdm, qbxm_name, log, log_cmd);//我们自己的网址
@@ -249,6 +250,7 @@ public class AppDetailLogActivity extends BaseActivity {
                             show_Toast("经纬度为空，不能执行上传");
                             return;
                         }
+                        AppLogUtils.writeAppLog("崩溃日志点击了上传按钮");
                         pb_show = 1;
                         runPbDialog();//loading画面
                         upload_xingbang(2,position,blastdate, htbh, jd, wd, xmbh, dwdm, qbxm_name, log, log_cmd);//我们自己的网址

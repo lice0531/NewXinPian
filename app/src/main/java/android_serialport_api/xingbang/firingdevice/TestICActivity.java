@@ -27,6 +27,7 @@ import android_serialport_api.xingbang.cmd.vo.From42Power;
 import android_serialport_api.xingbang.db.DenatorBaseinfo;
 import android_serialport_api.xingbang.jilian.SyncActivity;
 import android_serialport_api.xingbang.models.VoBlastModel;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,8 +62,8 @@ public class TestICActivity extends SerialPortActivity {
         ButterKnife.bind(this);
         // 标题栏
         setSupportActionBar(findViewById(R.id.toolbar));
+        AppLogUtils.writeAppLog("--进入测试电流页面--");
         loadMoreData();
-
         busHandler = new Handler(msg -> {
             if (busInfo != null) {
                 BigDecimal b = BigDecimal.valueOf(busInfo.getBusCurrentIa());//处理大额数据专用类

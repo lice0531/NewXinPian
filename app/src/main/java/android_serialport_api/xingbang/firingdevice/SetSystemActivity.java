@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.suke.widget.SwitchButton;
 
@@ -53,6 +54,8 @@ public class SetSystemActivity extends BaseActivity {
     SwitchButton swShangchuan;
     @BindView(R.id.sw_qzqb)
     SwitchButton swQzqb;
+    @BindView(R.id.ll_qzqb)
+    LinearLayout llQzqb;
     @BindView(R.id.et_set_Preparation)
     EditText etSetPreparation;
     @BindView(R.id.set_languages)
@@ -110,6 +113,7 @@ public class SetSystemActivity extends BaseActivity {
         Log.e(TAG, "是否验证雷管已授权:: " + Yanzheng_sq);
         Log.e(TAG, "Fujian: " + Fujian);
         Log.e(TAG,"是否强制起爆:" + Qzqb);
+        llQzqb.setVisibility(!changjia.equals("XJ") ? View.VISIBLE : View.GONE);
         if (qiaosi_set.equals("true")) {
             swSetsys.setChecked(true);
         }
@@ -324,10 +328,12 @@ public class SetSystemActivity extends BaseActivity {
             if(changjia.equals("XJ")) {
                 //厂家为XJ时，有错误雷管不能接续起爆  是否上传错误雷管:否
                 swQzqb.setChecked(false);
+                llQzqb.setVisibility(View.GONE);
                 swShangchuan.setChecked(false);
                 MmkvUtils.savecode("Qzqb", "否");
                 MmkvUtils.savecode("Shangchuan", "否");
             } else {
+                llQzqb.setVisibility(View.VISIBLE);
                 swQzqb.setChecked(true);
                 swShangchuan.setChecked(true);
                 MmkvUtils.savecode("Shangchuan", "是");

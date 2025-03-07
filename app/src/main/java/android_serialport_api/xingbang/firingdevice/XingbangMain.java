@@ -575,10 +575,12 @@ public class XingbangMain extends SerialPortActivity {
 
         mHandler_updataVersion = new Handler(msg -> {
             if (msg.what == 1) {
+                AppLogUtils.writeAppXBLog("显示APP版本更新弹窗");
                 DownloadVersionBean path = (DownloadVersionBean) msg.obj;
                 createDialog_download(path, getString(R.string.text_updata_sys_2), 1);
             }
             if (msg.what == 2) {
+                AppLogUtils.writeAppXBLog("显示bin更新弹窗");
                 DownloadVersionBean path = (DownloadVersionBean) msg.obj;
                 createDialog_download(path, getString(R.string.text_updata_sys_6), 2);
             }
@@ -866,7 +868,7 @@ public class XingbangMain extends SerialPortActivity {
 
             case R.id.btn_main_reister://注册
                 //2次点击
-
+                AppLogUtils.writeAppXBLog("点击了雷管注册按钮");
                 if (System.currentTimeMillis() - zclastClickTime < FAST_CLICK_DELAY_TIME) {
                     show_Toast(getResources().getString(R.string.text_qwcfdj));
                     return;
@@ -884,6 +886,7 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_test://测试
+                AppLogUtils.writeAppXBLog("点击了网络测试按钮");
                 //2次点击
                 if (System.currentTimeMillis() - wjlastClickTime < FAST_CLICK_DELAY_TIME) {
                     show_Toast(getResources().getString(R.string.text_qwcfdj));
@@ -934,6 +937,7 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_blast://起爆
+                AppLogUtils.writeAppXBLog("点击了授时起爆按钮");
                 if (System.currentTimeMillis() - qblastClickTime < FAST_CLICK_DELAY_TIME) {
                     show_Toast(getResources().getString(R.string.text_qwcfdj));
                     return;
@@ -968,16 +972,19 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_query://查看
+                AppLogUtils.writeAppXBLog("点击了数据上传按钮");
                 close();//停止访问电流
                 startActivity(new Intent(XingbangMain.this, QueryHisDetail.class));
                 break;
 
             case R.id.btn_main_setevn://项目管理
+                AppLogUtils.writeAppXBLog("点击了项目管理按钮");
                 close();//停止访问电流
                 startActivity(new Intent(this, SaveProjectActivity.class));
                 break;
 
             case R.id.btn_main_help://辅助功能
+                AppLogUtils.writeAppXBLog("点击了辅助功能按钮");
 //                createHelpDialog();
                 close();//停止访问电流
                 String str8 = "查看雷管";
@@ -987,6 +994,7 @@ public class XingbangMain extends SerialPortActivity {
                 break;
 
             case R.id.btn_main_downWorkCode://下载
+                AppLogUtils.writeAppXBLog("点击了授权管理按钮");
                 if (!projectCheck(2)) return;
                 close();//停止访问电流
                 startActivity(new Intent(this, DownWorkCode.class));
@@ -1417,10 +1425,12 @@ public class XingbangMain extends SerialPortActivity {
                     dialog2.dismiss();
                     close();//停止访问电流
                     if (str5.equals("组网")) {
+                        AppLogUtils.writeAppXBLog("首页3分钟放电弹窗-点击了继续进网检页面");
                         Intent intent5 = new Intent(this, TestDenatorActivity.class);
                         intent5.putExtra("dataSend", str5);
                         startActivityForResult(intent5, 1);
                     } else {
+                        AppLogUtils.writeAppXBLog("首页3分钟放电弹窗-点击了继续进起爆页面");
                         GreenDaoMaster master = new GreenDaoMaster();//如果注册用户名和密码就验证
                         List<UserMain> userMainList = master.queryAllUser();
                         if(userMainList.size() != 0){
@@ -1484,9 +1494,11 @@ public class XingbangMain extends SerialPortActivity {
         builder.setTitle(R.string.text_updata_sys_1);//"说明"
         builder.setMessage(message);
         builder.setPositiveButton(R.string.text_updata_sys_3, (dialog, which) -> {
+
 //            show_Toast("当前系统程序有新版本,正在升级,请稍等!");
             close();//停止访问电流
             finish();
+            AppLogUtils.writeAppXBLog("版本更新弹窗点击了继续按钮");
             if (version == 1) {
                 Intent intent = new Intent(this, DownLoadActivity.class);
                 intent.putExtra("dataSend", name.toString());
@@ -1507,6 +1519,7 @@ public class XingbangMain extends SerialPortActivity {
 //        });
         builder.setNeutralButton(R.string.text_updata_sys_4, (dialog, which) -> {
             dialog.dismiss();
+            AppLogUtils.writeAppXBLog("版本更新弹窗点击了不更新按钮");
         });
         builder.create().show();
     }
@@ -1704,7 +1717,6 @@ public class XingbangMain extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
-                AppLogUtils.writeAppXBLog("->:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
@@ -1720,7 +1732,6 @@ public class XingbangMain extends SerialPortActivity {
         byte[] cmdBuf = new byte[size];
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
-        AppLogUtils.writeAppXBLog("<-:" + fromCommad);
 //        Log.e("自检收到", "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;

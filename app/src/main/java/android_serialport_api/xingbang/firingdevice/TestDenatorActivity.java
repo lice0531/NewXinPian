@@ -292,6 +292,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             if (msg.what == 1) {
                 show_Toast(getResources().getString(R.string.text_qberr3) + shellStr + getResources().getString(R.string.text_qberr4));
             } else if (msg.what == 2) {
+                AppLogUtils.writeAppLog("雷管信息不完整");
                 AlertDialog dialog = new AlertDialog.Builder(TestDenatorActivity.this)
                         .setTitle(R.string.text_test_title1)//设置对话框的标题
                         .setMessage(R.string.text_text_msg1)//设置对话框的内容
@@ -360,6 +361,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_return_complete = findViewById(R.id.btn_test_return);
 
         btn_return_complete.setOnClickListener(v -> {
+            AppLogUtils.writeAppLog("点击了退出按钮");
             closeThread();
             closeForm();
         });
@@ -368,6 +370,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         btn_jixu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AppLogUtils.writeAppLog("点击了授时起爆按钮");
                 if (needIgnoreClick()) {
                     return;
                 }
@@ -376,6 +379,7 @@ public class TestDenatorActivity extends SerialPortActivity {
         });
         btn_firing_lookError_4 = (Button) findViewById(R.id.btn_test_lookError);
         btn_firing_lookError_4.setOnClickListener(v -> {
+            AppLogUtils.writeAppLog("点击了查看错误雷管按钮");
             loadErrorBlastModel();
 //                loadMoreData();
             createDialog();
@@ -514,6 +518,7 @@ public class TestDenatorActivity extends SerialPortActivity {
             dialog.dismiss();
         });
         builder.setNegativeButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            AppLogUtils.writeAppLog("点击了退出按钮");
             dialog.dismiss();
             closeThread();
             closeForm();
@@ -1016,7 +1021,6 @@ public class TestDenatorActivity extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("->:" + str);
-                AppLogUtils.writeAppXBLog("->:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {
@@ -1346,7 +1350,6 @@ public class TestDenatorActivity extends SerialPortActivity {
         System.arraycopy(buffer, 0, cmdBuf, 0, size);
         String fromCommad = Utils.bytesToHexFun(cmdBuf);
         Utils.writeLog("<-:" + fromCommad);
-        AppLogUtils.writeAppXBLog("<-:" + fromCommad);
 //        Log.e("返回命令--测试页面", "fromCommad: "+fromCommad );
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
@@ -1691,6 +1694,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                     .setMessage(tip)//设置对话框的内容"本次任务成功起爆！"
                     //设置对话框的按钮
                     .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
+                        AppLogUtils.writeAppLog("点击了退出按钮");
 //                        stopXunHuan();
                         ll_1.setVisibility(View.GONE);
                         ll_2.setVisibility(View.VISIBLE);
@@ -1714,6 +1718,7 @@ public class TestDenatorActivity extends SerialPortActivity {
 //                        dialog1.dismiss();
 //                    })
                     .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
+                        AppLogUtils.writeAppLog("点击了退出按钮");
                         stopXunHuan(false);
                     }).create();
             dialog.show();
@@ -1754,6 +1759,7 @@ public class TestDenatorActivity extends SerialPortActivity {
                 dialog.dismiss();
             });
             builder.setNegativeButton(getResources().getString(R.string.text_fir_dialog5), (dialog, which) -> {
+                AppLogUtils.writeAppLog("点击了查看错误雷管按钮");
 //            stopXunHuan();
                 llview.setVisibility(View.VISIBLE);
                 text_tip.setVisibility(View.GONE);

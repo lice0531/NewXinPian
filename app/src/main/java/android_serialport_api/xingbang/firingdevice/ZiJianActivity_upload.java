@@ -403,7 +403,6 @@ public class ZiJianActivity_upload extends SerialPortActivity {
             try {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Utils.writeLog("自检发送:" + str);
-                AppLogUtils.writeAppXBLog("自检页面发送:" + str);
                 Log.e("发送命令", str);
                 mOutputStream.write(mBuffer);
             } catch (IOException e) {

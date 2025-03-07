@@ -83,7 +83,7 @@ public class QuYuActivity2 extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qu_yu2);
         ButterKnife.bind(this);
-
+        AppLogUtils.writeAppLog("---进入区域页面---");
         loadingDialog = new LoadingDialog(QuYuActivity2.this)
                 .setLoadingText("加载中...");
         titleText.setText("选择区域");
@@ -257,9 +257,11 @@ public class QuYuActivity2 extends BaseActivity {
                 break;
             case R.id.title_right2:
             case R.id.title_add://添加区域
+                AppLogUtils.writeAppLog("点击了添加区域按钮");
                 carteQuYu();
                 break;
             case R.id.tv_cancel:
+                AppLogUtils.writeAppLog("点击了取消按钮");
                 isDelete = true;
                 layBottom.setVisibility(View.GONE);
                 quyuAdapter.showCheckBox(false);
@@ -290,10 +292,12 @@ public class QuYuActivity2 extends BaseActivity {
                     return;
                 }
                 if (isSelectAll) {
+                    AppLogUtils.writeAppLog("点击了全选按钮");
                     tv_check_all.setText(getResources().getString(R.string.text_qxqx));
                     isSelectAll = false;
                     setAllItemChecked(true);
                 } else {
+                    AppLogUtils.writeAppLog("点击了取消全选按钮");
                     tv_check_all.setText(getResources().getString(R.string.text_qx));
                     isSelectAll = true;
                     setAllItemChecked(false);
@@ -347,7 +351,7 @@ public class QuYuActivity2 extends BaseActivity {
                                 qyIdList.clear();
                                 Utils.saveFile();//把软存中的数据存入磁盘中
                                 Log.e(TAG, "区域页面多选结果:" + qyIdList.toString());
-                                AppLogUtils.writeAppLog("点击了多选删除区域按钮");
+                                AppLogUtils.writeAppLog("点击了多选只删除雷管按钮");
                             } )
                             .setPositiveButton(R.string.text_dialog_qbsc, (dialog14, which) -> {
                                 for (QuYuData data : mQuYuList) {
@@ -389,6 +393,7 @@ public class QuYuActivity2 extends BaseActivity {
                     show_Toast(getResources().getString(R.string.text_selectqy));
                     return;
                 }
+                AppLogUtils.writeAppLog("点击了多选组网按钮");
                 Log.e(TAG,"id集合:" + qyIdList.toString());
                 //先将之前已经组网的区域selected改为false 再将最新选中的区域selected改为true
                 QuYuDao qyDao = getDaoSession().getQuYuDao();
@@ -514,8 +519,6 @@ public class QuYuActivity2 extends BaseActivity {
                         dataBean.setSelect(false);
                         index--;
                     }
-
-
                     quyuAdapter.notifyDataSetChanged();
                 }
             }

@@ -320,10 +320,12 @@ public class FiringMainActivity extends SerialPortActivity {
         isJL = !TextUtils.isEmpty(jlFlag) ? true : false;
         Log.e(TAG,"进入起爆页面");
         Utils.writeLog("起爆页面-qbxm_id:" + qbxm_name);
+        AppLogUtils.writeAppLog("起爆页面-qbxm_id:" + qbxm_name);
         AppLogUtils.writeAppXBLog("起爆倒计时elevenCount:" + elevenCount);
         startFlag = 1;
         qyIdList = new GreenDaoMaster().getSelectedQyIdList();
         ShouShi = (String) MmkvUtils.getcode("ShouShi", "否");
+        AppLogUtils.writeAppXBLog("是否打开手势起爆功能: " + ShouShi);
         initParam();//重置参数
         initView();
         initHandle();
@@ -419,6 +421,7 @@ public class FiringMainActivity extends SerialPortActivity {
         // threadTest = new ThreadTest();
         btn_return1 = findViewById(R.id.btn_firing_return_1);
         btn_return1.setOnClickListener(v -> {
+            AppLogUtils.writeAppXBLog("点击了退出按钮");
             exitJl();
             closeThread();
             closeForm();
@@ -426,6 +429,7 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         btn_return2 = findViewById(R.id.btn_firing_return_2);
         btn_return2.setOnClickListener(v -> {
+            AppLogUtils.writeAppXBLog("点击了退出按钮");
             exitJl();
             closeThread();
             closeForm();
@@ -433,6 +437,7 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         btn_return4 = findViewById(R.id.btn_firing_return_4);
         btn_return4.setOnClickListener(v -> {
+            AppLogUtils.writeAppXBLog("点击了退出按钮");
             exitJl();
             closeThread();
             closeForm();
@@ -440,6 +445,7 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         btn_return6 = findViewById(R.id.btn_firing_return_6);
         btn_return6.setOnClickListener(v -> {
+            AppLogUtils.writeAppXBLog("点击了退出按钮");
             exitJl();
             closeThread();
             closeForm();
@@ -454,6 +460,7 @@ public class FiringMainActivity extends SerialPortActivity {
         });
         btn_return8 = findViewById(R.id.btn_firing_return_8);
         btn_return8.setOnClickListener(v -> {
+            AppLogUtils.writeAppXBLog("点击了退出按钮");
             exitJl();
             closeThread();
             closeForm();
@@ -473,8 +480,8 @@ public class FiringMainActivity extends SerialPortActivity {
 //                return;
 //            }
             String err = ll_firing_errorAmount_4.getText().toString();
-            AppLogUtils.writeAppLog("检测结束，点继续按钮进行充电了");
             if (err.equals("0")) {
+                AppLogUtils.writeAppLog("检测结束，点继续按钮进行充电了");
 //                increase(33);//之前是4
                 increase(6);//充电阶段
                 duanlu_sun=0;
@@ -619,9 +626,10 @@ public class FiringMainActivity extends SerialPortActivity {
                     .setTitle(getResources().getString(R.string.text_alert_tip))//设置对话框的标题
                     .setView(view)
                     .setNeutralButton(R.string.text_dialog_qx, (dialog2, which) -> {
-
+                        AppLogUtils.writeAppLog("检测结束," + content + "点取消按钮弹窗消失了");
                     })
                     .setPositiveButton(R.string.text_firing_jixu, (dialog2, which) -> {
+                        AppLogUtils.writeAppLog("检测结束，点继续按钮进行充电了");
                         Log.e(TAG,"有错误雷管:继续");
                         list_dianliu.clear();
                         increase(6);//充电阶段
@@ -629,6 +637,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     })
                     .create();
         } else {
+            AppLogUtils.writeAppLog("检测结束," + content + "--不能强制起爆");
             //厂家为XJ:有错误雷管只能退出  所以接收到级联指令也不操作
             xzqb();
             //XJ存在错误雷管 限制起爆
@@ -707,17 +716,20 @@ public class FiringMainActivity extends SerialPortActivity {
                     deviceStatus = "11";
                     isDlycShow = true;
                 }
+                AppLogUtils.writeAppLog("显示电流异常弹窗了");
                 dlycDialog = new Builder(FiringMainActivity.this)
                         .setTitle(getResources().getString(R.string.text_dlyc))//设置对话框的标题
                         .setMessage(getResources().getString(R.string.text_jcyc1))//设置对话框的内容
                         //设置对话框的按钮
                         .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog1, which) -> {
+                            AppLogUtils.writeAppLog("点击了退出按钮");
                             exitJl();
                             dialog1.dismiss();
                             finish();
                         })
                         .setPositiveButton(getResources().getString(R.string.text_dialog_jxqb), (dialog12, i) -> {
                             dialog12.dismiss();
+                            AppLogUtils.writeAppLog("电流异常弹窗--点击了继续按钮");
                             if (isJL) {
                                 isDlycShow = false;
                                 if (isDlycShow) {
@@ -1974,7 +1986,6 @@ public class FiringMainActivity extends SerialPortActivity {
                 String str = Utils.bytesToHexFun(mBuffer);
                 Log.e("发送命令", str);//pid + "-" + tid +
                 Utils.writeLog("->:" + str);
-                AppLogUtils.writeAppXBLog("->:" + str);
                 mOutputStream.write(mBuffer);
 
             } catch (IOException e) {
@@ -2131,7 +2142,7 @@ public class FiringMainActivity extends SerialPortActivity {
         int tid = Process.myTid(); // 获取当前线程的ID
         //pid + "-" + tid +
         Utils.writeLog("<-:" + fromCommad);//找到问题可以把这个进程id去掉
-        AppLogUtils.writeAppXBLog("<-:" + fromCommad);
+//        AppLogUtils.writeAppXBLog("<-:" + fromCommad);
 //        Log.e("返回命令--起爆页面", fromCommad);
         if (completeValidCmd(fromCommad) == 0) {
             fromCommad = this.revCmd;
@@ -3841,8 +3852,9 @@ public class FiringMainActivity extends SerialPortActivity {
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_1) {
             m0UpTime = System.currentTimeMillis();
+            AppLogUtils.writeAppXBLog("点击了数字1按键");
         } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2") && !Build.DEVICE.equals("KT50")) {
-
+            AppLogUtils.writeAppXBLog("点击了数字3按键");
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
@@ -3856,7 +3868,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
         } else if (keyCode == KeyEvent.KEYCODE_5 && (Build.DEVICE.equals("KT50_B2") || Build.DEVICE.equals("KT50"))) {
-
+            AppLogUtils.writeAppXBLog("点击了数字5按键");
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
@@ -3870,7 +3882,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
         }
-
+        AppLogUtils.writeAppXBLog("按组合键起爆");
         Utils.writeRecord("--按组合键起爆--");
         return super.dispatchKeyEvent(event);
     }
@@ -4063,6 +4075,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         dialog1.dismiss();
                     })
                     .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
+                        AppLogUtils.writeAppXBLog("点击了退出按钮");
                         exitJl();
                         dialog12.cancel();
                         closeThread();
@@ -4099,6 +4112,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     //设置对话框的按钮
 
                     .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog12, which) -> {
+                        AppLogUtils.writeAppXBLog("点击了退出按钮");
                         exitJl();
                         byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                         sendCmd(reCmd);
@@ -4108,6 +4122,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         dialog12.cancel();
                     })
                     .setPositiveButton(getResources().getString(R.string.text_firing_jixu), (dialog12, which) -> {
+                        AppLogUtils.writeAppXBLog("出现异常弹窗后点击了继续按钮");
 //                    off();//重新检测
                         firstThread = new ThreadFirst(allBlastQu);
                         firstThread.exit = false;
@@ -4192,6 +4207,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 dialog.dismiss();
             });
             builder.setNegativeButton(getResources().getString(R.string.text_fir_dialog5), (dialog, which) -> {
+                AppLogUtils.writeAppXBLog("点击了查看错误雷管按钮");
 //            stopXunHuan();
                 llview.setVisibility(View.VISIBLE);
                 text_tip.setVisibility(View.GONE);
@@ -4238,6 +4254,7 @@ public class FiringMainActivity extends SerialPortActivity {
                         sendClycjg();
                     })
                     .setNeutralButton(getResources().getString(R.string.text_test_exit), (dialog, which) -> {
+                        AppLogUtils.writeAppLog(tip + "--点击了退出按钮");
                         exitJl();
                         byte[] reCmd = ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00");//35退出起爆
                         sendCmd(reCmd);
@@ -4501,6 +4518,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 Log.e("起爆页面", "收到级联起爆指令--isQbFail:" + isQbFail + "--isInterunptQb:" + isInterunptQb);
                 Log.e("起爆页面", "收到级联起爆指令时--eightCount " + eightCount);
                 if (kaiguan) {
+                    AppLogUtils.writeAppXBLog("接到级联指令开始起爆了");
                     jixu();
                     kaiguan = false;
                 }
@@ -4511,10 +4529,12 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
         } else if (msg.equals("finish")) {
+            AppLogUtils.writeAppXBLog("退出起爆页面了");
             closeThread();
             closeForm();
             finish();
         } else if (msg.equals("exitPage")) {
+            AppLogUtils.writeAppXBLog("退出起爆页面了");
             //收到主控退出当前起爆页面之类   为防止有子设备仍处于高压状态   此时发送35指令下电
             sendCmd(ThreeFiringCmd.setToXbCommon_FiringExchange_5523_6("00"));//35退出起爆
             closeThread();
@@ -4546,6 +4566,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
         } else if (msg.equals("sendWaitQb")) {
+            AppLogUtils.writeAppXBLog("起爆中了");
             //子机展示为起爆中，请稍后状态
             if (!isQbFail && !isInterunptQb) {
                 show_Toast(getString(R.string.text_sync_tip6));
@@ -4756,6 +4777,7 @@ public class FiringMainActivity extends SerialPortActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //判断当点击的是返回键
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            AppLogUtils.writeAppXBLog("退出起爆页面了");
             exitJl();
             closeThread();
             closeForm();
@@ -4787,6 +4809,7 @@ public class FiringMainActivity extends SerialPortActivity {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        AppLogUtils.writeAppXBLog("退出起爆界面");
         Utils.writeRecord("---退出起爆页面---");
     }
 }

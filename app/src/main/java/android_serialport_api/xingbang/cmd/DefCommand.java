@@ -2,8 +2,6 @@ package android_serialport_api.xingbang.cmd;
 
 import android.util.Log;
 
-import android_serialport_api.xingbang.Application;
-import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.CRC16;
 import android_serialport_api.xingbang.utils.Utils;
 
@@ -106,7 +104,6 @@ public class DefCommand {
 	public static String getCmd(String cmdInfo){
 		Log.e("返回命令",cmdInfo);
 		Utils.writeLog("<-:"+cmdInfo);
-		AppLogUtils.writeAppXBLog("<-:"+cmdInfo);
 		if(cmdInfo.length()>4)return cmdInfo.substring(4,6);
 		return null;
 	}

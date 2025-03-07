@@ -213,6 +213,7 @@ public class SyncActivityYouxian extends BaseActivity {
                     }
 //                    if (response.contains("A001" + MmkvUtils.getcode("ACode", ""))) {
                     if (response.startsWith("A1" + MmkvUtils.getcode("ACode", ""))) {
+                        AppLogUtils.writeAppLog("收到有线级联同步成功指令");
                         //同步成功
                         //收到服务器的同步确认指令
                         isTongBu = true;
@@ -222,6 +223,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         btnTest.setText(R.string.text_sync_tip3);
 //                    } else if (response.contains("A002")) {
                     } else if (response.startsWith("A2")) {
+                        AppLogUtils.writeAppLog("收到有线级联检测指令");
                         if (A002) {
                             show_Toast(getString(R.string.text_sync_tip4));
                             String str5 = "级联起爆";
@@ -250,6 +252,7 @@ public class SyncActivityYouxian extends BaseActivity {
                     } else if (response.startsWith("ABA2")) {
                         Log.e(TAG,"收到重新检测指令了" + response + "--" + response.substring(response.length() - 2));
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(response.length() - 2))) {
+                            AppLogUtils.writeAppLog("收到有线级联检测指令");
                             if (A002) {
                                 show_Toast(getString(R.string.text_sync_tip4));
                                 String str5 = "级联起爆";
@@ -289,6 +292,7 @@ public class SyncActivityYouxian extends BaseActivity {
 //                    } else if (response.contains("A003")) {
                         //收到主控的充电指令
                     } else if (response.startsWith("A4")) {
+                        AppLogUtils.writeAppLog("收到有线级联充电指令");
 //                        if (getStringAfterA4(response).equals(MmkvUtils.getcode("ACode", ""))) {
 //                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
 //                        show_Toast(getString(R.string.text_sync_tip5));
@@ -301,6 +305,7 @@ public class SyncActivityYouxian extends BaseActivity {
                     } else if (response.startsWith("ABA4")) {
                         Log.e(TAG,"收到重新充电指令了" + response + "--" + response.substring(response.length() - 2));
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(response.length() - 2))) {
+                            AppLogUtils.writeAppLog("收到有线级联充电指令");
 //                            send485Cmd("BBA4" + MmkvUtils.getcode("ACode", ""));
 //                            show_Toast(getString(R.string.text_sync_tip5));
                             EventBus.getDefault().post(new FirstEvent("rejixu"));
@@ -309,6 +314,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         }
 //                    } else if (response.contains("A004")) {
                     } else if (response.startsWith("A5")) {
+                        AppLogUtils.writeAppLog("收到有线级联起爆指令");
                         Log.e("接收到A5指令了",response);
                         //收到主控切换模式的命令  此时通知板子进入起爆模式
                         if (MmkvUtils.getcode("ACode", "").equals(response.substring(2, 4))) {
@@ -371,6 +377,7 @@ public class SyncActivityYouxian extends BaseActivity {
 //                    } else if (response.contains("A003")) {
                         //收到主控的起爆指令
                     } else if (response.startsWith("A6")) {
+                        AppLogUtils.writeAppLog("收到有线级联起爆指令");
 //                        if (MmkvUtils.getcode("ACode", "").equals(response.substring(2))) {
 //                        show_Toast(getString(R.string.text_sync_tip6));
                         EventBus.getDefault().post(new FirstEvent("qibao"));
@@ -386,6 +393,7 @@ public class SyncActivityYouxian extends BaseActivity {
                         //收到主控的退出指令
 //                    } else if (response.contains("A005")) {
                     } else if (response.startsWith("A7")) {
+                        AppLogUtils.writeAppLog("收到有线级联退出级联指令");
                         A002 = true;
                         A5Other = true;
                         A5Main = true;
@@ -395,6 +403,7 @@ public class SyncActivityYouxian extends BaseActivity {
 //                        show_Toast("收到退出指令");
                         finish();
                     } else if (response.startsWith("A8")) {
+                        AppLogUtils.writeAppLog("收到有线级联退出级联指令");
                         A002 = true;
                         A5Other = true;
                         A5Main = true;

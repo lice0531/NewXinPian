@@ -270,7 +270,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
         ButterKnife.bind(this);
         DatabaseHelper mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null, DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
-        AppLogUtils.writeAppLog("---进入下载项目页面---");
+        AppLogUtils.writeAppLog("---进入授权管理页面---");
         baidudingwei();
         getUserMessage();//获取用户信息
 //        getPropertiesData();//第二种获取用户信息
@@ -413,8 +413,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
 
         // 区域 更新视图
         mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-        Utils.writeRecord("---进入项目下载页面---");
-        AppLogUtils.writeAppLog("---进入项目下载页面---");
+        Utils.writeRecord("---进入授权管理页面---");
 
         //模拟下载---测试完要记得关闭
 //        new Thread(new Runnable() {
@@ -1893,6 +1892,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                         return;
                                     }
                                     if (b.equals("123")) {
+                                        AppLogUtils.writeAppLog("点击了删除单个授权项目按钮");
                                         delShouQuan(map_dl.get(position).get("id").toString());//删除方法
                                         GreenDaoMaster master = new GreenDaoMaster();
                                         master.deleteTypeLeiGuanFroTime(map_dl.get(position).get("spare2").toString());
@@ -2498,6 +2498,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                                         return;
                                     }
                                     if (b.equals("123")) {
+                                        AppLogUtils.writeAppLog("点击了清空授权按钮");
                                         GreenDaoMaster.delAllMessage();//清空数据
                                         GreenDaoMaster.delAllDetonatorTypeNew();//清空授权数据
                                         mHandler_httpresult.sendMessage(mHandler_httpresult.obtainMessage());//刷新数据
@@ -2527,6 +2528,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 break;
             case R.id.btn_down_workcode://下载
 //                loadMoreData_lg(currentPage);
+                AppLogUtils.writeAppLog("点击了下载按钮");
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
                 saveData();
                 hideInputKeyboard();//隐藏键盘,取消焦点
@@ -2676,6 +2678,7 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
                 deleteHistory("history_bprysfz", at_bprysfz);
                 break;
             case R.id.btn_down_offline:
+                AppLogUtils.writeAppLog("点击了离线下载按钮");
                 Intent offIntent = new Intent(this, DownOfflineActivity.class);
                 startActivity(offIntent);
                 break;

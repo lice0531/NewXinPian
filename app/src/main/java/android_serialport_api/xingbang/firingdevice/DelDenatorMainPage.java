@@ -41,6 +41,7 @@ import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
 import android_serialport_api.xingbang.models.VoBlastModel;
 import android_serialport_api.xingbang.db.DatabaseHelper;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import android_serialport_api.xingbang.R;
@@ -70,9 +71,9 @@ public class DelDenatorMainPage extends BaseActivity  {
     @BindView(R.id.btn_del_return)
     Button btnDelReturn;
     @BindView(R.id.setDelayTime_FirstNo)//起始序号
-            EditText setDelayTimeFirstNo;
+    EditText setDelayTimeFirstNo;
     @BindView(R.id.setDelayTime_EndNo)//终点序号
-            EditText setDelayTimeEndNo;
+    EditText setDelayTimeEndNo;
     @BindView(R.id.denator_del_func)
     LinearLayout denatorDelFunc;
     @BindView(R.id.denator_del_listview)
@@ -326,6 +327,7 @@ public class DelDenatorMainPage extends BaseActivity  {
                         return;
                     }
                     if ( b.equals("123")) {
+                        AppLogUtils.writeAppLog("点击了全部删除雷管按钮");
                         tipALLDelDenator();
                         deleteQuYu();
                         deletePai();

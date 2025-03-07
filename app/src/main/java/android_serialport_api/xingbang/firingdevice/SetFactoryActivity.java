@@ -231,7 +231,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
 
             updateFactory(a, b, c, d, id);
             getLoaderManager().restartLoader(1, null, SetFactoryActivity.this);
-            AppLogUtils.writeAppLog("修改的厂家代码是:" + b);
+            AppLogUtils.writeAppLog("修改的厂家代码是:" + b + "--特征码:" + c);
             //    将输入的用户名和密码打印出来
             show_Toast(getString(R.string.text_error_tip38));
             hideInputKeyboard();
@@ -308,6 +308,7 @@ public class SetFactoryActivity extends BaseActivity implements LoaderCallbacks<
                         facselected = "是";
                     }
                     if (insertFactory(facname, faccode, facTe, facselected)) {
+                        AppLogUtils.writeAppLog("设置的cjCode:" + faccode + "--特征码:" + facTe);
                         show_Toast(getString(R.string.text_fac_tip1));
                     }
                 } else {

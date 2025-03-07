@@ -20,6 +20,7 @@ import android_serialport_api.xingbang.SerialPortActivity;
 import android_serialport_api.xingbang.cmd.DefCommand;
 import android_serialport_api.xingbang.cmd.FourStatusCmd;
 import android_serialport_api.xingbang.cmd.OneReisterCmd;
+import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.DownloadTest;
 import android_serialport_api.xingbang.utils.MmkvUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -50,6 +51,7 @@ public class SystemVersionActivity extends SerialPortActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sys_version);//version
         ButterKnife.bind(this);
+        AppLogUtils.writeAppLog("进入版本信息页面");
         //初始化在主页面,全局搜索默认值
         changjia = (String) MmkvUtils.getcode("sys_ver_name", "TY");
         if(changjia.equals("XJ")){

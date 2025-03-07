@@ -343,6 +343,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 finish();
                 break;
             case R.id.tv_cancel:
+                AppLogUtils.writeAppLog("点击了取消按钮");
                 pnList.clear();
                 epList.clear();
                 isDelete = true;
@@ -355,10 +356,12 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             case R.id.tv_check_all:
 //                pnList.clear();
                 if (isSelectAll) {
+                    AppLogUtils.writeAppLog("点击了全选按钮");
                     tvCheckAll.setText(getResources().getString(R.string.text_qxqx));
                     isSelectAll = false;
                     mAdapter.AllCheckBox(true);
                 } else {
+                    AppLogUtils.writeAppLog("点击了取消全选按钮");
                     tvCheckAll.setText(getResources().getString(R.string.text_qx));
                     isSelectAll = true;
                     mAdapter.AllCheckBox(false);
@@ -438,6 +441,7 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
             case R.id.title_add:
             case R.id.btn_add_project:
                 isDelete = true;
+                AppLogUtils.writeAppLog("点击了新增项目按钮");
                 mAdapter.showCheckBox(false);
                 isSelectAll = true;
                 mAdapter.AllCheckBox(false);
@@ -470,7 +474,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
                 break;
             case R.id.btn_delete_project:
             case R.id.tv_delete_project:
-                AppLogUtils.writeAppLog("点击了'删除项目'按钮执行多些删除项目操作");
                 if (epList.isEmpty()) {
                     show_Toast("请先选中要删除的项目");
                     return;
@@ -513,40 +516,6 @@ public class SaveProjectActivity extends BaseActivity implements SaveProjectAdap
 
     @Override
     public void itemClick(View v) {
-//        int position = (int) v.getTag();
-//        if(v.getId() == R.id.btn_del_name){
-//            delShouQuan(map_project.get(position).get("project_name").toString());//删除方法
-//            if (map_project != null && map_project.size() > 0) {//移除map中的值
-//                map_project.remove(position);
-//            }
-//            mAdapter.notifyDataSetChanged();
-//        }
-//        if ("true".equals(map_project.get(position).get("selected").toString())) {
-//            //如果是使用中的项目，进入项目编辑页面
-//            Intent intent = new Intent(this,ProjectManagerActivity.class);
-//            intent.putExtra("xmPageFlag","Y");
-//            intent.putExtra("proId",map_project.get(position).get("id").toString());
-//            intent.putExtra("htbh",map_project.get(position).get("htbh").toString());
-//            intent.putExtra("dwdm",map_project.get(position).get("dwdm").toString());
-//            intent.putExtra("xmbh",map_project.get(position).get("xmbh").toString());
-//            intent.putExtra("coordxy",map_project.get(position).get("coordxy").toString());
-//            intent.putExtra("business",map_project.get(position).get("business").toString());
-//            intent.putExtra("project_name",map_project.get(position).get("project_name").toString());
-//            intent.putExtra("bprysfz",map_project.get(position).get("bprysfz").toString());
-//            startActivity(intent);
-//        } else {
-//            //如果不是使用中的项目，进入项目详情页面
-//            Intent intent = new Intent(this,ProjectDetailActivity.class);
-//            intent.putExtra("proId",map_project.get(position).get("id").toString());
-//            intent.putExtra("htbh",map_project.get(position).get("htbh").toString());
-//            intent.putExtra("dwdm",map_project.get(position).get("dwdm").toString());
-//            intent.putExtra("xmbh",map_project.get(position).get("xmbh").toString());
-//            intent.putExtra("coordxy",map_project.get(position).get("coordxy").toString());
-//            intent.putExtra("business",map_project.get(position).get("business").toString());
-//            intent.putExtra("project_name",map_project.get(position).get("project_name").toString());
-//            intent.putExtra("bprysfz",map_project.get(position).get("bprysfz").toString());
-//            startActivity(intent);
-//        }
     }
 
     private List<String> pnList = new ArrayList<>();
