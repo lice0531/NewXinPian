@@ -236,7 +236,7 @@ public class FinishDenatorToUpMain {
         String headAfter = "";
         int currentPackLen = 0;
         String currentPackLenStr = "";
-        eNo = Utils.strPaddingZero(tempequNo, 11);
+        eNo = Utils.strPaddingZero(tempequNo, 8);
 
         int currentDataIndex = 0;
         for (int i = 2; i <= packTotal; i++) {
