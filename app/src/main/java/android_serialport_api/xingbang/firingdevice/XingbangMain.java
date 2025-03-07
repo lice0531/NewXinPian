@@ -1183,6 +1183,7 @@ public class XingbangMain extends SerialPortActivity {
                     baseinfo.setDuanNo(Integer.parseInt(a[20]));
                     baseinfo.setFanzhuan(a[21]);
                     baseinfo.setPai(a[22]);
+                    baseinfo.setPiece(a[23]);
                     getDaoSession().getDenatorBaseinfoDao().insert(baseinfo);
                 } else {
                     f.delete();//如果字段个数不对,先删除list,再跳出循环

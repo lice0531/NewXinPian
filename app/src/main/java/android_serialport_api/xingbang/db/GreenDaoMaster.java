@@ -293,6 +293,16 @@ public class GreenDaoMaster {
     }
 
     /**
+     * 删除错误代码不等于FF的所有雷管
+     */
+    public void deleteErrLeiGuanNew() {
+        QueryBuilder<DenatorBaseinfo> result = mDeantorBaseDao.queryBuilder();
+        result.where(DenatorBaseinfoDao.Properties.ErrorName.notEq("通信成功"))
+                .where(DenatorBaseinfoDao.Properties.ErrorName.notEq(""))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
      * 根据区域删除所有雷管
      */
     public void deleteLeiGuanFroPiece(String piece) {
@@ -2720,6 +2730,17 @@ public class GreenDaoMaster {
         }
         // 批量保存更新后的记录
         quyuDao.updateInTx(quYuList);  // 使用updateInTx进行批量更新
+    }
+
+    public void updateQyStatus() {
+        List<QuYu> quYuList = quyuDao.queryBuilder().where(QuYuDao.Properties.IsQb.eq("true")).list();
+        for (QuYu quYu : quYuList) {
+            long lgCount = mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.Piece.eq(quYu.getQyid())).count();
+            if (lgCount == 0) {
+                quYu.setIsQb("false");
+                quyuDao.update(quYu);
+            }
+        }
     }
 
     /**

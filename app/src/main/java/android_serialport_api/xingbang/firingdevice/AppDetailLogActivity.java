@@ -709,7 +709,6 @@ public class AppDetailLogActivity extends BaseActivity {
             tipDlg.dismiss();
             tipDlg = null;
         }
-//        Utils.saveFile();//把软存中的数据存入磁盘中
         super.onDestroy();
         fixInputMethodManagerLeak(this);
     }
