@@ -363,8 +363,9 @@ public class DelDenatorMainPage extends BaseActivity  {
                         runPbDialog();
 
                         GreenDaoMaster master = new GreenDaoMaster();
-                        master.deleteErrLeiGuan(mRegion);
-                        Utils.deleteData(mRegion);//重新排序雷管
+                        master.deleteErrLeiGuanNew();
+                        master.updateQyStatus();//如果删除的错误雷管所属区域中没有雷管了，已起爆状态需取消
+                        Utils.deleteDataNew();//重新排序雷管
                         refreshData();
                         Utils.saveFile();//把软存中的数据存入磁盘中
 
