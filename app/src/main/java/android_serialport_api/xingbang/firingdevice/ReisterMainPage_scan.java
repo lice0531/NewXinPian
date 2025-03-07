@@ -6104,53 +6104,59 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        String holeinDelayStr = holeinDelayTxt.getText().toString();
 //        //孔间延时
 //        String holeBetweentStr = holeBetweentTxt.getText().toString();
-
-        int start = startNoStr;
-        int end = endNoStr;
+        Log.e(TAG, "holeDeAmoStr: " +holeDeAmoStr);
+        Log.e(TAG, "startDelayStr: " +startDelayStr);
+        Log.e(TAG, "holeinDelayStr: " +holeinDelayStr);
+        Log.e(TAG, "holeBetweentStr: " +holeBetweentStr);
         int holeDeAmo = Integer.parseInt(holeDeAmoStr);
         int startDelay = Integer.parseInt(startDelayStr);
-        int holeinDelay = Integer.parseInt(holeinDelayStr);
-        int holeBetweent = Integer.parseInt(holeBetweentStr);
+        int holeinDelay = Integer.parseInt(holeinDelayStr);//孔内延时
+        int holeBetweent = Integer.parseInt(holeBetweentStr);//孔间延时
         int holeLoop = 1;
         int delayCount = startDelay;
-        for (int iLoop = start; iLoop < end; iLoop++) {
+        for (int iLoop = startNoStr; iLoop < endNoStr; iLoop++) {//孔间循环
 
             //int isExist = isDel(""+iLoop);
 
-            for (int i = 1; i <= holeDeAmo; i++) {
+            for (int i = 1; i <= holeDeAmo; i++) {//孔内循环
                 if (dijia) {
                     if (i < holeDeAmo) {
                         delayCount += holeinDelay;
+                        Log.e(TAG, "孔内循环--第"+i+"发==递加延时:"+delayCount );
                         iLoop++;
                     }
                 } else {
                     if (i < holeDeAmo) {
                         delayCount -= holeinDelay;
+                        Log.e(TAG, "孔内循环--第"+i+"发==递加延时:"+delayCount );
                         iLoop++;
                     }
                 }
 
-                if (iLoop > end) break;
+                if (iLoop > endNoStr) break;
             }
             holeLoop++;
             if (dijia) {
                 delayCount += holeBetweent;
+                Log.e(TAG, "孔间循环--第"+iLoop+"发==递加延时:"+delayCount );
             } else {
                 delayCount -= holeBetweent;
+                Log.e(TAG, "孔间循环--第"+iLoop+"发==递加延时:"+delayCount );
             }
-
+            Log.e(TAG, "holeLoop: "+holeLoop );
+            Log.e(TAG, "=======================" );
         }
         return delayCount;
     }
 
     private void setDenatorDelay(boolean dijia, int start, int end, String holeDeAmoStr, String startDelayStr, String holeinDelayStr, String holeBetweentStr) {
-//        Log.e("设置延时", "递加 dijia: " + dijia);
-//        Log.e("设置延时", "start: " + start);
-//        Log.e("设置延时", "end: " + end);
-//        Log.e("设置延时", "孔内雷管总数数holeDeAmoStr: " + holeDeAmoStr);
-//        Log.e("设置延时", "开始延时startDelayStr: " + startDelayStr);
-//        Log.e("设置延时", "孔内延时holeinDelayStr: " + holeinDelayStr);
-//        Log.e("设置延时", "孔间延时holeBetweentStr: " + holeBetweentStr);
+        Log.e("设置延时", "递加 dijia: " + dijia);
+        Log.e("设置延时", "start: " + start);
+        Log.e("设置延时", "end: " + end);
+        Log.e("设置延时", "孔内雷管总数数holeDeAmoStr: " + holeDeAmoStr);
+        Log.e("设置延时", "开始延时startDelayStr: " + startDelayStr);
+        Log.e("设置延时", "孔内延时holeinDelayStr: " + holeinDelayStr);
+        Log.e("设置延时", "孔间延时holeBetweentStr: " + holeBetweentStr);
         int holeDeAmo = Integer.parseInt(holeDeAmoStr);
         int startDelay = Integer.parseInt(startDelayStr);
         int holeinDelay = Integer.parseInt(holeinDelayStr);
@@ -6159,22 +6165,59 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int delayCount = startDelay;
         List<DenatorBaseinfoSelect> list_lg = childList.get(groupListChoice - 1);
 
-        for (int i = 0; i < list_lg.size(); i++) {
-
+        for (int iLoop = start-1; iLoop < end; iLoop++) {//孔间循环
             ContentValues values = new ContentValues();
-
+            //int isExist = isDel(""+iLoop);
             if (dijia) {
-                delayCount = startDelay + (list_lg.get(i).getBlastserial() - 1) * holeBetweent + (list_lg.get(i).getDuanNo() - 1) * holeinDelay;
+                delayCount += holeBetweent;
+                values.put("delay", delayCount);
+                values.put("blastserial", holeLoop);
+                values.put("duanNo", 1);
+                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
+                Log.e("设置延时", "孔间循环--第"+iLoop+"发==递加延时:"+delayCount +"ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
             } else {
-                delayCount = startDelay - (list_lg.get(i).getBlastserial() - 1) * holeBetweent - (list_lg.get(i).getDuanNo() - 1) * holeinDelay;
-
+                delayCount -= holeBetweent;
+                values.put("delay", delayCount);
+                values.put("blastserial", holeLoop);
+                values.put("duanNo", 1);
+                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
+                Log.e("设置延时", "孔间循环--第"+iLoop+"发==递减延时:"+delayCount );
             }
-            values.put("delay", delayCount);
-            Log.e("设置延时", "ShellBlastNo:" + list_lg.get(i).getShellBlastNo() + " 更新delay: " + delayCount);
+            for (int i = 1; i <= holeDeAmo; i++) {//孔内循环
 
-            db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(i).getId() + "", mRegion, paiChoice + ""});
+                if (dijia) {
+                    if (i < holeDeAmo&&(iLoop+1)<end) {
+                        iLoop++;
+                        delayCount += holeinDelay;
+                        values.put("delay", delayCount);
+                        values.put("blastserial", holeLoop);
+                        values.put("duanNo", i+1);
+                        Log.e("设置延时", "ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
+                        db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
+                        Log.e("设置延时", "孔内循环--第"+iLoop+"发==递加延时:"+delayCount );
+                    }
+                } else {
+                    if (i < holeDeAmo&&(iLoop+1)<end) {
+                        iLoop++;
+                        delayCount -= holeinDelay;
+                        values.put("delay", delayCount);
+                        values.put("blastserial", holeLoop);
+                        values.put("duanNo", i+1);
+                        Log.e("设置延时", "ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
+
+                        db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
+                        Log.e("设置延时", "孔内循环--第"+iLoop+"发==递加延时:"+delayCount );
+
+                    }
+                }
+
+                if (iLoop > end) break;
+            }
 
 
+            Log.e("设置延时", "holeLoop: "+holeLoop );
+            holeLoop++;
+            Log.e("设置延时", "=======================" );
         }
         pb_show = 0;
         mHandler_2.sendMessage(mHandler_2.obtainMessage());
@@ -6185,6 +6228,80 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 + ",开始延时:" + startDelayStr + ",孔内延时:" + holeinDelayStr + ",孔间延时:" + holeBetweentStr);
         Utils.writeRecord("--设置延时:起始序号:" + start + ",终点序号:" + end + ",孔内雷管数:" + holeDeAmoStr
                 + ",开始延时:" + startDelayStr + ",孔内延时:" + holeinDelayStr + ",孔间延时:" + holeBetweentStr);
+    }
+
+        //优化后的结构
+//    private void setDenatorDelay(boolean isIncremental, int start, int end, String holeDeAmoStr, String startDelayStr, String holeinDelayStr, String holeBetweenStr) {
+//        // 日志记录
+//        logDelayParameters(isIncremental, start, end, holeDeAmoStr, startDelayStr, holeinDelayStr, holeBetweenStr);
+//
+//        // 转换字符串为整数
+//        int holeDeAmo = Integer.parseInt(holeDeAmoStr);
+//        int startDelay = Integer.parseInt(startDelayStr);
+//        int holeinDelay = Integer.parseInt(holeinDelayStr);
+//        int holeBetween = Integer.parseInt(holeBetweenStr);
+//
+//        int holeLoop = 1;
+//        int delayCount = startDelay;
+//        List<DenatorBaseinfoSelect> list_lg = childList.get(groupListChoice - 1);
+//
+//        for (int iLoop = start - 1; iLoop < end; iLoop++) {
+//            ContentValues values = new ContentValues();
+//
+//            // 更新孔间延时
+//            updateDelay(isIncremental, values, delayCount, holeLoop, Math.toIntExact(list_lg.get(iLoop).getId()), mRegion, paiChoice, holeBetween);
+//            logDelayUpdate(iLoop, delayCount, list_lg.get(iLoop).getShellBlastNo(), isIncremental ? "递加" : "递减");
+//
+//            // 更新孔内延时
+//            for (int i = 1; i <= holeDeAmo; i++) {
+//                if (i < holeDeAmo && (iLoop + 1) < end) {
+//                    iLoop++;
+//                    updateDelay(isIncremental, values, delayCount, holeLoop, Math.toIntExact(list_lg.get(iLoop).getId()), mRegion, paiChoice, holeinDelay);
+//                    logDelayUpdate(iLoop, delayCount, list_lg.get(iLoop).getShellBlastNo(), isIncremental ? "递加" : "递减");
+//                }
+//
+//                if (iLoop >= end) break; // 超出范围时退出循环
+//            }
+//
+//            logHoleLoop(holeLoop);
+//            holeLoop++;
+//        }
+//    }
+
+    // 日志记录：参数信息
+    private void logDelayParameters(boolean isIncremental, int start, int end, String holeDeAmoStr, String startDelayStr, String holeinDelayStr, String holeBetweenStr) {
+        Log.e("设置延时", "递加 isIncremental: " + isIncremental);
+        Log.e("设置延时", "start: " + start);
+        Log.e("设置延时", "end: " + end);
+        Log.e("设置延时", "孔内雷管总数 holeDeAmoStr: " + holeDeAmoStr);
+        Log.e("设置延时", "开始延时 startDelayStr: " + startDelayStr);
+        Log.e("设置延时", "孔内延时 holeinDelayStr: " + holeinDelayStr);
+        Log.e("设置延时", "孔间延时 holeBetweenStr: " + holeBetweenStr);
+    }
+
+    // 更新延时值
+    private void updateDelay(boolean isIncremental, ContentValues values, int delayCount, int holeLoop, int id, String mRegion, int paiChoice, int delayValue) {
+        if (isIncremental) {
+            delayCount += delayValue;
+        } else {
+            delayCount -= delayValue;
+        }
+
+        values.put("delay", delayCount);
+        values.put("blastserial", holeLoop);
+        values.put("duanNo", 1);
+        db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{String.valueOf(id), mRegion, String.valueOf(paiChoice)});
+    }
+
+    // 日志记录：延时更新
+    private void logDelayUpdate(int iLoop, int delayCount, String shellBlastNo, String delayType) {
+        Log.e("设置延时", "孔间循环--第" + (iLoop + 1) + "发==" + delayType + "延时:" + delayCount + " ShellBlastNo:" + shellBlastNo + " 更新delay: " + delayCount);
+    }
+
+    // 日志记录：holeLoop 信息
+    private void logHoleLoop(int holeLoop) {
+        Log.e("设置延时", "holeLoop: " + holeLoop);
+        Log.e("设置延时", "=======================");
     }
 
 
