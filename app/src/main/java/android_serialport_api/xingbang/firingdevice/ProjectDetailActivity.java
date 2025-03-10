@@ -165,11 +165,11 @@ public class ProjectDetailActivity extends BaseActivity {
         if (mBusiness.startsWith("非营业性")) {
             Log.e(TAG,"非营业性");
             llXmxx.setVisibility(View.GONE);
-            llDwxx.setVisibility(View.VISIBLE);
+//            llDwxx.setVisibility(View.VISIBLE);
         } else {
             Log.e(TAG,"营业性");
             llXmxx.setVisibility(View.VISIBLE);
-            llDwxx.setVisibility(View.GONE);
+//            llDwxx.setVisibility(View.GONE);
         }
         Log.e(TAG,"htid:" + mHtbh + "--xmhb:" + mXmbh);
         view_htid.setVisibility(TextUtils.isEmpty(mHtbh) ? View.GONE : View.VISIBLE);

@@ -114,6 +114,8 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
                 View.GONE : View.VISIBLE);
         viewHolder.ll_htid.setVisibility(TextUtils.isEmpty(list.get(position).get("htbh").toString()) ?
                 View.GONE : View.VISIBLE);
+        viewHolder.ll_item_dwxx.setVisibility(TextUtils.isEmpty(list.get(position).get("dwdm").toString()) ?
+                View.GONE : View.VISIBLE);
         viewHolder.tv_sp_name.setText(list.get(position).get("project_name").toString());
         viewHolder.tv_sp_htbh.setText(list.get(position).get("htbh").toString());
         viewHolder.tv_sp_xmbh.setText(list.get(position).get("xmbh").toString());
@@ -129,10 +131,10 @@ public class SaveProjectAdapter extends BaseAdapter implements OnClickListener {
             viewHolder.tv_gsxz.setText(list.get(position).get("business").toString());
             if (list.get(position).get("business").toString().startsWith("营业性")) {
                 viewHolder.ll_item_xmxx.setVisibility(View.VISIBLE);
-                viewHolder.ll_item_dwxx.setVisibility(View.GONE);
+//                viewHolder.ll_item_dwxx.setVisibility(View.GONE);
             } else {
                 viewHolder.ll_item_xmxx.setVisibility(View.GONE);
-                viewHolder.ll_item_dwxx.setVisibility(View.VISIBLE);
+//                viewHolder.ll_item_dwxx.setVisibility(View.VISIBLE);
             }
         }
         viewHolder.btn_del.setTag(position);

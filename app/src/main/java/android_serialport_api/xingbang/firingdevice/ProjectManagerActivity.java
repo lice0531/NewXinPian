@@ -4,6 +4,7 @@ import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_TRACKER_EN;
 
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,17 +19,29 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.location.Poi;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 import com.kfree.comm.system.ScanQrControl;
 import com.orhanobut.logger.Logger;
 import com.scandecode.ScanDecode;
@@ -56,6 +69,7 @@ import android_serialport_api.xingbang.db.Project;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.jilian.FirstEvent;
+import android_serialport_api.xingbang.services.LocationService;
 import android_serialport_api.xingbang.utils.AppLogUtils;
 import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
@@ -87,6 +101,8 @@ public class ProjectManagerActivity extends BaseActivity {
     LinearLayout llXmxx;
     @BindView(R.id.ll_dwxx)
     LinearLayout llDwxx;
+    @BindView(R.id.btn_location)
+    Button btnLocation;
     private String select_business;
     private String TAG = "项目管理页面";
     private String pageFlag = "";//根据不同情况进入页面显示右上角的文字不一样
@@ -98,6 +114,12 @@ public class ProjectManagerActivity extends BaseActivity {
     private ScanQrControl mScaner = null;
     private ScanBar scanBarThread;
     private int continueScanFlag = 0;
+    private String jd = "";
+    private String wd = "";
+    private LocationService locationService;
+    private int mCount = 0;
+    private boolean isFirstLoc = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +130,7 @@ public class ProjectManagerActivity extends BaseActivity {
         mMyDatabaseHelper = new DatabaseHelper(this, "denatorSys.db", null,  DatabaseHelper.TABLE_VERSION);
         db = mMyDatabaseHelper.getReadableDatabase();
         SQLiteStudioService.instance().start(this);
+        startOneLocaton();
         SoundPlayUtils.init(this);
         initData();
         //初始化扫码功能
@@ -168,11 +191,9 @@ public class ProjectManagerActivity extends BaseActivity {
             if (business.startsWith("非营业性")) {
                 addGsxz.setSelection(0);
                 llXmxx.setVisibility(View.GONE);
-                llDwxx.setVisibility(View.VISIBLE);
                 Log.e(TAG,"进来非营业性了。。");
             } else {
                 llXmxx.setVisibility(View.VISIBLE);
-                llDwxx.setVisibility(View.GONE);
                 addGsxz.setSelection(1);
                 Log.e(TAG,"进来营业性了。。");
             }
@@ -181,7 +202,6 @@ public class ProjectManagerActivity extends BaseActivity {
             tv_right.setVisibility(View.VISIBLE);
             tv_right.setText("扫码新增项目");
             llXmxx.setVisibility(View.GONE);
-            llDwxx.setVisibility(View.VISIBLE);
         }
         tv_right.setOnClickListener(v -> {
             if (tv_right.getText().toString().trim().contains("删除")) {
@@ -259,10 +279,8 @@ public class ProjectManagerActivity extends BaseActivity {
                 Log.e(TAG ,"公司性质选择的是:" + select_business);
                 if (i == 0) {
                     llXmxx.setVisibility(View.GONE);
-                    llDwxx.setVisibility(View.VISIBLE);
                 } else {
                     llXmxx.setVisibility(View.VISIBLE);
-                    llDwxx.setVisibility(View.GONE);
                 }
             }
             @Override
@@ -281,6 +299,35 @@ public class ProjectManagerActivity extends BaseActivity {
         downAtXmbh.addTextChangedListener(xmbh_watcher);//长度监听
         downAtBprysfz.addTextChangedListener(sfz_watcher);//长度监听
         downAtDwdm.addTextChangedListener(dwdm_watcher);//长度监听
+    }
+
+    private LocationClient mLocClientContinuoue = null;
+    private LocationClient mLocClientOne = null;
+    /**
+     * 启动单次定位
+     */
+    private void startOneLocaton() {
+        mLocClientOne = new LocationClient(this);
+        mLocClientOne.registerLocationListener(oneLocationListener);
+        LocationClientOption locationClientOption = new LocationClientOption();
+        // 可选，设置定位模式，默认高精度 LocationMode.Hight_Accuracy：高精度；
+        locationClientOption.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);
+        // 可选，设置返回经纬度坐标类型，默认GCJ02
+        locationClientOption.setCoorType("bd09ll");
+        // 如果设置为0，则代表单次定位，即仅定位一次，默认为0
+        // 如果设置非0，需设置1000ms以上才有效
+        locationClientOption.setScanSpan(0);
+        // 设置是否进行单次定位，单次定位时调用start之后会默认返回一次定位结果
+        locationClientOption.setOnceLocation(true);
+        //可选，设置是否使用gps，默认false
+        locationClientOption.setOpenGps(true);
+        // 可选，是否需要地址信息，默认为不需要，即参数为false
+        // 如果开发者需要获得当前点的地址信息，此处必须为true
+        locationClientOption.setIsNeedAddress(false);
+        // 设置定位参数
+        mLocClientOne.setLocOption(locationClientOption);
+        // 开启定位
+        mLocClientOne.start();
     }
 
     /**
@@ -469,10 +516,8 @@ public class ProjectManagerActivity extends BaseActivity {
             if (sbusiness.startsWith("非营业性")) {
                 addGsxz.setSelection(0);
                 llXmxx.setVisibility(View.GONE);
-                llDwxx.setVisibility(View.VISIBLE);
             } else {
                 llXmxx.setVisibility(View.VISIBLE);
-                llDwxx.setVisibility(View.GONE);
                 addGsxz.setSelection(1);
             }
             downAtProjectName.setText(sprojectName);
@@ -530,9 +575,16 @@ public class ProjectManagerActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
     }
-    @OnClick({R.id.btn_down_inputOK,R.id.btn_down_ercode})
+    @OnClick({R.id.btn_down_inputOK,R.id.btn_down_ercode,R.id.btn_location})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.btn_location://启动定位
+                if (jd.equals("")) {
+                    show_Toast(getResources().getString(R.string.text_down_show1));
+                    break;
+                }
+                createHelpDialog();
+                break;
             case R.id.btn_down_inputOK:
                 hideInputKeyboard();//隐藏键盘
                 if (downAtCoordx.getText().toString().trim().length() < 1) {
@@ -563,6 +615,32 @@ public class ProjectManagerActivity extends BaseActivity {
                 startActivity(intent);
                 break;
         }
+    }
+
+    /***
+     * 建立对话框
+     */
+    @SuppressLint("SetTextI18n")
+    public void createHelpDialog() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.activity_down_tip, null);
+        final EditText jd_5 = (EditText) view.findViewById(R.id.jd_5);
+        final EditText jd_4 = (EditText) view.findViewById(R.id.jd_4);
+        final EditText wd_5 = (EditText) view.findViewById(R.id.wd_5);
+        final EditText wd_4 = (EditText) view.findViewById(R.id.wd_4);
+        jd_5.setText(jd.substring(0, 6));
+        jd_4.setText(jd.substring(6));
+        wd_5.setText(wd.substring(0, 6));
+        wd_4.setText(wd.substring(6));
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.text_down_tip12));//"说明"
+        builder.setView(view);
+        builder.setPositiveButton(getResources().getString(R.string.text_alert_sure), (dialog, which) -> {
+            downAtCoordx.setText(jd_5.getText().toString().trim() + jd_4.getText().toString().trim() );
+            downAtCoordy.setText(wd_5.getText().toString().trim()  + wd_4.getText().toString().trim() );
+            dialog.dismiss();
+        });
+        builder.create().show();
     }
 
     private int delShouQuan(String proId,String project_name) {//删除雷管
@@ -701,32 +779,27 @@ public class ProjectManagerActivity extends BaseActivity {
         String dwdm = downAtDwdm.getText().toString().trim().replace(" ", "");
         String name = downAtProjectName.getText().toString().trim().replace(" ", "");
         if (select_business.startsWith("营业性")) {
-            // 判断合同编号和项目编号不能同时为空
-            if (TextUtils.isEmpty(htid) && TextUtils.isEmpty(xmbh)) {
-                checkStr = "合同编号和项目编号不能同时为空，请重新输入";
-            } else {
-                // 如果合同编号为空，项目编号长度必须大于等于15
-                if (TextUtils.isEmpty(htid) && !TextUtils.isEmpty(xmbh)) {
-                    if (xmbh.length() < 15) {
-                        checkStr = "当前项目编号小于15位，请重新输入"; // 项目编号小于15位
-                    }
-                }
-                // 如果项目编号为空，合同编号长度必须大于等于15
-                if (TextUtils.isEmpty(xmbh) && !TextUtils.isEmpty(htid)) {
-                    if (htid.length() < 15) {
-                        checkStr = "当前合同编号小于15位，请重新输入"; // 合同编号小于15位
-                    }
-                }
-                // 如果合同编号和项目编号都不为空，检查它们的长度
-                if (!TextUtils.isEmpty(htid) && !TextUtils.isEmpty(xmbh)) {
-                    if (htid.length() < 15) {
-                        checkStr = "当前合同编号小于15位，请重新输入"; // 合同编号小于15位
-                    }
-                    if (xmbh.length() < 15) {
-                        checkStr = "当前项目编号小于15位，请重新输入"; // 项目编号小于15位
-                    }
-                }
+            // 检查是否三个都为空
+            if (TextUtils.isEmpty(dwdm) && TextUtils.isEmpty(xmbh) && TextUtils.isEmpty(htid)) {
+                return "单位代码、项目编号和合同编号不能同时为空";
             }
+
+            // 校验 dwdm（单位代码），如果有输入，检查是否13位
+            if (!TextUtils.isEmpty(dwdm) && dwdm.length() < 13) {
+                return "当前单位代码小于13位，请重新输入";
+            }
+
+            // 校验 xmbh（项目编号），如果有输入，检查是否15位
+            if (!TextUtils.isEmpty(xmbh) && xmbh.length() < 15) {
+                return "当前项目编号小于13位，请重新输入";
+            }
+
+            // 校验 htid（合同编号），如果有输入，检查是否15位
+            if (!TextUtils.isEmpty(htid) && htid.length() < 15) {
+                return "当前合同编号小于13位，请重新输入";
+            }
+            // 如果所有校验通过，返回空字符
+            return "";
         } else {
             // 判断单位代码小于13位
             if (dwdm.length() < 13) {
@@ -853,9 +926,156 @@ public class ProjectManagerActivity extends BaseActivity {
         }
     };
 
+    /*****
+     *
+     * 单次定位回调监听
+     *
+     */
+    private final BDAbstractLocationListener oneLocationListener = new BDAbstractLocationListener() {
+
+        /**
+         * 定位请求回调函数
+         * @param location 定位结果
+         */
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            if (null == location) {
+                return;
+            }
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//            addOneLocMarker(latLng);
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(latLng);
+            int padding = 0;
+            int paddingBottom = 600;
+            MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngBounds(builder.build(), padding,
+                    padding, padding, paddingBottom);
+            StringBuffer sb = new StringBuffer(256);
+            // 更新地图状态
+//            mBaiduMap.animateMapStatus(mapStatusUpdate);
+            if (location.getLocType() == BDLocation.TypeGpsLocation) {// GPS定位结果
+                sb.append("gps定位成功");
+            } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {// 网络定位结果
+                sb.append("网络定位成功");
+            } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {// 离线定位结果
+                sb.append("离线定位成功");
+            } else if (location.getLocType() == BDLocation.TypeServerError) {
+                sb.append("服务端网络定位失败");
+            } else if (location.getLocType() == BDLocation.TypeNetWorkException) {
+                sb.append("网络不同导致定位失败，请检查网络是否通畅");
+            } else if (location.getLocType() == BDLocation.TypeCriteriaException) {
+                sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
+            }
+            String locationStr = Utils.getLocationStr(location, mLocClientOne);
+            Log.e("定位", "locationStr: "+locationStr );
+            if (!TextUtils.isEmpty(locationStr)) {
+                sb.append(locationStr);
+            }
+            double a = 4.9E-324;
+            if (location.getLatitude() != a) {
+                wd = location.getLatitude() + "";
+//                downAtCoordy.setText(getResources().getString(R.string.text_query_lat) + location.getLatitude() + "");
+            }
+
+            sb.append("\nlontitude : ");// 经度
+            sb.append(location.getLongitude());
+            if (location.getLatitude() != a) {
+                jd = location.getLongitude() + "";
+//                downAtCoordx.setText(location.getLongitude() + "");
+            }
+        }
+    };
+
+    /**
+     * 停止连续定位
+     */
+    private void stopContinuoueLocaton() {
+        if (null != mLocClientContinuoue) {
+            mLocClientContinuoue.stop();
+            isFirstLoc = true;
+        }
+    }
+
+    /*****
+     *
+     * 连续定位回调监听
+     *
+     */
+    private final BDAbstractLocationListener continuoueLocationListener = new BDAbstractLocationListener() {
+
+        /**
+         * 定位请求回调函数
+         * @param location 定位结果
+         */
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            if (null == location ) {
+                return;
+            }
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            if (isFirstLoc) {
+//                addContinuoueLocMarker(latLng);
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(latLng);
+                int padding = 0;
+                int paddingBottom = 600;
+                MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngBounds(builder.build(), padding,
+                        padding, padding, paddingBottom);
+                // 更新地图状态
+//                mBaiduMap.animateMapStatus(mapStatusUpdate);
+                isFirstLoc = false;
+            }
+//            mContinuoueLocMarker.setPosition(latLng);
+            StringBuffer sb = new StringBuffer(256);
+            if (location.getLocType() == BDLocation.TypeGpsLocation) {// GPS定位结果
+                sb.append("gps定位成功");
+            } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {// 网络定位结果
+                sb.append("网络定位成功");
+            } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {// 离线定位结果
+                sb.append("离线定位成功");
+            } else if (location.getLocType() == BDLocation.TypeServerError) {
+                sb.append("服务端网络定位失败");
+            } else if (location.getLocType() == BDLocation.TypeNetWorkException) {
+                sb.append("网络不同导致定位失败，请检查网络是否通畅");
+            } else if (location.getLocType() == BDLocation.TypeCriteriaException) {
+                sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
+            }
+            sb.append("\n连续定位次数 : ");
+            sb.append(mCount ++);
+            String locationStr = Utils.getLocationStr(location,mLocClientContinuoue);
+            Log.e("连续定位", "locationStr: "+locationStr );
+            if (!TextUtils.isEmpty(locationStr)) {
+                sb.append(locationStr);
+            }
+            double a = 4.9E-324;
+            if (location.getLatitude() != a) {
+                wd = location.getLatitude() + "";
+//                downAtCoordy.setText(location.getLatitude() + "");
+            }
+
+            sb.append("\nlontitude : ");// 经度
+            sb.append(location.getLongitude());
+            if (location.getLatitude() != a) {
+                jd = location.getLongitude() + "";
+//                downAtCoordx.setText(location.getLongitude() + "");
+            }
+        }
+    };
+
+    /**
+     * 停止单次定位
+     */
+    private void stopOneLocaton() {
+        if (null != mLocClientOne) {
+            mLocClientOne.stop();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopContinuoueLocaton();
+        stopOneLocaton();
         SQLiteStudioService.instance().stop();
         if (db != null) db.close();
         if (mScaner != null) {

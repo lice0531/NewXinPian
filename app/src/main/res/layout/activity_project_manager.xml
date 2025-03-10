@@ -295,7 +295,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/addproject_tv_left"
-                            android:text="经纬度:     "
+                            android:text="经纬度: "
                             android:textSize="20sp" />
 
                         <AutoCompleteTextView
@@ -331,7 +331,15 @@
                             android:maxLines="2"
                             android:padding="5dp"
                             android:textSize="16sp" />
-
+                        <Button
+                            android:visibility="visible"
+                            android:id="@+id/btn_location"
+                            style="@style/allbtntstyle"
+                            android:layout_width="48dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="3dp"
+                            android:text="@string/text_down_tip7"
+                            android:textSize="18sp" />
                     </LinearLayout>
 
                     <View

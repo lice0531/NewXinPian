@@ -2732,17 +2732,6 @@ public class GreenDaoMaster {
         quyuDao.updateInTx(quYuList);  // 使用updateInTx进行批量更新
     }
 
-    public void updateQyStatus() {
-        List<QuYu> quYuList = quyuDao.queryBuilder().where(QuYuDao.Properties.IsQb.eq("true")).list();
-        for (QuYu quYu : quYuList) {
-            long lgCount = mDeantorBaseDao.queryBuilder().where(DenatorBaseinfoDao.Properties.Piece.eq(quYu.getQyid())).count();
-            if (lgCount == 0) {
-                quYu.setIsQb("false");
-                quyuDao.update(quYu);
-            }
-        }
-    }
-
     /**
      * 根据区域id更新已起爆的区域状态为true
      * @param idList

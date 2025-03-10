@@ -895,12 +895,12 @@ public class XingbangMain extends SerialPortActivity {
                 wjlastClickTime = System.currentTimeMillis();
                 if (!projectCheck(3)) return;
 
-                //验证是否授权
-                queryBeian();
-                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
-                    initDialog_shouquan();
-                    return;
-                }
+                //验证是否授权  网检暂时不验证雷管是否授权
+//                queryBeian();
+//                if (Yanzheng_sq.equals("验证") && Yanzheng_sq_size > 0) {
+//                    initDialog_shouquan();
+//                    return;
+//                }
 
                 long time = System.currentTimeMillis();
                 long endTime = (long) MmkvUtils.getcode("endTime", (long) 0);
