@@ -837,9 +837,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                                 if (childList.get(zhuceAdapter.getGroupCount() - 1).size() != 0) {//不是空排
                                     List<DenatorBaseinfo> db_list = new GreenDaoMaster().queryLeiguanPaiDesc(mRegion, paiChoice);
                                     Log.e(TAG, "db_list.get(0).toString(): " + db_list.get(0).toString());
-                                    for (int n =0;n< childList.get(groupListChoice - 1).size();n++){
-                                        if(Objects.equals(childList.get(groupListChoice - 1).get(n).getId(), db_list.get(0).getId())){
-                                            childListChoice = n+1;
+                                    for (int n = 0; n < childList.get(groupListChoice - 1).size(); n++) {
+                                        if (Objects.equals(childList.get(groupListChoice - 1).get(n).getId(), db_list.get(0).getId())) {
+                                            childListChoice = n + 1;
                                         }
                                     }
 
@@ -1025,7 +1025,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             choicepaiData.setSum(total2 + "");//
                             choicepaiData.setDelayMin(delay_minNum_new + "");
                             choicepaiData.setDelayMax(delay_max_new + "");
-                            Log.e("更新排延时","注册页面1007--min:" + delay_minNum_new +
+                            Log.e("更新排延时", "注册页面1007--min:" + delay_minNum_new +
                                     "--max:" + delay_max_new);
                             getDaoSession().getPaiDataDao().update(choicepaiData);
                         }
@@ -2069,18 +2069,18 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                            if (info.getFanzhuan() != null && info.getFanzhuan().equals("0") || d == 1) {
 //                                show_Toast(getResources().getString(R.string.text_queryHis_dialog4));
 //                            } else {
-                            // TODO 开启进度条
-                            runPbDialog();
-                            new Thread(() -> {
-                                if (info.getShellBlastNo().length() != 13) {
-                                    new GreenDaoMaster().deleteDetonator(info.getId());
-                                } else {
-                                    new GreenDaoMaster().deleteDetonator(info.getShellBlastNo());
-                                }
-                                //先更新排数据,再删除排
-                                updataPaiData();
+                        // TODO 开启进度条
+                        runPbDialog();
+                        new Thread(() -> {
+                            if (info.getShellBlastNo().length() != 13) {
+                                new GreenDaoMaster().deleteDetonator(info.getId());
+                            } else {
+                                new GreenDaoMaster().deleteDetonator(info.getShellBlastNo());
+                            }
+                            //先更新排数据,再删除排
+                            updataPaiData();
 //                                    Utils.deleteData(mRegion, info.getDuan());//重新排序雷管
-                                Utils.deleteDataforXuHao(mRegion, paiChoice);//重新排序雷管孔号(代替序号)
+                            Utils.deleteDataforXuHao(mRegion, paiChoice);//重新排序雷管孔号(代替序号)
 //                                    // 删除某一发雷管
 //                                    int duan_guan = new GreenDaoMaster().getDuan(shellBlastNo);
 //                                    new GreenDaoMaster().deleteDetonator(shellBlastNo);
@@ -2091,16 +2091,16 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                                    Message msg = new Message();
 //                                    msg.arg1 = duan_guan;
 //                                    mHandler_showNum.sendMessage(msg);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        show_Toast(getResources().getString(R.string.text_del_ok));
-                                    }
-                                });
-                                // 区域 更新视图
-                                mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));//删除后更新视图
-                                pb_show = 0;
-                            }).start();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    show_Toast(getResources().getString(R.string.text_del_ok));
+                                }
+                            });
+                            // 区域 更新视图
+                            mHandler_0.sendMessage(mHandler_0.obtainMessage(1003));//删除后更新视图
+                            pb_show = 0;
+                        }).start();
 //                            }
                     }).create();
             dialog2.show();
@@ -2572,7 +2572,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         PaiData paiData = groupList.get(groupListChoice - 1);
         int start_delay = Integer.parseInt(paiData.getStartDelay());//开始延时
         int f1 = Integer.parseInt(paiData.getKongDelay());//f1延时
-        int f2 =Integer.parseInt(f2_delay_data);//f2延时
+        int f2 = Integer.parseInt(f2_delay_data);//f2延时
 //        int maxNo = getMaxNumberNo();
 //        int delay = getMaxDelay(maxNo);//获取最大延时
         // 获取 该区域 最大序号
@@ -2731,7 +2731,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         denatorBaseinfo.setDelay((db_charu.getDelay() + Integer.parseInt(f2_delay_data)));
                         Log.e("扫码-单孔多发判断", "延时递加: " + (db_charu.getDelay() + Integer.parseInt(f2_delay_data)));
                     }
-                }else {
+                } else {
                     denatorBaseinfo.setDelay(db_charu.getDelay());
                 }
 
@@ -3565,7 +3565,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         Log.e(TAG, "getDelay: " + 1121);
                         delay_max = delay_min - f1 * (tk_num + 1);
                     } else if (!flag_t1) {//同孔
-                        delay_max = delay_min- f2;
+                        delay_max = delay_min - f2;
                         Log.e(TAG, "getDelay: " + 1123);
                     } else {
                         Log.e(TAG, "getDelay: " + 1122);
@@ -3596,7 +3596,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     if (flag_tk) {
                         delay_max = delay_max + f1 * (tk_num + 1);
                     } else if (!flag_t1) {//同孔
-                        delay_max = delay_max+f2;
+                        delay_max = delay_max + f2;
                     } else {
                         delay_max = delay_max + f1;
                     }
@@ -3630,9 +3630,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int delay_max;
         delay_max = db_charu.getDelay();
 //        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
-        Log.e(TAG, "flag_jh_f1: "+flag_jh_f1 );
-        Log.e(TAG, "delay_set: "+delay_set );
-        Log.e(TAG, "db_charu.getDelay(): "+db_charu.getDelay() );
+        Log.e(TAG, "flag_jh_f1: " + flag_jh_f1);
+        Log.e(TAG, "delay_set: " + delay_set);
+        Log.e(TAG, "db_charu.getDelay(): " + db_charu.getDelay());
 
         if (!flag_jh_f1) {
             Log.e(TAG, "getDelay: " + 1);
@@ -3648,9 +3648,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     if (flag_tk) {
                         Log.e(TAG, "getDelay: " + 13);
                         delay_max = delay_max - f1 * (tk_num + 1);
-                    }else if (flag_t1&&kongSum!=1) {
+                    } else if (flag_t1 && kongSum != 1) {
                         Log.e(TAG, "getDelay: " + 14);
-                        delay_max = delay_max - f1 - (kongSum - 1)*f2;
+                        delay_max = delay_max - f1 - (kongSum - 1) * f2;
                     } else {
                         Log.e(TAG, "getDelay: " + 15);
                         delay_max = delay_max - f1;
@@ -3673,13 +3673,13 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     if (flag_tk) {
                         Log.e(TAG, "getDelay: " + 222);
                         delay_max = delay_max + f1 * (tk_num + 1);
-                    }else if (flag_t1&&kongSum!=1) {
+                    } else if (flag_t1 && kongSum != 1) {
                         Log.e(TAG, "getDelay: " + 223);
                         Log.e(TAG, "delay_max: " + delay_max);
                         Log.e(TAG, "f1: " + f1);
                         Log.e(TAG, "f2: " + f2);
                         Log.e(TAG, "(kongSum - 1): " + ((kongSum - 1)));
-                        delay_max = delay_max + f1 ;
+                        delay_max = delay_max + f1;
                     } else {
                         Log.e(TAG, "getDelay: " + 224);
                         delay_max = delay_max + f1;
@@ -6068,8 +6068,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         String checstr = null;
         if (checstr == null || checstr.trim().length() < 1) {
             int maxDelay = getComputerDenDelay(dijia, startNoStr, endNoStr, holeDeAmoStr, startDelayStr, holeinDelayStr, holeBetweentStr);
-            Log.e("延时1", "maxDelay: " + maxDelay);//9010
-            Log.e("延时2", "maxSecond: " + maxSecond);//5000
+            Log.e("延时1", "计算出总体延时--maxDelay: " + maxDelay);//9010
+            Log.e("延时2", "最大延时--maxSecond: " + maxSecond);//5000
             if (maxSecond >= 0 && maxSecond < maxDelay) {
                 show_Toast(getResources().getString(R.string.text_setDelay_dialog5) + maxSecond + getResources().getString(R.string.text_setDelay_dialog6));
                 return;
@@ -6104,47 +6104,54 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //        String holeinDelayStr = holeinDelayTxt.getText().toString();
 //        //孔间延时
 //        String holeBetweentStr = holeBetweentTxt.getText().toString();
-        Log.e(TAG, "holeDeAmoStr: " +holeDeAmoStr);
-        Log.e(TAG, "startDelayStr: " +startDelayStr);
-        Log.e(TAG, "holeinDelayStr: " +holeinDelayStr);
-        Log.e(TAG, "holeBetweentStr: " +holeBetweentStr);
+//        Log.e(TAG, "holeDeAmoStr: " + holeDeAmoStr);
+//        Log.e(TAG, "startDelayStr: " + startDelayStr);
+//        Log.e(TAG, "holeinDelayStr: " + holeinDelayStr);
+//        Log.e(TAG, "holeBetweentStr: " + holeBetweentStr);
         int holeDeAmo = Integer.parseInt(holeDeAmoStr);
         int startDelay = Integer.parseInt(startDelayStr);
         int holeinDelay = Integer.parseInt(holeinDelayStr);//孔内延时
         int holeBetweent = Integer.parseInt(holeBetweentStr);//孔间延时
         int holeLoop = 1;
         int delayCount = startDelay;
-        for (int iLoop = startNoStr; iLoop < endNoStr; iLoop++) {//孔间循环
+        for (int iLoop = startNoStr-1; iLoop < endNoStr; iLoop++) {//孔间循环
 
+            if (iLoop == startNoStr - 1) {
+//                Log.e(TAG, "孔间循环--第" + iLoop + "发==延时:" + delayCount);
+            } else {
+                if (dijia) {
+                    delayCount += holeBetweent;
+//                    Log.e(TAG, "孔间循环--第" + iLoop + "发==递加延时:" + delayCount);
+                } else {
+                    delayCount -= holeBetweent;
+//                    Log.e(TAG, "孔间循环--第" + iLoop + "发==递减延时:" + delayCount);
+                }
+            }
             //int isExist = isDel(""+iLoop);
 
             for (int i = 1; i <= holeDeAmo; i++) {//孔内循环
                 if (dijia) {
-                    if (i < holeDeAmo) {
-                        delayCount += holeinDelay;
-                        Log.e(TAG, "孔内循环--第"+i+"发==递加延时:"+delayCount );
+                    if (i < holeDeAmo && (iLoop + 1) < endNoStr) {
                         iLoop++;
+                        delayCount += holeinDelay;
+//                        Log.e(TAG, "孔内循环--第" + iLoop + "发==递加延时:" + delayCount);
                     }
                 } else {
-                    if (i < holeDeAmo) {
-                        delayCount -= holeinDelay;
-                        Log.e(TAG, "孔内循环--第"+i+"发==递加延时:"+delayCount );
+                    if (i < holeDeAmo && (iLoop + 1) < endNoStr) {
                         iLoop++;
+                        delayCount -= holeinDelay;
+//                        Log.e(TAG, "孔内循环--第" + iLoop + "发==递加延时:" + delayCount);
+
                     }
                 }
 
                 if (iLoop > endNoStr) break;
             }
+
             holeLoop++;
-            if (dijia) {
-                delayCount += holeBetweent;
-                Log.e(TAG, "孔间循环--第"+iLoop+"发==递加延时:"+delayCount );
-            } else {
-                delayCount -= holeBetweent;
-                Log.e(TAG, "孔间循环--第"+iLoop+"发==递加延时:"+delayCount );
-            }
-            Log.e(TAG, "holeLoop: "+holeLoop );
-            Log.e(TAG, "=======================" );
+//            Log.e(TAG, "holeLoop: " + holeLoop);
+//            Log.e(TAG, "总体延时--delayCount: " + delayCount);
+//            Log.e(TAG, "=======================");
         }
         return delayCount;
     }
@@ -6165,49 +6172,56 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int delayCount = startDelay;
         List<DenatorBaseinfoSelect> list_lg = childList.get(groupListChoice - 1);
 
-        for (int iLoop = start-1; iLoop < end; iLoop++) {//孔间循环
+        for (int iLoop = start - 1; iLoop < end; iLoop++) {//孔间循环
             ContentValues values = new ContentValues();
             //int isExist = isDel(""+iLoop);
-            if (dijia) {
-                delayCount += holeBetweent;
+            if (iLoop == start - 1) {
                 values.put("delay", delayCount);
                 values.put("blastserial", holeLoop);
                 values.put("duanNo", 1);
                 db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
-                Log.e("设置延时", "孔间循环--第"+iLoop+"发==递加延时:"+delayCount +"ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
+                Log.e("设置延时", "孔间循环--第" + iLoop + "发==递加延时:" + delayCount + "ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
             } else {
-                delayCount -= holeBetweent;
-                values.put("delay", delayCount);
-                values.put("blastserial", holeLoop);
-                values.put("duanNo", 1);
-                db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
-                Log.e("设置延时", "孔间循环--第"+iLoop+"发==递减延时:"+delayCount );
-            }
-            for (int i = 1; i <= holeDeAmo; i++) {//孔内循环
-
                 if (dijia) {
-                    if (i < holeDeAmo&&(iLoop+1)<end) {
+                    delayCount += holeBetweent;
+                    values.put("delay", delayCount);
+                    values.put("blastserial", holeLoop);
+                    values.put("duanNo", 1);
+                    db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
+                    Log.e("设置延时", "孔间循环--第" + iLoop + "发==递加延时:" + delayCount + "ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
+
+                } else {
+                    delayCount -= holeBetweent;
+                    values.put("delay", delayCount);
+                    values.put("blastserial", holeLoop);
+                    values.put("duanNo", 1);
+                    db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
+                    Log.e("设置延时", "孔间循环--第" + iLoop + "发==递减延时:" + delayCount + "ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
+
+                }
+            }
+
+            for (int i = 1; i <= holeDeAmo; i++) {//孔内循环
+                Log.e(TAG, "-------孔内-------");
+                if (dijia) {
+                    if (i < holeDeAmo && (iLoop + 1) < end) {
                         iLoop++;
                         delayCount += holeinDelay;
                         values.put("delay", delayCount);
                         values.put("blastserial", holeLoop);
-                        values.put("duanNo", i+1);
-                        Log.e("设置延时", "ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
+                        values.put("duanNo", i + 1);
                         db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
-                        Log.e("设置延时", "孔内循环--第"+iLoop+"发==递加延时:"+delayCount );
+                        Log.e("设置延时", "孔间循环--第" + iLoop + "发==递加延时:" + delayCount + "ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
                     }
                 } else {
-                    if (i < holeDeAmo&&(iLoop+1)<end) {
+                    if (i < holeDeAmo && (iLoop + 1) < end) {
                         iLoop++;
                         delayCount -= holeinDelay;
                         values.put("delay", delayCount);
                         values.put("blastserial", holeLoop);
-                        values.put("duanNo", i+1);
-                        Log.e("设置延时", "ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
-
+                        values.put("duanNo", i + 1);
                         db.update(DatabaseHelper.TABLE_NAME_DENATOBASEINFO, values, "id =? and piece =? and pai =? ", new String[]{list_lg.get(iLoop).getId() + "", mRegion, paiChoice + ""});
-                        Log.e("设置延时", "孔内循环--第"+iLoop+"发==递加延时:"+delayCount );
-
+                        Log.e("设置延时", "孔间循环--第" + iLoop + "发==递减延时:" + delayCount + "ShellBlastNo:" + list_lg.get(iLoop).getShellBlastNo() + " 更新delay: " + delayCount);
                     }
                 }
 
@@ -6215,9 +6229,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
 
 
-            Log.e("设置延时", "holeLoop: "+holeLoop );
+            Log.e("设置延时", "holeLoop: " + holeLoop);
             holeLoop++;
-            Log.e("设置延时", "=======================" );
+            Log.e("设置延时", "=======================");
         }
         pb_show = 0;
         mHandler_2.sendMessage(mHandler_2.obtainMessage());
@@ -6230,7 +6244,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 + ",开始延时:" + startDelayStr + ",孔内延时:" + holeinDelayStr + ",孔间延时:" + holeBetweentStr);
     }
 
-        //优化后的结构
+    //优化后的结构
 //    private void setDenatorDelay(boolean isIncremental, int start, int end, String holeDeAmoStr, String startDelayStr, String holeinDelayStr, String holeBetweenStr) {
 //        // 日志记录
 //        logDelayParameters(isIncremental, start, end, holeDeAmoStr, startDelayStr, holeinDelayStr, holeBetweenStr);
