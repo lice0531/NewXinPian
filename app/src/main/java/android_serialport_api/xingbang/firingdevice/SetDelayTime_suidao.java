@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -305,6 +307,30 @@ public class SetDelayTime_suidao extends BaseActivity {
         startDelayTxt.setText("10");
         holeinDelayTxt.setText("0");
         holeBetweentTxt.setText("10");
+    }
+
+    private int getTotalNum(){
+        int a1 = Integer.parseInt(etDuanTotal1.getText().toString());
+        int a2 = Integer.parseInt(etDuanTotal2.getText().toString());
+        int a3 = Integer.parseInt(etDuanTotal3.getText().toString());
+        int a4 = Integer.parseInt(etDuanTotal4.getText().toString());
+        int a5 = Integer.parseInt(etDuanTotal5.getText().toString());
+        int a6 = Integer.parseInt(etDuanTotal6.getText().toString());
+        int a7 = Integer.parseInt(etDuanTotal7.getText().toString());
+        int a8 = Integer.parseInt(etDuanTotal8.getText().toString());
+        int a9 = Integer.parseInt(etDuanTotal9.getText().toString());
+        int a10 = Integer.parseInt(etDuanTotal10.getText().toString());
+        int a11 = Integer.parseInt(etDuanTotal11.getText().toString());
+        int a12 = Integer.parseInt(etDuanTotal12.getText().toString());
+        int a13 = Integer.parseInt(etDuanTotal13.getText().toString());
+        int a14 = Integer.parseInt(etDuanTotal14.getText().toString());
+        int a15 = Integer.parseInt(etDuanTotal15.getText().toString());
+        int a16 = Integer.parseInt(etDuanTotal16.getText().toString());
+        int a17 = Integer.parseInt(etDuanTotal17.getText().toString());
+        int a18 = Integer.parseInt(etDuanTotal18.getText().toString());
+        int a19 = Integer.parseInt(etDuanTotal19.getText().toString());
+        int a20 = Integer.parseInt(etDuanTotal20.getText().toString());
+        return a1 + a2 +a3 +a4 +a5 +a6 +a7 +a8 +a9 +a10 +a11 +a12 +a13 +a14 +a15 +a16 +a17 +a18 +a19 +a20;
     }
 
     private void initHandle() {
@@ -645,6 +671,27 @@ public class SetDelayTime_suidao extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_setDelayTime_inputOK:
+                if(getTotalNum()<mListData.size()){
+                    TextView view2 = new TextView(this);
+                    view2.setTextSize(25);
+                    view2.setTextColor(Color.RED);
+                    view2.setText(getResources().getString(R.string.text_tip3));
+                    view2.setTypeface(null, Typeface.BOLD);
+                    LayoutInflater inflater = getLayoutInflater();
+                    View customTitleView = inflater.inflate(R.layout.custom_dialog_title, null);
+
+                    AlertDialog dialog = new AlertDialog.Builder(this)
+                            .setCustomTitle(customTitleView)
+                            .setTitle(getResources().getString(R.string.text_alert_tip))//设置对话框的标题
+                            .setView(view2)
+                            .setPositiveButton(R.string.text_qd, (dialog2, which) -> {
+                                dialog2.dismiss();
+                            })
+                            .create();
+                    dialog.show();
+                    return;
+                }
+
                 AlertDialog dialog = new AlertDialog.Builder(SetDelayTime_suidao.this)
                         .setTitle(getResources().getString(R.string.text_setDelay_dialog1))//设置对话框的标题//"成功起爆"
                         .setMessage(getResources().getString(R.string.text_setDelay_dialog2))//设置对话框的内容"本次任务成功起爆！"

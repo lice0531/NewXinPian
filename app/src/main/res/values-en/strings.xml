@@ -1076,4 +1076,5 @@
     <string name="text_nodata">There is currently no data to upload</string>
     <string name="text_tip1">提示</string>
     <string name="text_tip2">当前排处于翻转状态,不能进行注册,删除,修改等操作,请复位后再进行操作.</string>
+    <string name="text_tip3">设置数量小于雷管数量,请检查一下每段数量,或再多设置一段.</string>
 </resources>
