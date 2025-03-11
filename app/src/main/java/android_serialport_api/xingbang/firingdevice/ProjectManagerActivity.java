@@ -974,14 +974,12 @@ public class ProjectManagerActivity extends BaseActivity {
             double a = 4.9E-324;
             if (location.getLatitude() != a) {
                 wd = location.getLatitude() + "";
-//                downAtCoordy.setText(getResources().getString(R.string.text_query_lat) + location.getLatitude() + "");
             }
 
             sb.append("\nlontitude : ");// 经度
             sb.append(location.getLongitude());
             if (location.getLatitude() != a) {
                 jd = location.getLongitude() + "";
-//                downAtCoordx.setText(location.getLongitude() + "");
             }
         }
     };

@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -128,12 +129,12 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
     Button btnDownWorkcode;
     @BindView(R.id.down_at_htid)//合同编号
     AutoCompleteTextView at_htid;
-    @BindView(R.id.ll_1)
-    LinearLayout ll1;
+    @BindView(R.id.ll_htbh)
+    LinearLayout llHtbh;
     @BindView(R.id.down_at_xmbh)//项目编号
     AutoCompleteTextView at_xmbh;
-    @BindView(R.id.ll_2)
-    LinearLayout ll2;
+    @BindView(R.id.ll_xmbh)
+    LinearLayout llXmbh;
     @BindView(R.id.down_at_dwdm)//单位代码
     AutoCompleteTextView at_dwdm;
     @BindView(R.id.ll_3)
@@ -441,12 +442,13 @@ public class DownWorkCode extends BaseActivity implements LoaderCallbacks<Cursor
             at_coordxy.setText(usedProject.getCoordxy());
             String business = usedProject.getBusiness();
             at_bprysfz.setText(usedProject.getBprysfz());
+            llXmbh.setVisibility(!TextUtils.isEmpty(usedProject.getXmbh()) ? View.VISIBLE : View.GONE);
+            llDwxx.setVisibility(!TextUtils.isEmpty(usedProject.getDwdm()) ? View.VISIBLE : View.GONE);
+            llHtbh.setVisibility(!TextUtils.isEmpty(usedProject.getHtbh()) ? View.VISIBLE : View.GONE);
             if (business.startsWith("非营业性")) {
                 llXmxx.setVisibility(View.GONE);
-                llDwxx.setVisibility(View.VISIBLE);
             } else {
                 llXmxx.setVisibility(View.VISIBLE);
-                llDwxx.setVisibility(View.GONE);
             }
         }
     }

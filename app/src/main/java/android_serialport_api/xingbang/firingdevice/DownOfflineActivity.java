@@ -176,10 +176,10 @@ public class DownOfflineActivity extends BaseActivity {
             String business = usedProject.getBusiness();
             if (business.startsWith("非营业性")) {
                 llXmxx.setVisibility(View.GONE);
-                llDwxx.setVisibility(View.VISIBLE);
+//                llDwxx.setVisibility(View.VISIBLE);
             } else {
                 llXmxx.setVisibility(View.VISIBLE);
-                llDwxx.setVisibility(View.GONE);
+//                llDwxx.setVisibility(View.GONE);
             }
         }
     }
