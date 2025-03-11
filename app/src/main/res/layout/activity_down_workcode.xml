@@ -113,241 +113,6 @@
                         android:textSize="20sp" />
 
                 </LinearLayout>
-
-                <!--        <LinearLayout-->
-                <!--            android:id="@+id/ly_setUpdata"-->
-                <!--            android:layout_width="fill_parent"-->
-                <!--            android:layout_height="wrap_content"-->
-                <!--            android:layout_marginTop="5dp"-->
-                <!--            android:visibility="visible"-->
-                <!--            android:orientation="vertical">-->
-                <!--            <LinearLayout-->
-                <!--                android:layout_width="fill_parent"-->
-                <!--                android:layout_height="40dp"-->
-                <!--                android:layout_marginTop="5dp"-->
-                <!--                android:visibility="visible"-->
-                <!--                >-->
-
-                <!--                <TextView-->
-                <!--                    style="@style/alltextstyle"-->
-                <!--                    android:layout_width="@dimen/downworkcode_pg_left"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_marginRight="5dp"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    android:text="@string/text_down_xmmc" />-->
-
-                <!--                <AutoCompleteTextView-->
-                <!--                    android:id="@+id/down_at_project_name"-->
-                <!--                    style="@style/alltextstyle"-->
-                <!--                    android:layout_width="10dp"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_weight="5"-->
-                <!--                    android:background="@drawable/translucent"-->
-                <!--                    android:gravity="center_vertical"-->
-                <!--                    android:hint="@string/text_down_xmmc"-->
-                <!--                    android:padding="5dp" />-->
-
-                <!--                <Button-->
-                <!--                    android:id="@+id/btn_clear_project_name"-->
-                <!--                    style="@style/allbtntstyle"-->
-                <!--                    android:layout_width="48dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:text="@string/text_down_tip6" />-->
-                <!--            </LinearLayout>-->
-                <!--            <LinearLayout-->
-                <!--                android:id="@+id/ll_1"-->
-                <!--                android:layout_width="fill_parent"-->
-                <!--                android:layout_height="40dp"-->
-                <!--                android:layout_marginTop="5dp">-->
-
-                <!--                <TextView-->
-                <!--                    android:layout_width="@dimen/downworkcode_pg_left"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_marginRight="5dp"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    style="@style/alltextstyle"-->
-                <!--                    android:text="@string/text_down_htbh"-->
-                <!--                    />-->
-
-                <!--                <AutoCompleteTextView-->
-                <!--                    android:id="@+id/down_at_htid"-->
-                <!--                    android:layout_width="10dp"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_weight="5"-->
-                <!--                    android:background="@drawable/translucent"-->
-                <!--                    android:gravity="center_vertical"-->
-                <!--                    style="@style/alltextstyle"-->
-                <!--                    android:hint="@string/text_down_tip1"-->
-                <!--                    android:inputType="number"-->
-                <!--                    android:digits="0123456789"-->
-                <!--                    android:maxLength="15"-->
-                <!--                    android:padding="5dp"-->
-                <!--                    />-->
-
-                <!--                <Button-->
-                <!--                    android:id="@+id/btn_clear_htid"-->
-                <!--                    android:layout_width="48dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    style="@style/allbtntstyle"-->
-                <!--                    android:text="@string/text_down_tip6"-->
-                <!--                    />-->
-                <!--            </LinearLayout>-->
-
-                <!--            <LinearLayout-->
-                <!--                android:id="@+id/ll_2"-->
-                <!--                android:layout_width="fill_parent"-->
-                <!--                android:layout_height="40dp"-->
-                <!--                android:layout_marginTop="5dp">-->
-
-                <!--                <TextView-->
-                <!--                    android:layout_width="@dimen/downworkcode_pg_left"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_marginRight="5dp"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    style="@style/alltextstyle"-->
-                <!--                    android:text="@string/text_xmbh"-->
-                <!--                    />-->
-
-                <!--                <AutoCompleteTextView-->
-                <!--                    android:id="@+id/down_at_xmbh"-->
-                <!--                    android:layout_width="10dp"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_weight="5"-->
-                <!--                    android:background="@drawable/translucent"-->
-                <!--                    android:gravity="center_vertical"-->
-                <!--                    android:hint="@string/text_down_tip2"-->
-                <!--                    android:maxLength="15"-->
-                <!--                    android:padding="5dp"-->
-                <!--                    android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"-->
-                <!--                    android:text=""-->
-                <!--                    style="@style/alltextstyle" />-->
-
-                <!--                <Button-->
-                <!--                    android:id="@+id/btn_clear_xmbh"-->
-                <!--                    android:layout_width="48dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    style="@style/allbtntstyle"-->
-                <!--                    android:text="@string/text_down_tip6"-->
-                <!--                    />-->
-                <!--            </LinearLayout>-->
-
-                <!--            <LinearLayout-->
-                <!--                android:id="@+id/ll_3"-->
-                <!--                android:layout_width="fill_parent"-->
-                <!--                android:layout_height="40dp"-->
-                <!--                android:layout_marginTop="5dp">-->
-
-                <!--                <TextView-->
-                <!--                    android:layout_width="@dimen/downworkcode_pg_left"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_marginRight="5dp"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    style="@style/alltextstyle"-->
-                <!--                    android:text="@string/text_dwdm"-->
-                <!--                    />-->
-
-                <!--                <AutoCompleteTextView-->
-                <!--                    android:id="@+id/down_at_dwdm"-->
-                <!--                    android:layout_width="10dp"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_weight="5"-->
-                <!--                    android:background="@drawable/translucent"-->
-                <!--                    android:gravity="center_vertical"-->
-                <!--                    android:hint="@string/text_down_tip3"-->
-                <!--                    android:maxLength="13"-->
-                <!--                    android:inputType="number"-->
-                <!--                    android:digits="1234567890"-->
-                <!--                    android:padding="5dp"-->
-                <!--                    style="@style/alltextstyle"/>-->
-
-                <!--                <TextView-->
-                <!--                    android:layout_width="48dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:gravity="left"-->
-                <!--                    android:paddingRight="3dp"-->
-                <!--                    android:text=""-->
-                <!--                    android:textSize="@dimen/childPageEditFontSize" />-->
-                <!--            </LinearLayout>-->
-
-                <!--            <LinearLayout-->
-                <!--                android:id="@+id/ll_4"-->
-                <!--                android:layout_width="fill_parent"-->
-                <!--                android:layout_height="40dp"-->
-                <!--                android:layout_marginTop="5dp">-->
-
-                <!--                <TextView-->
-                <!--                    android:id="@+id/textView10"-->
-                <!--                    android:layout_width="@dimen/downworkcode_pg_left"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_marginRight="5dp"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    style="@style/alltextstyle"-->
-                <!--                    android:text="@string/text_jwd"-->
-                <!--                    />-->
-
-                <!--                <AutoCompleteTextView-->
-                <!--                    android:id="@+id/down_at_coordxy"-->
-                <!--                    android:layout_width="10dp"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_weight="5"-->
-                <!--                    android:background="@drawable/translucent"-->
-                <!--                    android:gravity="center_vertical"-->
-                <!--                    android:hint="@string/text_down_tip4"-->
-                <!--                    android:maxLength="22"-->
-                <!--                    android:padding="5dp"-->
-                <!--                    android:textSize="18sp"-->
-                <!--                    android:inputType="number"-->
-                <!--                    android:digits="1234567890.,"-->
-                <!--                    style="@style/alltextstyle" />-->
-
-                <!--                <Button-->
-                <!--                    android:id="@+id/btn_location"-->
-                <!--                    android:layout_width="48dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    style="@style/allbtntstyle"-->
-                <!--                    android:text="@string/text_down_tip7"-->
-                <!--                    />-->
-                <!--            </LinearLayout>-->
-
-                <!--            <LinearLayout-->
-                <!--                android:id="@+id/ll_5"-->
-                <!--                android:layout_width="fill_parent"-->
-                <!--                android:layout_height="40dp"-->
-                <!--                android:layout_marginTop="5dp">-->
-
-                <!--                <TextView-->
-                <!--                    android:layout_width="@dimen/downworkcode_pg_left"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_marginRight="5dp"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    style="@style/alltextstyle"-->
-                <!--                    android:text="@string/text_down_sfz"-->
-                <!--                    />-->
-
-                <!--                <AutoCompleteTextView-->
-                <!--                    android:id="@+id/down_at_bprysfz"-->
-                <!--                    style="@style/alltextstyle"-->
-                <!--                    android:layout_width="10dp"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_weight="5"-->
-                <!--                    android:background="@drawable/translucent"-->
-                <!--                    android:gravity="center_vertical"-->
-                <!--                    android:hint="@string/text_down_tip5"-->
-                <!--                    android:maxLength="18"-->
-                <!--                    android:padding="5dp"-->
-                <!--                    android:digits="0123456789X"-->
-                <!--                    android:textSize="18sp" />-->
-
-                <!--                <Button-->
-                <!--                    android:id="@+id/btn_clear_sfz"-->
-                <!--                    android:layout_width="48dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    style="@style/allbtntstyle"-->
-                <!--                    android:text="@string/text_down_tip6"-->
-                <!--                    />-->
-                <!--            </LinearLayout>-->
-
-                <!--        </LinearLayout>-->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView1"
                     style="@style/cardview_style"
@@ -372,45 +137,15 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-<!--                        <LinearLayout-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:orientation="horizontal">-->
-
-<!--                            <TextView-->
-<!--                                style="@style/alltextstyle"-->
-<!--                                android:layout_marginTop="5dp"-->
-<!--                                android:layout_marginBottom="5dp"                                android:layout_gravity="center_vertical"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_marginStart="@dimen/addproject_tv_left"-->
-<!--                                android:text="项目名称: "-->
-<!--                                android:textSize="20sp" />-->
-
-<!--                            <AutoCompleteTextView-->
-<!--                                android:id="@+id/down_at_project_name"-->
-<!--                                style="@style/alltextstyle"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_weight="5"-->
-<!--                                android:gravity="center_vertical"-->
-<!--                                android:hint="项目名称"-->
-<!--                                android:maxLines="5"-->
-<!--                                android:padding="5dp"-->
-<!--                                android:textSize="18sp"-->
-<!--                                android:background="@null"-->
-<!--                                android:enabled="false"/>-->
-
-                            <Button
-                                android:visibility="gone"
-                                android:id="@+id/btn_clear_project_name"
-                                style="@style/allbtntstyle"
-                                android:layout_width="48dp"
-                                android:layout_height="40dp"
-                                android:layout_marginRight="3dp"
-                                android:text="@string/text_down_tip6"
-                                android:textSize="18sp" />
-<!--                        </LinearLayout>-->
+                        <Button
+                            android:visibility="gone"
+                            android:id="@+id/btn_clear_project_name"
+                            style="@style/allbtntstyle"
+                            android:layout_width="48dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="3dp"
+                            android:text="@string/text_down_tip6"
+                            android:textSize="18sp" />
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -460,97 +195,112 @@
                             android:orientation="vertical"
                             android:visibility="visible">
 
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="2dp"
-                                android:background="@color/rangle_border_base"
-                                android:visibility="visible" />
-
                             <LinearLayout
-                                android:id="@+id/ll_1"
+                                android:id="@+id/ll_htbh"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/setenv_down_ly_Height"
-                                android:orientation="horizontal">
+                                android:orientation="vertical">
 
-                                <TextView
-                                    style="@style/alltextstyle"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/addproject_tv_left"
-                                    android:text="合同编号: "
-                                    android:textSize="20sp" />
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+                                    android:background="@color/rangle_border_base"
+                                    android:visibility="visible" />
 
-                                <AutoCompleteTextView
-                                    android:id="@+id/down_at_htid"
-                                    style="@style/alltextstyle"
-                                    android:layout_width="10dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="5"
-                                    android:digits="0123456789"
-                                    android:gravity="center_vertical"
-                                    android:hint="15位数字"
-                                    android:inputType="number"
-                                    android:maxLength="15"
-                                    android:padding="5dp"
-                                    android:textSize="18sp"
-                                    android:enabled="false"
-                                    android:background="@null"/>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/setenv_down_ly_Height"
+                                    android:orientation="horizontal">
 
-                                <Button
-                                    android:visibility="gone"
-                                    android:id="@+id/btn_clear_htid"
-                                    style="@style/allbtntstyle"
-                                    android:layout_width="48dp"
-                                    android:layout_height="40dp"
-                                    android:layout_marginRight="3dp"
-                                    android:text="@string/text_down_tip6"
-                                    android:textSize="18sp" />
+                                    <TextView
+                                        style="@style/alltextstyle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/addproject_tv_left"
+                                        android:text="合同编号: "
+                                        android:textSize="20sp" />
+
+                                    <AutoCompleteTextView
+                                        android:id="@+id/down_at_htid"
+                                        style="@style/alltextstyle"
+                                        android:layout_width="10dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="5"
+                                        android:digits="0123456789"
+                                        android:gravity="center_vertical"
+                                        android:hint="15位数字"
+                                        android:inputType="number"
+                                        android:maxLength="15"
+                                        android:padding="5dp"
+                                        android:textSize="18sp"
+                                        android:enabled="false"
+                                        android:background="@null"/>
+
+                                    <Button
+                                        android:visibility="gone"
+                                        android:id="@+id/btn_clear_htid"
+                                        style="@style/allbtntstyle"
+                                        android:layout_width="48dp"
+                                        android:layout_height="40dp"
+                                        android:layout_marginRight="3dp"
+                                        android:text="@string/text_down_tip6"
+                                        android:textSize="18sp" />
+                                </LinearLayout>
+
                             </LinearLayout>
 
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="2dp"
-                                android:background="@color/rangle_border_base" />
 
                             <LinearLayout
-                                android:id="@+id/ll_2"
+                                android:id="@+id/ll_xmbh"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/setenv_down_ly_Height"
-                                android:orientation="horizontal">
+                                android:orientation="vertical">
 
-                                <TextView
-                                    style="@style/alltextstyle"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/addproject_tv_left"
-                                    android:text="项目编号: "
-                                    android:textSize="20sp" />
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+                                    android:background="@color/rangle_border_base" />
 
-                                <AutoCompleteTextView
-                                    android:id="@+id/down_at_xmbh"
-                                    style="@style/alltextstyle"
-                                    android:layout_width="10dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="5"
-                                    android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
-                                    android:gravity="center_vertical"
-                                    android:hint="15位数字或字母"
-                                    android:maxLength="15"
-                                    android:padding="5dp"
-                                    android:text=""
-                                    android:textSize="18sp"
-                                    android:enabled="false"
-                                    android:background="@null"/>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/setenv_down_ly_Height"
+                                    android:orientation="horizontal">
 
-                                <Button
-                                    android:visibility="gone"
-                                    android:id="@+id/btn_clear_xmbh"
-                                    style="@style/allbtntstyle"
-                                    android:layout_width="48dp"
-                                    android:layout_height="40dp"
-                                    android:layout_marginRight="3dp"
-                                    android:text="@string/text_down_tip6"
-                                    android:textSize="18sp" />
+                                    <TextView
+                                        style="@style/alltextstyle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/addproject_tv_left"
+                                        android:text="项目编号: "
+                                        android:textSize="20sp" />
+
+                                    <AutoCompleteTextView
+                                        android:id="@+id/down_at_xmbh"
+                                        style="@style/alltextstyle"
+                                        android:layout_width="10dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="5"
+                                        android:digits="1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
+                                        android:gravity="center_vertical"
+                                        android:hint="15位数字或字母"
+                                        android:maxLength="15"
+                                        android:padding="5dp"
+                                        android:text=""
+                                        android:textSize="18sp"
+                                        android:enabled="false"
+                                        android:background="@null"/>
+
+                                    <Button
+                                        android:visibility="gone"
+                                        android:id="@+id/btn_clear_xmbh"
+                                        style="@style/allbtntstyle"
+                                        android:layout_width="48dp"
+                                        android:layout_height="40dp"
+                                        android:layout_marginRight="3dp"
+                                        android:text="@string/text_down_tip6"
+                                        android:textSize="18sp" />
+                                </LinearLayout>
+
                             </LinearLayout>
                         </LinearLayout>
 
@@ -636,14 +386,14 @@
                                 android:background="@null"/>
 
                             <Button
-                                android:visibility="gone"
                                 android:id="@+id/btn_location"
                                 style="@style/allbtntstyle"
                                 android:layout_width="48dp"
                                 android:layout_height="40dp"
                                 android:layout_marginRight="3dp"
                                 android:text="@string/text_down_tip7"
-                                android:textSize="18sp" />
+                                android:textSize="18sp"
+                                android:visibility="gone" />
                         </LinearLayout>
 
                         <View
@@ -671,25 +421,25 @@
                                 android:layout_width="10dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="5"
+                                android:background="@null"
                                 android:digits="0123456789X"
+                                android:enabled="false"
                                 android:gravity="center_vertical"
                                 android:hint="爆破人员身份证"
                                 android:maxLength="18"
                                 android:maxLines="2"
                                 android:padding="5dp"
-                                android:textSize="16sp"
-                                android:enabled="false"
-                                android:background="@null"/>
+                                android:textSize="16sp" />
 
                             <Button
-                                android:visibility="gone"
                                 android:id="@+id/btn_clear_sfz"
                                 style="@style/allbtntstyle"
                                 android:layout_width="48dp"
                                 android:layout_height="40dp"
                                 android:layout_marginRight="3dp"
                                 android:text="@string/text_down_tip6"
-                                android:textSize="18sp" />
+                                android:textSize="18sp"
+                                android:visibility="gone" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -1056,15 +806,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp">
 
                     <android_serialport_api.xingbang.custom.MlistView
                         android:id="@+id/lv_shouquan"
                         android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:divider="@color/white"
-                        android:dividerHeight="10dp"
-                        android:layout_height="match_parent">
+                        android:dividerHeight="10dp">
 
                     </android_serialport_api.xingbang.custom.MlistView>
                 </LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="gsxz_name">
-        <item>非营业性爆破作业单位</item>
         <item>营业性爆破作业单位</item>
+        <item>非营业性爆破作业单位</item>
     </string-array>
 </resources>
