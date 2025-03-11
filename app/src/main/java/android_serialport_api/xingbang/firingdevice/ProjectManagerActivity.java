@@ -188,14 +188,14 @@ public class ProjectManagerActivity extends BaseActivity {
             downAtCoordx.setText(jd);
             downAtCoordy.setText(wd);
             downAtBprysfz.setText(bprysfz);
-            if (business.startsWith("非营业性")) {
+            if (business.startsWith("营业性")) {
+                llXmxx.setVisibility(View.VISIBLE);
                 addGsxz.setSelection(0);
+                Log.e(TAG,"进来营业性了。。");
+            } else {
+                addGsxz.setSelection(1);
                 llXmxx.setVisibility(View.GONE);
                 Log.e(TAG,"进来非营业性了。。");
-            } else {
-                llXmxx.setVisibility(View.VISIBLE);
-                addGsxz.setSelection(1);
-                Log.e(TAG,"进来营业性了。。");
             }
         } else {
             addGsxz.setSelection(0);
@@ -278,9 +278,9 @@ public class ProjectManagerActivity extends BaseActivity {
                 select_business = delay[i];
                 Log.e(TAG ,"公司性质选择的是:" + select_business);
                 if (i == 0) {
-                    llXmxx.setVisibility(View.GONE);
-                } else {
                     llXmxx.setVisibility(View.VISIBLE);
+                } else {
+                    llXmxx.setVisibility(View.GONE);
                 }
             }
             @Override
