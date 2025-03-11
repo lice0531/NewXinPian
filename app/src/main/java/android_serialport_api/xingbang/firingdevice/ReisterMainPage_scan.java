@@ -2294,13 +2294,9 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     String holeinDelayStr = neiDelay.getText().toString();
                     //孔间延时
                     String holeBetweentStr = kongDelay.getText().toString();
-                    if (endNoStr-startNoStr==0) {
-                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(15));
-                        return;
-                    }
+
                     //递减,开始序号,结束序号,孔内雷管数,开始延时,孔内延时,孔间延时
-                    Log.e(TAG, "endNoStr: " +endNoStr);
-                    Log.e(TAG, "startNoStr: " + startNoStr);
+
                     Log.e(TAG, "是否递减: " + sw_dijian.isChecked());
                     setDalay(!sw_dijian.isChecked(), startNoStr, endNoStr, holeDeAmoStr, startDelayStr, holeinDelayStr, holeBetweentStr);
 
@@ -6084,14 +6080,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 show_Toast(getResources().getString(R.string.text_setDelay_dialog5) + maxSecond + getResources().getString(R.string.text_setDelay_dialog6));
                 return;
             }
+            Log.e(TAG, "endNoStr: " +endNoStr);
+            Log.e(TAG, "startNoStr: " + startNoStr);
+
+
             if (maxDelay < 0) {
                 show_Toast("延时不能小于0ms");
                 return;
             }
-            pb_show = 1;
-            runPbDialog();
-            new Thread(() -> setDenatorDelay(dijia, startNoStr, endNoStr, holeDeAmoStr, startDelayStr, holeinDelayStr, holeBetweentStr)).start();
-            show_Toast(getString(R.string.text_error_tip36));
+//            if (endNoStr-startNoStr>=0&&endNoStr!=0) {
+//                mHandler_tip.sendMessage(mHandler_tip.obtainMessage(15));
+//                return;
+                pb_show = 1;
+                runPbDialog();
+                new Thread(() -> setDenatorDelay(dijia, startNoStr, endNoStr, holeDeAmoStr, startDelayStr, holeinDelayStr, holeBetweentStr)).start();
+                show_Toast(getString(R.string.text_error_tip36));
+//            }
+
         } else {
             show_Toast(checstr);
         }
@@ -6181,7 +6186,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int holeLoop = 1;
         int delayCount = startDelay;
         List<DenatorBaseinfoSelect> list_lg = childList.get(groupListChoice - 1);
-        if(end-start>0){
+        if(end-start>=0&&end!=0){
             for (int iLoop = start - 1; iLoop < end; iLoop++) {//孔间循环
                 ContentValues values = new ContentValues();
                 //int isExist = isDel(""+iLoop);
@@ -6251,6 +6256,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     + ",开始延时:" + startDelayStr + ",孔内延时:" + holeinDelayStr + ",孔间延时:" + holeBetweentStr);
             Utils.writeRecord("--设置延时:起始序号:" + start + ",终点序号:" + end + ",孔内雷管数:" + holeDeAmoStr
                     + ",开始延时:" + startDelayStr + ",孔内延时:" + holeinDelayStr + ",孔间延时:" + holeBetweentStr);
+        }else {
+            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(15));
         }
         pb_show = 0;
         mHandler_2.sendMessage(mHandler_2.obtainMessage());
