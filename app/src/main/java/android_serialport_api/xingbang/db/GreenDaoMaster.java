@@ -471,7 +471,16 @@ public class GreenDaoMaster {
                 .where(DetonatorTypeNewDao.Properties.ShellBlastNo.eq(ShellBlastNo))
                 .unique();
     }
-
+    /**
+     * 查询授权表中的重复授权
+     */
+    public ShouQuan checkRepeat_ShouQUan(String name,String yxq) {
+        return mShouquanDao
+                .queryBuilder()
+                .where(ShouQuanDao.Properties.Spare1.eq(name))
+                .where(ShouQuanDao.Properties.Spare2.eq(yxq))
+                .unique();
+    }
     /**
      * 从数据库表中拿数据
      *
@@ -640,7 +649,20 @@ public class GreenDaoMaster {
             return false;
         }
     }
-
+    /**
+     * 检查重复的数据
+     *
+     * @param yxq
+     */
+    public static boolean checkRepeatProject(String name,String yxq) {
+        GreenDaoMaster master = new GreenDaoMaster();
+        ShouQuan sq = master.checkRepeat_ShouQUan(name,yxq);
+        if (sq != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     /**
      * 查询雷管 区域倒序(序号)
      * 区域号 1 2 3 4 5

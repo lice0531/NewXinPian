@@ -1,5 +1,7 @@
 package android_serialport_api.xingbang.firingdevice;
 
+import static android_serialport_api.xingbang.Application.getDaoSession;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -57,6 +59,7 @@ import android_serialport_api.xingbang.custom.LoadingDialog;
 import android_serialport_api.xingbang.db.DatabaseHelper;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.Project;
+import android_serialport_api.xingbang.db.ShouQuan;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.models.DanLingBean;
 import android_serialport_api.xingbang.models.DanLingOffLinBean;
@@ -380,7 +383,8 @@ public class DownOfflineActivity extends BaseActivity {
                 if (danLingBean.getCwxx().equals("0")) {
                     if (danLingBean.getZbqys().getZbqy().size() > 0) {
                         for (int i = 0; i < danLingBean.getZbqys().getZbqy().size(); i++) {
-                            insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),yxq,danLingBean.getLgs().getLg().size());
+                                insertJson(tx_htid, tv_xmbh, res, err, (danLingBean.getZbqys().getZbqy().get(i).getZbqyjd() + "," + danLingBean.getZbqys().getZbqy().get(i).getZbqywd()), danLingBean.getZbqys().getZbqy().get(i).getZbqymc(),yxq,danLingBean.getLgs().getLg().size());
+
                         }
                     }
                 }
@@ -446,27 +450,33 @@ public class DownOfflineActivity extends BaseActivity {
      * @param toal
      */
     public void insertJson(String htbh, String xmbh, String json, int errNum, String coordxy, String name,String yxq,int toal) {
-        ContentValues values = new ContentValues();
-        values.put("htbh", htbh);
-        values.put("xmbh", xmbh);
-        values.put("json", json);
-        values.put("errNum", errNum);
-        values.put("qbzt", "未爆破");
-        values.put("dl_state", "未上传");
-        values.put("zb_state", "未上传");
-        values.put("spare1", name);
-        values.put("spare2", yxq);//申请日期 yxq.substring(0, 10)
-        values.put("total", toal);//总数
-        values.put("bprysfz",dfAtBprysfz.getText().toString().trim());//身份证号
-        values.put("coordxy", coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
+        ShouQuan values =new ShouQuan();
+        values.setHtbh( htbh);
+        values.setXmbh( xmbh);
+        values.setJson(json);
+        values.setErrNum(String.valueOf(errNum));
+        values.setQbzt( "未爆破");
+        values.setDl_state("未上传");
+        values.setZb_state( "未上传");
+        values.setSpare1( name);
+        values.setSpare2( yxq);//申请日期 yxq.substring(0, 10)
+        values.setTotal( toal);//总数
+        values.setBprysfz(dfAtBprysfz.getText().toString().trim());//身份证号
+        values.setCoordxy( coordxy.replace("\n", "").replace("，", ",").replace(" ", ""));//经纬度
         if (dfAtDwdm.getText().toString().trim().length() < 1) {//单位代码
-            values.put("dwdm", "");
+            values.setDwdm( "");
         } else {
-            values.put("dwdm", dfAtDwdm.getText().toString().trim());
+            values.setDwdm( dfAtDwdm.getText().toString().trim());
+        }
+        ShouQuan sq = new GreenDaoMaster().checkRepeat_ShouQUan(name,yxq);
+        if(sq==null){
+            getDaoSession().getShouQuanDao().insert(values);
+            Log.e("插入数据", "成功");
+        }else {
+            Log.e("插入数据", "有重复数据:"+sq.toString());
         }
 
-        Log.e("插入数据", "成功");
-        db.insert(DatabaseHelper.TABLE_NAME_SHOUQUAN, null, values);
+
 
     }
 
