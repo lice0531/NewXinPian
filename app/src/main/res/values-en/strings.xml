@@ -125,6 +125,7 @@
     <string name="text_alert_tip6">List of Exploded Detonators</string>
     <string name="text_alert_username">Please enter the username</string>
     <string name="text_alert_password">Please input a password</string>
+    <string name="text_yhmcw">User name error</string>
     <string name="text_alert_login_tip">Have you logged in?</string>
     <string name="text_alert_xiugai">Modify information</string>
     <string name="text_alert_sbbh">Equipment Number Settings</string>
