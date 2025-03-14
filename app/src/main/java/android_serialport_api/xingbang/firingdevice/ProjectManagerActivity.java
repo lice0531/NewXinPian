@@ -513,12 +513,12 @@ public class ProjectManagerActivity extends BaseActivity {
         if (!TextUtils.isEmpty(sbusiness)) {
             SoundPlayUtils.play(1);
             AppLogUtils.writeAppLog("扫码后项目信息已成功识别");
-            if (sbusiness.startsWith("非营业性")) {
+            if (sbusiness.startsWith("营业性")) {
                 addGsxz.setSelection(0);
-                llXmxx.setVisibility(View.GONE);
-            } else {
                 llXmxx.setVisibility(View.VISIBLE);
+            } else {
                 addGsxz.setSelection(1);
+                llXmxx.setVisibility(View.GONE);
             }
             downAtProjectName.setText(sprojectName);
             downAtHtid.setText(shtbh);
