@@ -1,24 +1,32 @@
 package android_serialport_api.xingbang.firingdevice;
 
 
-import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;
-
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,7 +39,6 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,13 +74,18 @@ import android_serialport_api.xingbang.models.VoDenatorBaseInfo;
 import android_serialport_api.xingbang.models.VoFireHisMain;
 import android_serialport_api.xingbang.models.VoFiringTestError;
 import android_serialport_api.xingbang.utils.CommonDialog;
-import android_serialport_api.xingbang.utils.CustomDialog;
 import android_serialport_api.xingbang.utils.MmkvUtils;
+import android_serialport_api.xingbang.utils.MyUtils;
+import android_serialport_api.xingbang.utils.UsbUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.ButterKnife;
-
 import static android_serialport_api.xingbang.Application.getDaoSession;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.github.mjdev.libaums.UsbMassStorageDevice;
+import com.github.mjdev.libaums.fs.FileSystem;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -218,6 +230,11 @@ public class FiringMainActivity extends SerialPortActivity {
     private long time = 0;
     private String Yanzheng_sq = "";//是否验雷管授权
     private int duan_total=0;
+    private UsbDevice usbDevice;
+    private UsbManager usbManager;
+    private UsbMassStorageDevice[] storageDevices;
+    private PendingIntent usbPermissionIntent;
+    private String uPwd;// u盘数字密码
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,6 +250,8 @@ public class FiringMainActivity extends SerialPortActivity {
         Bundle bundle = intent.getExtras();
         qbxm_id = (String) bundle.get("qbxm_id");
         qbxm_name = (String) bundle.get("qbxm_name");
+        uPwd = (String)MmkvUtils.getcode("uPwd","");
+        Log.e(TAG,"U盘密码:" + uPwd);
         if (qbxm_id == null) {
             qbxm_id = "-1";
             qbxm_name = " ";
@@ -252,7 +271,29 @@ public class FiringMainActivity extends SerialPortActivity {
         Log.e(TAG, "elevenCount: " + elevenCount);
         //级联接收命令注册的eventbus
         EventBus.getDefault().register(this);
+        initUsb();
+    }
 
+    private void initUsb(){
+        // 初始化 UsbManager
+        usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+        // 获取所有连接的 USB 设备
+        storageDevices = UsbMassStorageDevice.getMassStorageDevices(this);
+        // 注册 USB 权限广播接收器
+        registerUSBReceiver();
+        // 请求 USB 设备权限
+        requestUSBPermission(storageDevices);
+    }
+
+    /**
+     * 注册 USB 权限广播接收器
+     */
+    private void registerUSBReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_USB_PERMISSION);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        registerReceiver(usbReceiver, filter);
     }
 
     private void initView() {
@@ -373,6 +414,13 @@ public class FiringMainActivity extends SerialPortActivity {
 //                        version_1 = true;
 //                        customDialog.dismiss();
 //                    }).show();
+            if (!checkUsbConnect(1)) {
+                //对插入的U盘进行校验
+                return;
+            }
+            isShowNoUsbDialog = 0;
+            isShowErrorUsbDialog = 0;
+            Log.e(TAG,"U盘校验结果:" + checkUsbConnect(1));
             String err = ll_firing_errorAmount_4.getText().toString();
             if (err.equals("0")) {
 //                increase(33);//之前是4
@@ -394,14 +442,219 @@ public class FiringMainActivity extends SerialPortActivity {
                             increase(6);//充电阶段
                             version_1 = true;
                         })
-                        .setNeutralButton(R.string.text_tc, (dialog2, which) -> {
+                        .setNeutralButton(getResources().getString(R.string.text_tc), (dialog2, which) -> {
                         })
                         .create();
                 dialog.show();
             }
-
         });
     }
+
+    private void showUpTip(String msg,int type) {
+        if (!FiringMainActivity.this.isFinishing()  && !FiringMainActivity.this.isDestroyed()) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    AlertDialog dialog = new AlertDialog.Builder(FiringMainActivity.this)
+                            .setTitle(getResources().getString(R.string.text_fir_dialog2))
+                            .setMessage(msg)
+                            //设置对话框的按钮
+                            .setNeutralButton(getResources().getString(R.string.text_tc), (dialog1, which) -> {
+                                dialog1.dismiss();
+                                closeThread();
+                                closeForm();
+                                finish();
+                                if (type == 2) {
+                                    //1+5起爆时候退出，更新endTime
+                                    MmkvUtils.savecode("endTime", System.currentTimeMillis());//应该是从退出页面开始计时
+                                }
+                            }).setPositiveButton(getResources().getString(R.string.text_alert_sure),
+                                    (dialog12, which) -> dialog12.dismiss())
+                            .create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+                }
+            });
+        }
+    }
+
+    private int isShowNoUsbDialog = 0;
+    private int isShowErrorUsbDialog = 0;
+    private boolean checkUsbConnect(int type) {
+        //没有插入U盘  给出提示
+        if (usbDevice == null) {
+            if (type == 1) {
+                showUpTip(getResources().getString(R.string.text_crszmy),type);
+            } else {
+                if (isShowNoUsbDialog == 0) {
+                    isShowNoUsbDialog = 1;
+                    showUpTip(getResources().getString(R.string.text_crszmy),type);
+                }
+            }
+            return false;
+        } else {
+            Log.e(TAG,"usb设备:" + usbDevice.toString());
+            String currentUid = ((String)MmkvUtils.getcode("upUuid",""));
+            Log.e(TAG,"当前U盘的uid:" + currentUid);
+            if (!UsbUtils.isUuidValid(upContent, currentUid) || !UsbUtils.isPasswordValid(upContent, uPwd)) {
+                if (type == 1) {
+                    showUpTip(getResources().getString(R.string.text_crzqmy),type);
+                } else {
+                    if (isShowErrorUsbDialog == 0) {
+                        isShowErrorUsbDialog = 1;
+                        //第一次校验：当前U盘是否该起爆器绑定的U盘  不是就给出提示
+                        showUpTip(getResources().getString(R.string.text_crzqmy),type);
+                    }
+                }
+                Log.e(TAG,"U盘校验出错了");
+                return false;
+            } else {
+                Log.e(TAG,"U盘校验通过,可以:" + (type == 1 ? "充电" : "起爆"));
+                return true;
+            }
+        }
+    }
+
+    /**
+     * 请求 USB 设备权限
+     */
+    private void requestUSBPermission(UsbMassStorageDevice[] sDevices) {
+        // 检查是否有连接的 USB 设备
+        if (sDevices != null && sDevices.length > 0) {
+            for (UsbMassStorageDevice device : sDevices) {
+                usbDevice = device.getUsbDevice();
+                if (!usbManager.hasPermission(usbDevice)) {
+                    Log.e(TAG, "u盘没有使用权，去请求权限");
+                    usbPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                    usbManager.requestPermission(usbDevice, usbPermissionIntent);
+                } else {
+                    Log.e(TAG, "u盘使用权已给，可以初始化设备了");
+                    // 如果有权限，初始化设备
+                    initDevice(device);
+                }
+            }
+        } else {
+            Log.e(TAG, "没有连接的 USB 设备");
+        }
+    }
+
+    private String upContent = "";//从U盘中读取出的内容
+    /**
+     * 初始化 USB 设备并写入/读取 CSV 文件
+     */
+    private void initDevice(UsbMassStorageDevice device) {
+        Log.e(TAG,"进入到初始化设备的方法了");
+        try {
+            String currentUid = "";
+            currentUid = ((String)MmkvUtils.getcode("upUuid",""));
+            Log.e(TAG,"currentUid:" + currentUid);
+            if (TextUtils.isEmpty(currentUid)) {
+                currentUid = UsbUtils.getUsbDeviceIdentifier(this);
+                MmkvUtils.savecode("upUuid",currentUid);
+                Log.e(TAG,"得到的u盘唯一标识:" + currentUid);
+            }
+            device.init();
+            FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
+            Log.e(TAG, "U 盘文件系统: " + currentFs.getVolumeLabel());
+            // 写入 CSV 文件到 U 盘根目录
+            final String key = "jadl12345678912345678912";
+            String csvContent = "uuid:" + currentUid + ",pwd1:123456,pwd2:138269,pwd3:235689,pwd4:147258,pwd5:246137,pwd6:137258,";
+            String jmUpwd = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), csvContent.getBytes()));
+            boolean writeSuccess = UsbUtils.writeFileToUSB(currentFs.getRootDirectory(), "updata.csv", jmUpwd);
+            if (writeSuccess) {
+                Log.d(TAG, "文件写入成功");
+            } else {
+                Log.e(TAG, "文件写入失败");
+            }
+            Log.e(TAG,"得到的u盘唯一标识:" + currentUid);
+            // 读取 CSV 文件内容
+            String readContent = UsbUtils.readFileFromUSB(currentFs.getRootDirectory(), "updata.csv");
+            upContent = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(readContent, Base64.DEFAULT)));
+            Log.e(TAG, "读取的 CSV 文件内容: \n" + upContent);
+        } catch (Exception e) {
+            Log.e(TAG, "初始化 U 盘设备失败: " + e.getMessage());
+            if (e.getMessage().contains("errno 1337")) {
+                Log.e(TAG, "可能是U盘通信问题，请检查设备连接和权限");
+            }
+        }
+    }
+
+    /**
+     * 动态注册广播接收器
+     */
+    private static final String ACTION_USB_PERMISSION = "com.example.USB_PERMISSION";
+    /**
+     * USB 权限广播接收器
+     */
+    private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action) {
+                case ACTION_USB_PERMISSION:
+                    synchronized (this) {
+                        UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                        if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                            if (device != null) {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        usbDevice = device;
+                                        Log.e(TAG, "U盘使用权限已给,设备信息: " + usbDevice.getDeviceName());
+                                        UsbMassStorageDevice[] sDevices = UsbMassStorageDevice.getMassStorageDevices(FiringMainActivity.this);
+                                        requestUSBPermission(sDevices);
+                                    }
+                                }, 5000);
+                            } else {
+                                Log.e(TAG, "U盘使用权限已给,设备信息获取失败");
+                                Utils.writeRecord("U盘使用权限已给,但设备信息获取失败");
+                            }
+                        } else {
+                            // 用户拒绝权限
+                            Log.e(TAG, "用户拒绝 USB 权限");
+                            if (device != null) {
+                                usbDevice = device;
+                                Log.e(TAG, "U盘使用权限已给,设备信息: " + usbDevice.getDeviceName());
+                                UsbMassStorageDevice[] sDevices = UsbMassStorageDevice.getMassStorageDevices(FiringMainActivity.this);
+                                requestUSBPermission(sDevices);
+                            } else {
+                                Log.e(TAG, "U盘使用权限已给,设备信息获取失败");
+                                Utils.writeRecord("U盘使用权限已给,但设备信息获取失败");
+                            }
+                        }
+                    }
+                    break;
+                case UsbManager.ACTION_USB_DEVICE_ATTACHED:
+                    // USB 设备插入
+                    UsbDevice attachedDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    if (attachedDevice != null) {
+                        usbDevice = attachedDevice;
+                        Log.e(TAG, "U盘已插入,设备信息: " + usbDevice.getDeviceName());
+                        Utils.writeRecord("U盘已插入,设备信息: " + usbDevice.getDeviceName());
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e(TAG, "U盘已插入,请求usb权限");
+                                UsbMassStorageDevice[] sDevices = UsbMassStorageDevice.getMassStorageDevices(FiringMainActivity.this);
+                                requestUSBPermission(sDevices);
+                            }
+                        }, 5000);
+
+                    } else {
+                        Log.e(TAG, "U盘已插入,但设备信息获取失败");
+                        Utils.writeRecord("U盘已插入,但设备信息获取失败");
+                    }
+                    break;
+                case UsbManager.ACTION_USB_DEVICE_DETACHED:
+                    // USB 设备拔出
+                    usbDevice = null;
+                    MmkvUtils.savecode("upUuid", "");
+                    Log.e(TAG, "U盘已拔出--uuid：" + (String) MmkvUtils.getcode("upUuid", ""));
+                    Utils.writeRecord("U盘已拔出");
+                    break;
+            }
+        }
+    };
 
     private void dialogExit() {
 
@@ -418,6 +671,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 })
                 .setNeutralButton(R.string.text_setDealy_qx, (dialog12, which) -> dialog12.dismiss())
                 .create();
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
@@ -1274,6 +1528,8 @@ public class FiringMainActivity extends SerialPortActivity {
         super.onDestroy();
         fixInputMethodManagerLeak(this);
         removeActivity();
+        // 取消注册广播接收器
+        unregisterReceiver(usbReceiver);
         Utils.writeRecord("---退出起爆页面---");
     }
 
@@ -2022,13 +2278,21 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (sevenDisplay == 0)
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             sevenDisplay = 1;
-                            if (keyFireCmd == 1) {
-
-                                increase(8);
-                                Log.e("increase", "8");
-                                keyFireCmd = 0;
-                                eightCmdExchangePower = 1;
-                            }
+//                            if (!checkUsbConnect(2)) {
+//                                Log.e(TAG,"");
+////                                return;
+//                            }
+//                            if (checkUsbConnect(2)) {
+                                if (keyFireCmd == 1) {
+                                    Log.e(TAG,"U盘校验已成功");
+                                    increase(8);
+                                    Log.e("increase", "8");
+                                    keyFireCmd = 0;
+                                    eightCmdExchangePower = 1;
+                                }
+//                            } else {
+//                                Log.e(TAG,"起爆U盘校验出错了");
+//                            }
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 8://起爆阶段
@@ -2219,6 +2483,9 @@ public class FiringMainActivity extends SerialPortActivity {
 
         int keyCode = event.getKeyCode();
         if (keyCode == KeyEvent.KEYCODE_1) {
+            if (!checkUsbConnect(2)) {
+                return false;
+            }
             m0UpTime = System.currentTimeMillis();
         } else if (keyCode == KeyEvent.KEYCODE_3 && !Build.DEVICE.equals("KT50_B2")) {
             m5DownTime = System.currentTimeMillis();
@@ -2229,6 +2496,9 @@ public class FiringMainActivity extends SerialPortActivity {
                 }
             }
         } else if (keyCode == KeyEvent.KEYCODE_5 && (Build.DEVICE.equals("KT50_B2") || Build.DEVICE.equals("KT50"))) {
+            if (!checkUsbConnect(2)) {
+                return false;
+            }
             m5DownTime = System.currentTimeMillis();
             long spanTime = m5DownTime - m0UpTime;
             if (spanTime < 500) {
@@ -2342,16 +2612,16 @@ public class FiringMainActivity extends SerialPortActivity {
 
         mOffTextView = new TextView(this);
         mOffTextView.setTextSize(25);
-        mOffTextView.setText(tip + "\n放电倒计时：");
+        mOffTextView.setText(tip + "\n" + getResources().getString(R.string.text_fir_dialog31));
         mDialog = new AlertDialog.Builder(this)
-                .setTitle("系统提示")
+                .setTitle(getResources().getString(R.string.text_fir_dialog2))
                 .setCancelable(false)
                 .setView(mOffTextView)
 //                .setPositiveButton("确定", (dialog, id) -> {
 //                    mOffTime.cancel();//清除计时
 //                    stopXunHuan();//关闭后的一些操作
 //                })
-                .setNegativeButton("退出", (dialog, id) -> {
+                .setNegativeButton(getResources().getString(R.string.text_tc), (dialog, id) -> {
                     dialog.cancel();
                     mOffTime.cancel();
                     closeThread();
@@ -2412,13 +2682,13 @@ public class FiringMainActivity extends SerialPortActivity {
 //                    mOffTime.cancel();//清除计时
 //                    stopXunHuan();//关闭后的一些操作
 //                })
-                .setNeutralButton("退出", (dialog, id) -> {
+                .setNeutralButton(getResources().getString(R.string.text_tc), (dialog, id) -> {
                     dialog.cancel();
                     mOffTime.cancel();
                     closeThread();
                     closeForm();
                 })
-                .setNegativeButton("继续", (dialog2, which) -> {
+                .setNegativeButton(getResources().getString(R.string.text_firing_jixu), (dialog2, which) -> {
                     dialog2.dismiss();
                     firstThread.start();
                     mOffTime.cancel();
@@ -2630,6 +2900,4 @@ public class FiringMainActivity extends SerialPortActivity {
             show_Toast(getResources().getString(R.string.text_fir_show1));
         }
     }
-
-
 }

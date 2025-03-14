@@ -596,6 +596,7 @@
     <string name="text_fir_dialog22">起爆器高压充电失败,请再次启动起爆流程,进行起爆</string>
     <string name="text_fir_dialog23">当前雷管数量为0</string>
     <string name="text_fir_dialog24">当前雷管数量为0,请先注册雷管</string>
+    <string name="text_fir_dialog31">放电倒计时：</string>
     <string name="text_queryHis_dialog1">删除提示</string>
     <string name="text_queryHis_dialog2">请确认是否删除当前记录</string>
     <string name="text_queryHis_dialog3">取消</string>
@@ -830,4 +831,8 @@
     <string name="text_gps4">GPS开启了</string>
     <string name="text_gps5">GPS关闭了</string>
     <string name="text_dlsccg">丹灵上传成功</string>
+    <string name="text_crszmy">请先插入数字秘钥</string>
+    <string name="text_crzqmy">请插入正确的数字秘钥</string>
+    <string name="text_srszmm">请输入6位数字密码</string>
+
 </resources>

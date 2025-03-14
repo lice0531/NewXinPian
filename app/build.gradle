@@ -122,6 +122,7 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
     //RecyclerView适配器
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+    implementation 'com.github.mjdev:libaums:0.7.0' // 使用 0.7.0 版本
 }
 
 greendao {

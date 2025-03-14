@@ -831,5 +831,7 @@
     <string name="text_gps4">GPS is off</string>
     <string name="text_gps5">GPS is on</string>
     <string name="text_dlsccg">Dan Ling uploaded successfully</string>
-
+    <string name="text_crszmy">Please insert the digital key first</string>
+    <string name="text_crzqmy">Please insert the correct digital key</string>
+    <string name="text_srszmm">Please enter a 6-digit password</string>
 </resources>
