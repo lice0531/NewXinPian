@@ -2386,7 +2386,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     fromData.setDenaId(temp.getDenatorId());//芯片码
                     Utils.writeRecord("--起爆测试结果:" + fromData);
                     AppLogUtils.writeAppLog("38指令--起爆测试结果:" + fromData);
-                    updateDenator(fromData);//更新雷管状态
+//                    updateDenator(fromData);//更新雷管状态
                     writeDenator = null;
                 }
                 reThirdWriteCount++;
@@ -2400,7 +2400,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 fromData.setDenaId(temp.getDenatorId());//芯片码
                 Utils.writeRecord("--起爆测试结果:" + fromData);
                 AppLogUtils.writeAppLog("39指令--起爆测试结果:" + fromData);
-                updateDenator(fromData);//更新雷管状态
+//                updateDenator(fromData);//更新雷管状态
                 writeDenator = null;
                 reThirdWriteCount++;
             }
