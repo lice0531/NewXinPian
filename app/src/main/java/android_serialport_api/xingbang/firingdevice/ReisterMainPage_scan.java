@@ -2644,7 +2644,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-
+        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
+        if (!flag_t1 || (kongSum >= 1 + duanNo1)) {//判断同孔
+            flag_t1=false;
+        }
         delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
         if (delay_max < 0) {//
             Log.e("扫码", "delay_max: " + delay_max);
@@ -2674,7 +2677,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "同孔  paiChoice: " + paiChoice);
         Log.e(TAG, "同孔  flag_t1: " + flag_t1);
         Log.e(TAG, "同孔  duanNo2: " + duanNo2);
-        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
+
 
         if (!flag_t1 || (kongSum >= 1 + duanNo1)) {//判断同孔
             int kong = maxKong;
@@ -2704,11 +2707,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
         int delay_add = 0;
         Log.e("插入--单发输入--插入标志", "00 - groupListChoice: " + groupListChoice + "--childListChoice:" + childListChoice);
-        Log.e("插入--单发输入--插入标志1", "charu: " + charu);
+        Log.e("插入--单发输入--插入标志1", "判断前charu: " + charu);
         if (kongChoice != total && childList.get(groupListChoice - 1).size() > 0 && !flag_add) {//加孔加位操作,
             charu = true;
         }
-        Log.e("插入--单发输入--插入标志", "charu: " + charu);
+        Log.e("插入--单发输入--插入标志", "判断后charu: " + charu);
         Log.e("插入--单发输入--插入标志", "kongChoice: " + kongChoice);
         Log.e("插入--单发输入--插入标志", "maxKong: " + maxKong);
         Log.e("插入--单发输入--插入标志", "total: " + total);
@@ -2717,43 +2720,51 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (charu) {
             Log.e("插入--单发输入--插入标志", "childList.get(groupListChoice - 1): " + childList.get(groupListChoice - 1));
             db_charu = childList.get(groupListChoice - 1).get(childListChoice - 1);//越界问题
+            int kongdelay_max= new GreenDaoMaster().getPieceAndPaiAndKongMaxDelay(mRegion, paiChoice,db_charu.getBlastserial());//获取当前孔最大延时
+            Log.e("插入--单发输入--插入标志", "当前孔最大延时kongdelay_max: " + kongdelay_max);
             Log.e("插入--单发输入--插入标志", "db_charu: " + db_charu.toString());
             int konghao = db_charu.getBlastserial() + 1;
 
 //            denatorBaseinfo.setSithole(konghao + "");
             Log.e(TAG, "插入--选中插入的雷管: " + db_charu.getShellBlastNo() + " 延时:" + db_charu.getDelay());
 
-            Log.e("插入--单发输入--插入孔号", "konghao: " + konghao);
-            Log.e("插入--单发输入--插入孔号", "duanNo1: " + duanNo1);
+            Log.e("插入--单发输入--插入孔号2", "konghao: " + konghao);
+            Log.e("插入--单发输入--插入孔号2", "duanNo1: " + duanNo1);
+            Log.e("插入--单发输入--插入孔号2", "flag_t1: " + flag_t1);
             if (!flag_t1) {//插入位
                 denatorBaseinfo.setBlastserial(db_charu.getBlastserial());
                 denatorBaseinfo.setDuanNo((db_charu.getDuanNo() + 1));
 //                denatorBaseinfo.setDelay(db_charu.getDelay());
                 if (duanNo1 > 1) {
                     if (!flag_jh_f1) {//孔内是否递减
-                        denatorBaseinfo.setDelay((db_charu.getDelay() - Integer.parseInt(f2_delay_data)));
-                        Log.e("扫码-单孔多发判断", "延时递减: " + (db_charu.getDelay() - Integer.parseInt(f2_delay_data)));
+                        delay_add = -Integer.parseInt(f2_delay_data);
+                        denatorBaseinfo.setDelay((kongdelay_max - Integer.parseInt(f2_delay_data)));
+                        Log.e("扫码-单孔多发判断", "延时递减: " + (kongdelay_max - Integer.parseInt(f2_delay_data)));
                     } else {
-                        denatorBaseinfo.setDelay((db_charu.getDelay() + Integer.parseInt(f2_delay_data)));
-                        Log.e("扫码-单孔多发判断", "延时递加: " + (db_charu.getDelay() + Integer.parseInt(f2_delay_data)));
+                        delay_add = Integer.parseInt(f2_delay_data);
+                        denatorBaseinfo.setDelay((kongdelay_max + Integer.parseInt(f2_delay_data)));
+                        Log.e("扫码-单孔多发判断", "延时递加: " + (kongdelay_max + Integer.parseInt(f2_delay_data)));
                     }
                 } else {
-                    denatorBaseinfo.setDelay(db_charu.getDelay());
+                    denatorBaseinfo.setDelay(kongdelay_max);
                 }
 
 
-                Log.e("插入--单发输入--插入孔号", "konghao: " + konghao);
             } else {
+                Log.e("插入--单发输入--插入孔号2", "flag_jh_f1: " + flag_jh_f1);
+                Log.e("插入--单发输入--插入孔号2", "delay_set: " + delay_set);
                 if (!flag_jh_f1) {
                     if (delay_set.equals("f1")) {
                         delay_add = -f1;
+                        Log.e("插入--单发输入--插入延时", "delay_add1: " + delay_add);
                     }
                 } else {
                     if (delay_set.equals("f1")) {
                         delay_add = f1;
+                        Log.e("插入--单发输入--插入延时", "delay_add2: " + delay_add);
                     }
                 }
-                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num);
+                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num,kongdelay_max);
                 Log.e("插入--单发输入--插入延时", "最终延时: " + delay_max);
                 denatorBaseinfo.setDelay(delay_max);
                 denatorBaseinfo.setBlastserial(konghao);
@@ -2904,7 +2915,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
             tk_num = Integer.parseInt(etTk.getText().toString());
         }
-
+        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
+        if (!flag_t1 || (kongSum >= 1 + duanNo1)) {//判断同孔
+            flag_t1=false;
+        }
         delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
         if (delay_max < 0) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
@@ -2949,7 +2963,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         Log.e(TAG, "注册  paiChoice: " + paiChoice);
         Log.e(TAG, "注册  flag_t1: " + flag_t1);
         Log.e(TAG, "注册  duanNo2: " + duanNo2);
-        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
         if (!flag_t1 || (kongSum >= 1 + duanNo1)) {//判断同孔
             int kong = maxKong;
 
@@ -3161,7 +3174,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         if (childList.get(groupListChoice - 1).size() > 0) {
             denatorBaseinfo_choice = childList.get(groupListChoice - 1).get(childListChoice - 1);//有为0的情况
         }
-
+        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
+        if (!flag_t1 || (kongSum >= 1 + duanNo1)) {//判断同孔
+            flag_t1=false;
+        }
+        //获取延时
         delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
         if (delay_max < 0 && denatorBaseinfo_choice != null && denatorBaseinfo_choice.getShellBlastNo().length() == 13) {//
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(13));
@@ -3205,7 +3222,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             denatorBaseinfo.setAuthorization(version);//雷管芯片型号
         }
 //        Log.e("扫码-单孔多发判断", "---------------" );
-        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
         Log.e("扫码-单孔多发判断", "flag_t1: " + flag_t1);
         Log.e("扫码-单孔多发判断", "kongSum: " + kongSum);
         Log.e("扫码-单孔多发判断", "duanNo1: " + duanNo1);
@@ -3240,6 +3256,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         int delay_add = 0;
         Log.e("插入--单发输入--插入标志", "charu: " + charu);
         if (charu) {
+            int kongdelay_max= new GreenDaoMaster().getPieceAndPaiAndKongMaxDelay(mRegion, paiChoice,db_charu.getBlastserial());//获取当前孔最大延时
             Log.e(TAG, "插入孔前一发延时: " + db_charu.getDelay());
             if (!flag_t1) {//同孔
                 denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
@@ -3254,7 +3271,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         delay_add = f1;
                     }
                 }
-                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num);
+                delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num,kongdelay_max);
 
                 denatorBaseinfo.setDelay(delay_max);
                 if (!flag_t1) {
@@ -3423,6 +3440,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             if (etTk.getText().toString() != null && etTk.getText().toString().length() > 0) {
                 tk_num = Integer.parseInt(etTk.getText().toString());
             }
+            int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
+            if (!flag_t1 || (kongSum >= 1 + duanNo1)) {//判断同孔
+                flag_t1=false;
+            }
             delay_max = getDelay(maxKong, delay_max, start_delay, f1, tk_num, f2, delay_min, duanNo2);
             Log.e("手动输入-最终延时", "delay_max: " + delay_max);
             if (delay_max < 0) {
@@ -3458,7 +3479,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
 
             Log.e("手动输入3", "flag_t1: " + flag_t1);
-            int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
             Log.e("扫码-单孔多发判断", "flag_t1: " + flag_t1);
             Log.e("扫码-单孔多发判断", "kongSum: " + kongSum);
             Log.e("扫码-单孔多发判断", "duanNo1: " + duanNo1);
@@ -3489,6 +3509,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             }
             int delay_add = 0;
             if (charu) {
+                int kongdelay_max= new GreenDaoMaster().getPieceAndPaiAndKongMaxDelay(mRegion, paiChoice,db_charu.getBlastserial());//获取当前孔最大延时
+
                 Log.e(TAG, "插入孔前一发延时: " + db_charu.getDelay());
                 if (!flag_t1) {//同孔
                     denatorBaseinfo.setDuanNo(db_charu.getDuanNo());
@@ -3503,7 +3525,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                             delay_add = f1;
                         }
                     }
-                    delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num);
+                    delay_max = getDelay_charu(start_delay, f1, f2, maxNo, delay_min, tk_num,kongdelay_max);
 
                     denatorBaseinfo.setDelay(delay_max);
                     if (!flag_t1) {
@@ -3548,6 +3570,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 
     private int getDelay(int maxNo, int delay_max, int start_delay, int f1, int tk_num, int f2, int delay_min, int duanNo2) {
         Log.e(TAG, "是否递减--flag_jh_f1: " + flag_jh_f1);
+        Log.e(TAG, "是否同孔--flag_t1: " + flag_t1);
         Log.e(TAG, "孔间还是排间delay_set: " + delay_set);
         Log.e(TAG, "maxNo: " + maxNo);
         Log.e(TAG, "delay: " + delay_max);
@@ -3572,7 +3595,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                         Log.e(TAG, "getDelay: " + 1121);
                         delay_max = delay_min - f1 * (tk_num + 1);
                     } else if (!flag_t1) {//同孔
-                        delay_max = delay_min - f2;
+                        delay_max = delay_min ;
                         Log.e(TAG, "getDelay: " + 1123);
                     } else {
                         Log.e(TAG, "getDelay: " + 1122);
@@ -3633,9 +3656,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         return delay_max;
     }
 
-    private int getDelay_charu(int start_delay, int f1, int f2, int maxNo, int delay_minNum, int tk_num) {
-        int delay_max;
-        delay_max = db_charu.getDelay();
+    private int getDelay_charu(int start_delay, int f1, int f2, int maxNo, int delay_minNum, int tk_num, int kongdelay_max) {
+        int delay_max= kongdelay_max;
 //        int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
         Log.e(TAG, "flag_jh_f1: " + flag_jh_f1);
         Log.e(TAG, "delay_set: " + delay_set);

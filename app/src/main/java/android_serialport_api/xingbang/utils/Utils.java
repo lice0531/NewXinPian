@@ -1998,6 +1998,12 @@ public class Utils {
      * 重新排序雷管(段)
      */
     public static void charuData(String mRegion, DenatorBaseinfo db_charu, boolean flag_t1, int delay_add, String pai_in, int paiChoice) {
+        Log.e("插入排序", "mRegion: " + mRegion);
+        Log.e("插入排序", "db_charu: " + db_charu);
+        Log.e("插入排序", "flag_t1: " + flag_t1);
+        Log.e("插入排序", "delay_add: " + delay_add);
+        Log.e("插入排序", "pai_in: " + pai_in);
+        Log.e("插入排序", "paiChoice: " + paiChoice);
         boolean flag_t1_local = flag_t1;
         String sql = "select * from denatorBaseinfo where piece = " + mRegion + " and pai = " + paiChoice + " and blastserial > " + db_charu.getBlastserial();
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
@@ -2065,14 +2071,16 @@ public class Utils {
 //                Log.e("插入排序", "pai_in: " + pai_in);
 //                Log.e("插入排序", "db_charu.getDuanNo(): " + db_charu.getDuanNo());
 //                Log.e("插入排序", "duanNo: " + duanNo);
-//                Log.e("插入排序", "flag_t1: " + flag_t1);
+
+                Log.e("插入排序", "flag_t1: " + flag_t1);
 
                 if (!flag_t1) {
                     lg.setBlastserial(blastserial);
                     lg.setSithole((Integer.parseInt(sithole)+1)+"");
-                    if (db_charu.getSithole().equals(sithole)) {//同孔情况下,后续位号增加
+                    Log.e("插入排序", "sithole: " + sithole);
+                    Log.e("插入排序", "db_charu.getSithole(): " + db_charu.getSithole());
+                    if (db_charu.getBlastserial()==blastserial) {//同孔情况下,后续位号增加
                         lg.setDuanNo(duanNo + 1);
-
                     } else {
                         lg.setDuanNo(duanNo);
                     }

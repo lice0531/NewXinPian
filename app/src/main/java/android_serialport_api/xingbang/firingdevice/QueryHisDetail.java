@@ -893,8 +893,8 @@ public class QueryHisDetail extends BaseActivity {
      */
     private void upload(final String blastdate, final int pos, final String htid, final String jd, final String wd, final String xmbh, final String dwdm) {
         final String key = "jadl12345678912345678912";
-//        String url = Utils.httpurl_upload_dl;//丹灵上传
-        String url = Utils.httpurl_upload_test;//丹灵上传
+        String url = Utils.httpurl_upload_dl;//丹灵上传
+//        String url = Utils.httpurl_upload_test;//丹灵上传
 
         // 创建OkHttpClient.Builder对象
 //        OkHttpClient.Builder builder = new OkHttpClient.Builder();
