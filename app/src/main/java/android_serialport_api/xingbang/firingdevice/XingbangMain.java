@@ -78,15 +78,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
-
 import static com.senter.pda.iam.libgpiot.Gpiot1.PIN_ADSL;//主板上电
 import static android_serialport_api.xingbang.Application.getDaoSession;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import org.apache.commons.net.ftp.FTPFile;
 
 
@@ -185,6 +178,7 @@ public class XingbangMain extends BaseActivity {
     private PendingIntent usbPermissionIntent;
     private UsbDevice usbDevice;
     private String gdUsbUid = "38B2-D0E3";//第一阶段先写上
+    private boolean isReStart = false;
 
     @Override
     protected void onRestart() {
@@ -200,6 +194,7 @@ public class XingbangMain extends BaseActivity {
         getPropertiesData();
 //        getUserMessage();
         super.onRestart();
+        isReStart = true;
         initUsb();
     }
 
@@ -748,6 +743,9 @@ public class XingbangMain extends BaseActivity {
             String readContent = UsbUtils.readFileFromUSB(currentFs.getRootDirectory(), "updata.csv");
             upContent = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(readContent, Base64.DEFAULT)));
             Log.e(TAG, "读取的 CSV 文件内容: \n" + upContent);
+            if (!TextUtils.isEmpty(upContent) && !isReStart) {
+                show_Toast("数字秘钥识别成功");
+            }
         } catch (Exception e) {
             Log.e(TAG, "初始化 U 盘设备失败: " + e.getMessage());
             if (e.getMessage().contains("errno 1337")) {
