@@ -573,7 +573,7 @@ public class XingbangMain extends BaseActivity {
             showUpTip(getResources().getString(R.string.text_crszmy));
             return;
         } else {
-            Log.e(TAG,"usb设备:" + usbDevice.toString());
+            Log.e(TAG,"usb设备:" + usbDevice.getDeviceName() + "--Vd:" + usbDevice.getVendorId() + "-Pd:" + usbDevice.getProductId());
         }
         String currentUid = ((String)MmkvUtils.getcode("upUuid",""));
         Log.e(TAG,"当前U盘的uid:" + currentUid);
@@ -730,11 +730,11 @@ public class XingbangMain extends BaseActivity {
             Log.e(TAG, "U 盘文件系统: " + currentFs.getVolumeLabel());
             // 写入 CSV 文件到 U 盘根目录
             final String key = "jadl12345678912345678912";
-            String csvContent = "uuid:" + currentUid + ",pwd1:123456,pwd2:138269,pwd3:235689,pwd4:147258,pwd5:246137,pwd6:137258,";
+            String csvContent = "uuid:" + currentUid + ",pwd1:612345,pwd2:913826,pwd3:923568,pwd4:814725,pwd5:724613,pwd6:813725,";
             String jmUpwd = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), csvContent.getBytes()));
             boolean writeSuccess = UsbUtils.writeFileToUSB(currentFs.getRootDirectory(), "updata.csv", jmUpwd);
             if (writeSuccess) {
-                Log.d(TAG, "文件写入成功");
+                Log.e(TAG, "文件写入成功");
             } else {
                 Log.e(TAG, "文件写入失败");
             }
@@ -744,7 +744,7 @@ public class XingbangMain extends BaseActivity {
             upContent = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(readContent, Base64.DEFAULT)));
             Log.e(TAG, "读取的 CSV 文件内容: \n" + upContent);
             if (!TextUtils.isEmpty(upContent) && !isReStart) {
-                show_Toast("数字秘钥识别成功");
+                show_Toast(getResources().getString(R.string.text_sbcg));
             }
         } catch (Exception e) {
             Log.e(TAG, "初始化 U 盘设备失败: " + e.getMessage());

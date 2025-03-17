@@ -480,6 +480,7 @@ public class FiringMainActivity extends SerialPortActivity {
 
     private int isShowNoUsbDialog = 0;
     private int isShowErrorUsbDialog = 0;
+    private boolean isCheckUp = false;//是否在校验U盘数据，如果是的话，在接入U盘数据读取成功时，再提示数字秘钥识别成功
     private boolean checkUsbConnect(int type) {
         //没有插入U盘  给出提示
         if (usbDevice == null) {
@@ -493,7 +494,8 @@ public class FiringMainActivity extends SerialPortActivity {
             }
             return false;
         } else {
-            Log.e(TAG,"usb设备:" + usbDevice.toString());
+            isCheckUp = true;
+            Log.e(TAG,"usb设备:" + usbDevice.getDeviceName() + "--Vd:" + usbDevice.getVendorId() + "-Pd:" + usbDevice.getProductId());
             String currentUid = ((String)MmkvUtils.getcode("upUuid",""));
             Log.e(TAG,"当前U盘的uid:" + currentUid);
             if (!UsbUtils.isUuidValid(upContent, currentUid) || !UsbUtils.isPasswordValid(upContent, uPwd)) {
@@ -510,6 +512,7 @@ public class FiringMainActivity extends SerialPortActivity {
                 return false;
             } else {
                 Log.e(TAG,"U盘校验通过,可以:" + (type == 1 ? "充电" : "起爆"));
+                Utils.writeRecord("U盘校验通过,可以:" + (type == 1 ? "充电" : "起爆"));
                 return true;
             }
         }
@@ -558,19 +561,14 @@ public class FiringMainActivity extends SerialPortActivity {
             Log.e(TAG, "U 盘文件系统: " + currentFs.getVolumeLabel());
             // 写入 CSV 文件到 U 盘根目录
             final String key = "jadl12345678912345678912";
-            String csvContent = "uuid:" + currentUid + ",pwd1:123456,pwd2:138269,pwd3:235689,pwd4:147258,pwd5:246137,pwd6:137258,";
-            String jmUpwd = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), csvContent.getBytes()));
-            boolean writeSuccess = UsbUtils.writeFileToUSB(currentFs.getRootDirectory(), "updata.csv", jmUpwd);
-            if (writeSuccess) {
-                Log.d(TAG, "文件写入成功");
-            } else {
-                Log.e(TAG, "文件写入失败");
-            }
             Log.e(TAG,"得到的u盘唯一标识:" + currentUid);
             // 读取 CSV 文件内容
             String readContent = UsbUtils.readFileFromUSB(currentFs.getRootDirectory(), "updata.csv");
             upContent = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(readContent, Base64.DEFAULT)));
             Log.e(TAG, "读取的 CSV 文件内容: \n" + upContent);
+            if (!TextUtils.isEmpty(upContent) && isCheckUp) {
+                show_Toast(getResources().getString(R.string.text_sbcg));
+            }
         } catch (Exception e) {
             Log.e(TAG, "初始化 U 盘设备失败: " + e.getMessage());
             if (e.getMessage().contains("errno 1337")) {
@@ -594,6 +592,8 @@ public class FiringMainActivity extends SerialPortActivity {
                 case ACTION_USB_PERMISSION:
                     synchronized (this) {
                         UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                        isShowNoUsbDialog = 0;
+                        isShowErrorUsbDialog = 0;
                         if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                             if (device != null) {
                                 new Handler().postDelayed(new Runnable() {
@@ -647,6 +647,8 @@ public class FiringMainActivity extends SerialPortActivity {
                     break;
                 case UsbManager.ACTION_USB_DEVICE_DETACHED:
                     // USB 设备拔出
+                    isShowNoUsbDialog = 0;
+                    isShowErrorUsbDialog = 0;
                     usbDevice = null;
                     MmkvUtils.savecode("upUuid", "");
                     Log.e(TAG, "U盘已拔出--uuid：" + (String) MmkvUtils.getcode("upUuid", ""));
@@ -2278,21 +2280,13 @@ public class FiringMainActivity extends SerialPortActivity {
                             if (sevenDisplay == 0)
                                 mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             sevenDisplay = 1;
-//                            if (!checkUsbConnect(2)) {
-//                                Log.e(TAG,"");
-////                                return;
-//                            }
-//                            if (checkUsbConnect(2)) {
-                                if (keyFireCmd == 1) {
-                                    Log.e(TAG,"U盘校验已成功");
-                                    increase(8);
-                                    Log.e("increase", "8");
-                                    keyFireCmd = 0;
-                                    eightCmdExchangePower = 1;
-                                }
-//                            } else {
-//                                Log.e(TAG,"起爆U盘校验出错了");
-//                            }
+                            if (keyFireCmd == 1) {
+                                Log.e(TAG, "U盘校验已成功");
+                                increase(8);
+                                Log.e("increase", "8");
+                                keyFireCmd = 0;
+                                eightCmdExchangePower = 1;
+                            }
                             mHandler_1.sendMessage(mHandler_1.obtainMessage());
                             break;
                         case 8://起爆阶段

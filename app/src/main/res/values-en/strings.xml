@@ -834,4 +834,5 @@
     <string name="text_crszmy">Please insert the digital key first</string>
     <string name="text_crzqmy">Please insert the correct digital key</string>
     <string name="text_srszmm">Please enter a 6-digit password</string>
+    <string name="text_sbcg">The digital key is successfully identified</string>
 </resources>
