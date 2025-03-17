@@ -1039,14 +1039,14 @@ public class XingbangMain extends SerialPortActivity {
             GreenDaoMaster master = new GreenDaoMaster();
             List<UserMain> userMainList = master.queryUser(a);
             if (userMainList.size() == 0) {
-                show_Toast("用户名为空");
+                show_Toast(getResources().getString(R.string.text_yhmcw));
             } else {
                 if (b.equals(userMainList.get(0).getUpassword())) {
                     toFiring();
                     dialog.dismiss();
                     dialogOFF(dialog);
                 } else {
-                    show_Toast("密码错误");
+                    show_Toast(getResources().getString(R.string.text_mmcw));
                     dialogOn(dialog);
                 }
             }

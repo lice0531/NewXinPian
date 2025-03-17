@@ -127,6 +127,7 @@
     <string name="text_alert_tip6">已爆雷管列表</string>
     <string name="text_alert_username">请输入用户名</string>
     <string name="text_alert_password">请输入密码</string>
+    <string name="text_yhmcw">用户名错误</string>
     <string name="text_alert_login_tip">是否登录过</string>
     <string name="text_alert_xiugai">修改信息</string>
     <string name="text_alert_sbbh">设备编号设置</string>
