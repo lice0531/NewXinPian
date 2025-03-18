@@ -4757,13 +4757,20 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     }
 
     private boolean checkDelay() {
+        int fanzhuanValue = 0;  // 给 fanzhuanValue 设置一个默认值
+        if (choicepaiData != null) {  // 确保 choicepaiData 不为 null
+            Integer fanZhuan = choicepaiData.getFanZhuan();  // 获取 fanZhuan
+            if (fanZhuan != null) {
+                fanzhuanValue = fanZhuan;  // 如果 fanZhuan 不为 null，使用它的值
+            }
+        }
         Log.e(TAG, "扫码检测 paiChoice: " + paiChoice);
         if (groupList.size() == 0) {
             Log.e(TAG, "扫码检测 没有排: ");
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(8));
             return true;
         }
-        if (choicepaiData.getFanZhuan() == 1) {
+        if (fanzhuanValue == 1) {
             mHandler_tip.sendMessage(mHandler_tip.obtainMessage(14));
             return true;
         }
