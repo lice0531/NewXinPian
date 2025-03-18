@@ -2111,6 +2111,39 @@ public class Utils {
     /**
      * 重新排序雷管(段)
      */
+    public static int charuGetDelay(String mRegion, DenatorBaseinfo db_charu, boolean flag_t1, int delay_add, String pai_in, int paiChoice) {
+        Log.e("插入排序", "mRegion: " + mRegion);
+        Log.e("插入排序", "db_charu: " + db_charu);
+        Log.e("插入排序", "flag_t1: " + flag_t1);
+        Log.e("插入排序", "delay_add: " + delay_add);
+        Log.e("插入排序", "pai_in: " + pai_in);
+        Log.e("插入排序", "paiChoice: " + paiChoice);
+        int delay_total = 0;
+        String sql = "select * from denatorBaseinfo where piece = " + mRegion + " and pai = " + paiChoice + " and blastserial > " + db_charu.getBlastserial();
+        Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int delay = cursor.getInt(5);
+                String pai = cursor.getString(22);
+
+                if (pai_in.equals(pai)) {
+                    delay_total=delay + delay_add;
+                } else {
+                    delay_total=delay;
+                }
+
+
+            }
+            cursor.close();
+        }
+
+        return delay_total;
+    }
+
+
+    /**
+     * 重新排序雷管(段)
+     */
     public static void charuData(String mRegion, DenatorBaseinfo db_charu, boolean flag_t1, int delay_add, int duan_in) {
         String sql = "select * from denatorBaseinfo where piece = " + mRegion + " and blastserial > " + db_charu.getBlastserial();
         Cursor cursor = Application.getDaoSession().getDatabase().rawQuery(sql, null);
