@@ -2378,17 +2378,17 @@ public class FiringMainActivity extends SerialPortActivity {
 //            Log.e(TAG, "38指令已返回,进入充电检测");
 
             if (stage == 33||stage == 55) {
-                From38ChongDian fromData = ThreeFiringCmd.jiexi_38("00", locatBuf);
-                Log.e(TAG, "雷管充电状态: "+fromData.getCommicationStatus()+" -- "+fromData.getCommicationStatus() );
-                if (fromData != null && writeDenator != null) {
-                    VoDenatorBaseInfo temp = writeDenator;
-                    fromData.setShellNo(temp.getShellBlastNo());
-                    fromData.setDenaId(temp.getDenatorId());//芯片码
-                    Utils.writeRecord("--起爆测试结果:" + fromData);
-                    AppLogUtils.writeAppLog("38指令--起爆测试结果:" + fromData);
+//                From38ChongDian fromData = ThreeFiringCmd.jiexi_38("00", locatBuf);
+//                Log.e(TAG, "雷管充电状态: "+fromData.getCommicationStatus()+" -- "+fromData.getCommicationStatus() );
+//                if (fromData != null && writeDenator != null) {
+//                    VoDenatorBaseInfo temp = writeDenator;
+//                    fromData.setShellNo(temp.getShellBlastNo());
+//                    fromData.setDenaId(temp.getDenatorId());//芯片码
+//                    Utils.writeRecord("--起爆测试结果:" + fromData);
+//                    AppLogUtils.writeAppLog("38指令--起爆测试结果:" + fromData);
 //                    updateDenator(fromData);//更新雷管状态
-                    writeDenator = null;
-                }
+//                    writeDenator = null;
+//                }
                 reThirdWriteCount++;
             }
         } else if (DefCommand.CMD_3_DETONATE_10.equals(cmd)) {//39 进入充电复检模式
