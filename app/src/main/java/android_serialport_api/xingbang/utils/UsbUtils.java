@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Environment;
@@ -252,6 +253,22 @@ public class UsbUtils {
         return false;  // 如果没有找到匹配的密码
     }
 
+    // 方法：获取isCheckUpTrue的值
+    public static String getIsCheckUpTrueValue(String str) {
+        // 将字符串按逗号分割
+        String[] parts = str.split(",");
+
+        // 遍历分割后的数组，查找 isCheckUpTrue 的值
+        for (String part : parts) {
+            if (part.startsWith("isCheckUpTrue:")) {
+                // 获取 isCheckUpTrue 的值
+                return part.split(":")[1];
+            }
+        }
+        // 如果找不到 isCheckUpTrue，则返回空
+        return "";
+    }
+
     /**
      * 写入文件到 U 盘
      *
@@ -322,5 +339,19 @@ public class UsbUtils {
             Log.e(TAG, "读取文件失败: " + e.getMessage());
         }
         return content.toString();
+    }
+
+    public static String getUsbSerialNumber(Context context, UsbDevice device) {
+        UsbManager usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+        UsbDeviceConnection connection = usbManager.openDevice(device);
+        if (connection == null) {
+            return "No permission to access USB";
+        }
+        byte[] rawDescriptors = new byte[255];
+        int result = connection.controlTransfer(0x80, 0x06, 0x0300, 0, rawDescriptors, rawDescriptors.length, 5000);
+        if (result < 0) {
+            return "Failed to get serial number";
+        }
+        return new String(rawDescriptors);
     }
 }

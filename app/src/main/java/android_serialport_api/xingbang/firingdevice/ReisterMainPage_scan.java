@@ -380,6 +380,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
 //                addXiangHao(data);
 //                return;
 //            }
+            Log.e("扫码注册","sanButtonFlag:" + sanButtonFlag);
             if (sanButtonFlag > 0) {//扫码结果设置到输入框里
                 Log.e("扫码注册", "data: " + data);
                 decodeBar(data);
@@ -389,6 +390,23 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                 mHandler_tip.sendMessage(msg);
                 scanDecode.stopScan();
             } else {
+                //管厂码
+                String mfacCode = Utils.getDetonatorShellToFactoryCodeStr(data);
+                //特征码
+                String facFea = Utils.getDetonatorShellToFeatureStr(data);
+                //雷管信息有误，管厂码不正确，请检查
+                Log.e("管厂码", "shellNo: " + data);
+                Log.e("管厂码", "factoryCode: " + factoryCode);
+                Log.e("管厂码", "facCode: " + mfacCode);
+                if (factoryCode != null && factoryCode.trim().length() > 0 && factoryCode.indexOf(mfacCode) < 0) {
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
+                    return;
+                }
+                //雷管信息有误，特征码不正确，请检查
+                if (factoryFeature != null && factoryFeature.trim().length() > 0 && factoryFeature.indexOf(facFea) < 0) {
+                    mHandler_tip.sendMessage(mHandler_tip.obtainMessage(2));
+                    return;
+                }
                 String barCode;
                 String denatorId;
 //                if (data.length() == 30) {//5620302H00001A62F400FFF20AB603
@@ -3094,7 +3112,6 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
     private void decodeBar(String strParamBarcode) {
 
         String subBarCode;
-
         if (strParamBarcode.trim().length() > 14) {
             int index = strParamBarcode.indexOf("SC:");
             Log.e("扫码", "index: " + index);

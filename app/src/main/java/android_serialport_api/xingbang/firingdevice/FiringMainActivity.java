@@ -498,24 +498,53 @@ public class FiringMainActivity extends SerialPortActivity {
             Log.e(TAG,"usb设备:" + usbDevice.getDeviceName() + "--Vd:" + usbDevice.getVendorId() + "-Pd:" + usbDevice.getProductId());
             String currentUid = ((String)MmkvUtils.getcode("upUuid",""));
             Log.e(TAG,"当前U盘的uid:" + currentUid);
-            if (!UsbUtils.isUuidValid(upContent, currentUid) || !UsbUtils.isPasswordValid(upContent, uPwd)) {
-                if (type == 1) {
-                    showUpTip(getResources().getString(R.string.text_crzqmy),type);
-                } else {
-                    if (isShowErrorUsbDialog == 0) {
-                        isShowErrorUsbDialog = 1;
-                        //第一次校验：当前U盘是否该起爆器绑定的U盘  不是就给出提示
-                        showUpTip(getResources().getString(R.string.text_crzqmy),type);
-                    }
-                }
-                Log.e(TAG,"U盘校验出错了");
+            String isCheckUpTrue = UsbUtils.getIsCheckUpTrueValue(upContent);
+            Log.e(TAG,"判断U盘是否正确:" + isCheckUpTrue);
+            if (TextUtils.isEmpty(upContent) || TextUtils.isEmpty(isCheckUpTrue)) {
+                showUpTip(getResources().getString(R.string.text_crzqmy),type);
                 return false;
-            } else {
-                Log.e(TAG,"U盘校验通过,可以:" + (type == 1 ? "充电" : "起爆"));
-                Utils.writeRecord("U盘校验通过,可以:" + (type == 1 ? "充电" : "起爆"));
-                return true;
+            }
+            if ("0".equals(isCheckUpTrue)) {
+                //isCheckUpTrue为0，暂不校验
+                if (!UsbUtils.isPasswordValid(upContent, uPwd)) {
+                    if (type == 1) {
+                        showUpTip(getResources().getString(R.string.text_crzqmy),type);
+                    } else {
+                        if (isShowErrorUsbDialog == 0) {
+                            isShowErrorUsbDialog = 1;
+                            //第一次校验：当前U盘是否该起爆器绑定的U盘  不是就给出提示
+                            showUpTip(getResources().getString(R.string.text_crzqmy),type);
+                        }
+                    }
+                    Log.e(TAG,"U盘校验出错了");
+                    return false;
+                } else {
+                    Log.e(TAG,"U盘校验通过,可以:" + (type == 1 ? "充电" : "起爆"));
+                    Utils.writeRecord("U盘校验通过,可以:" + (type == 1 ? "充电" : "起爆"));
+                    return true;
+                }
+            } else if ("1".equals(isCheckUpTrue)) {
+                if (!UsbUtils.isUuidValid(upContent, currentUid) || !UsbUtils
+                        .isPasswordValid(upContent, uPwd)) {
+                    if (type == 1) {
+                        showUpTip(getResources().getString(R.string.text_crzqmy),type);
+                    } else {
+                        if (isShowErrorUsbDialog == 0) {
+                            isShowErrorUsbDialog = 1;
+                            //第一次校验：当前U盘是否该起爆器绑定的U盘  不是就给出提示
+                            showUpTip(getResources().getString(R.string.text_crzqmy),type);
+                        }
+                    }
+                    Log.e(TAG,"U盘校验出错了");
+                    return false;
+                } else {
+                    Log.e(TAG,"U盘校验通过,可以:" + (type == 1 ? "充电" : "起爆"));
+                    Utils.writeRecord("U盘校验通过,可以:" + (type == 1 ? "充电" : "起爆"));
+                    return true;
+                }
             }
         }
+        return false;
     }
 
     /**
@@ -566,8 +595,12 @@ public class FiringMainActivity extends SerialPortActivity {
             String readContent = UsbUtils.readFileFromUSB(currentFs.getRootDirectory(), "updata.csv");
             upContent = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(readContent, Base64.DEFAULT)));
             Log.e(TAG, "读取的 CSV 文件内容: \n" + upContent);
-            if (!TextUtils.isEmpty(upContent) && isCheckUp) {
-                show_Toast(getResources().getString(R.string.text_sbcg));
+            if (isCheckUp) {
+                if (!TextUtils.isEmpty(upContent)) {
+                    show_Toast(getResources().getString(R.string.text_sbcg));
+                } else {
+                    show_Toast(getResources().getString(R.string.text_sbsb));
+                }
             }
         } catch (Exception e) {
             Log.e(TAG, "初始化 U 盘设备失败: " + e.getMessage());
@@ -653,6 +686,7 @@ public class FiringMainActivity extends SerialPortActivity {
                     MmkvUtils.savecode("upUuid", "");
                     Log.e(TAG, "U盘已拔出--uuid：" + (String) MmkvUtils.getcode("upUuid", ""));
                     Utils.writeRecord("U盘已拔出");
+                    upContent = "";
                     break;
             }
         }

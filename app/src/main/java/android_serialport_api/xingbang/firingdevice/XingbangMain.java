@@ -178,7 +178,7 @@ public class XingbangMain extends BaseActivity {
     private PendingIntent usbPermissionIntent;
     private UsbDevice usbDevice;
     private String gdUsbUid = "38B2-D0E3";//第一阶段先写上
-    private boolean isReStart = false;
+    private boolean isReStart = false;//控制是否显示“数字秘钥识别成功”toast
 
     @Override
     protected void onRestart() {
@@ -194,7 +194,6 @@ public class XingbangMain extends BaseActivity {
         getPropertiesData();
 //        getUserMessage();
         super.onRestart();
-        isReStart = true;
         initUsb();
     }
 
@@ -577,10 +576,19 @@ public class XingbangMain extends BaseActivity {
         }
         String currentUid = ((String)MmkvUtils.getcode("upUuid",""));
         Log.e(TAG,"当前U盘的uid:" + currentUid);
-        if (!UsbUtils.isUuidValid(upContent, currentUid)) {
-            //第一次校验：当前U盘是否该起爆器绑定的U盘  不是就给出提示
+        String isCheckUpTrue = UsbUtils.getIsCheckUpTrueValue(upContent);
+        Log.e(TAG,"判断U盘是否正确:" + isCheckUpTrue);
+        if (TextUtils.isEmpty(upContent) || TextUtils.isEmpty(isCheckUpTrue)) {
             showUpTip(getResources().getString(R.string.text_crzqmy));
             return;
+        }
+        //若为0   暂时不判断U盘是否正确   若为1 判断U盘是否正确
+        if ("1".equals(isCheckUpTrue)) {
+            if (!UsbUtils.isUuidValid(upContent, currentUid)) {
+                //第一次校验：当前U盘是否该起爆器绑定的U盘  不是就给出提示
+                showUpTip(getResources().getString(R.string.text_crzqmy));
+                return;
+            }
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(XingbangMain.this);
         builder.setTitle(R.string.text_srszmm);//"请输入6位数字密码"
@@ -722,6 +730,7 @@ public class XingbangMain extends BaseActivity {
             Log.e(TAG,"currentUid:" + currentUid);
             if (TextUtils.isEmpty(currentUid)) {
                 currentUid = UsbUtils.getUsbDeviceIdentifier(this);
+//                currentUid = UsbUtils.getUsbSerialNumber(this,usbDevice);
                 MmkvUtils.savecode("upUuid",currentUid);
                 Log.e(TAG,"得到的u盘唯一标识:" + currentUid);
             }
@@ -730,7 +739,7 @@ public class XingbangMain extends BaseActivity {
             Log.e(TAG, "U 盘文件系统: " + currentFs.getVolumeLabel());
             // 写入 CSV 文件到 U 盘根目录
             final String key = "jadl12345678912345678912";
-            String csvContent = "uuid:" + currentUid + ",pwd1:612345,pwd2:913826,pwd3:923568,pwd4:814725,pwd5:724613,pwd6:813725,";
+            String csvContent = "isCheckUpTrue:0,uuid:" + currentUid + ",pwd1:234561,pwd2:382691,pwd3:356892,pwd4:472581,pwd5:461372,pwd6:372581,";
             String jmUpwd = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), csvContent.getBytes()));
             boolean writeSuccess = UsbUtils.writeFileToUSB(currentFs.getRootDirectory(), "updata.csv", jmUpwd);
             if (writeSuccess) {
@@ -743,8 +752,12 @@ public class XingbangMain extends BaseActivity {
             String readContent = UsbUtils.readFileFromUSB(currentFs.getRootDirectory(), "updata.csv");
             upContent = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(readContent, Base64.DEFAULT)));
             Log.e(TAG, "读取的 CSV 文件内容: \n" + upContent);
-            if (!TextUtils.isEmpty(upContent) && !isReStart) {
-                show_Toast(getResources().getString(R.string.text_sbcg));
+            if (!isReStart) {
+                if (!TextUtils.isEmpty(upContent)) {
+                    show_Toast(getResources().getString(R.string.text_sbcg));
+                } else {
+                    show_Toast(getResources().getString(R.string.text_sbsb));
+                }
             }
         } catch (Exception e) {
             Log.e(TAG, "初始化 U 盘设备失败: " + e.getMessage());
@@ -838,6 +851,7 @@ public class XingbangMain extends BaseActivity {
                     MmkvUtils.savecode("upUuid", "");
                     Log.e(TAG, "U盘已拔出--uuid：" + (String) MmkvUtils.getcode("upUuid", ""));
                     Utils.writeRecord("U盘已拔出");
+                    upContent = "";
                     break;
             }
         }

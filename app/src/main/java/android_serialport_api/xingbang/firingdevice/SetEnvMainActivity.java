@@ -329,7 +329,8 @@ public class SetEnvMainActivity extends BaseActivity {
 //                startActivity(intent5);
                 break;
             case R.id.btn_set_upload://上传数据
-                setServerIpEnv();
+                show_Toast(getString(R.string.text_error_tip57));
+//                setServerIpEnv();
                 break;
             case R.id.btn_set_warrant://授权码
                 show_Toast(getString(R.string.text_error_tip57));

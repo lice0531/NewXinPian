@@ -836,4 +836,5 @@
     <string name="text_srszmm">请输入6位数字密码</string>
     <string name="app_version" translatable="false">KT50_3.25_MX_250317_en</string>
     <string name="text_sbcg">数字秘钥识别成功</string>
+    <string name="text_sbsb">数字秘钥识别失败</string>
 </resources>
