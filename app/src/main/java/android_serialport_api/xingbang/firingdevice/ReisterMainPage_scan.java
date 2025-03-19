@@ -1087,6 +1087,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else if (msg.what == 13) {
                 SoundPlayUtils.play(4);
                 show_Toast("延时不能小于0ms");
+                //更新排数据
+                updataPaiData();
                 mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
             } else if (msg.what == 14) {
                 TextView view = new TextView(this);
@@ -1559,11 +1561,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
         editScanRiqi.setBackgroundResource(R.drawable.translucent);
         //流水号
         edit_start_entboxNoAndSerial_st.getText().clear();
-        edit_start_entboxNoAndSerial_st.getText().clear();
+        edit_end_entboxNoAndSerial_ed.getText().clear();
         editScanHehao.getText().clear();
         editScanLiushui.getText().clear();
         edit_start_entboxNoAndSerial_st.setBackgroundResource(R.drawable.translucent);
-        edit_start_entboxNoAndSerial_st.setBackgroundResource(R.drawable.translucent);
+        edit_end_entboxNoAndSerial_ed.setBackgroundResource(R.drawable.translucent);
         editScanHehao.setBackgroundResource(R.drawable.translucent);
         editScanLiushui.setBackgroundResource(R.drawable.translucent);
         //连续注册个数
