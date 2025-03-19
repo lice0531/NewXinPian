@@ -2510,6 +2510,9 @@ public class GreenDaoMaster {
         }
     }
 
+    /**
+     * 当前孔最大延时
+     * */
     public int getPieceAndPaiAndKongMaxDelay(String piece,int pai,int kong) {
         int delay;
         String sql = "select max(delay) from denatorBaseinfo where  piece = "+piece+" and pai = "+pai+" and blastserial = "+kong;
@@ -2525,6 +2528,7 @@ public class GreenDaoMaster {
             return 0;
         }
     }
+
 
     /**
      * 获取 该区域 该排 最小的延时
