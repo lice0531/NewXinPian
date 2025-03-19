@@ -45,6 +45,7 @@ import android_serialport_api.xingbang.db.DetonatorTypeNew;
 import android_serialport_api.xingbang.db.GreenDaoMaster;
 import android_serialport_api.xingbang.db.PaiData;
 import android_serialport_api.xingbang.utils.AppLogUtils;
+import android_serialport_api.xingbang.utils.SoundPlayUtils;
 import android_serialport_api.xingbang.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,8 +83,8 @@ public class SouSuoSQActivity extends BaseActivity {
     private List<DetonatorTypeNew> mListData = new ArrayList<>();
     private List<ShouQuanData> mList = new ArrayList<>();
     private Handler mHandler_UI = new Handler(Looper.getMainLooper());     // UI处理
-    private String sqrq="";
-    private int paiChoice=1;
+    private String sqrq = "";
+    private int paiChoice = 1;
     private int kongChoice = 0;
     private static final int STATE_DEFAULT = 0;//默认状态
     private static final int STATE_EDIT = 1;//编辑状态
@@ -93,7 +94,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private String mRegion;     // 区域
     private String mOldTitle;   // 原标题
     private String isShowZc = "";//用来判断是否需要展示“选择雷管”按钮进行注册
-    String TAG="授权注册";
+    String TAG = "授权注册";
     private String factoryCode = "";//厂家代码
     private int pb_show = 0;
     private LoadingDialog tipDlg = null;
@@ -113,7 +114,7 @@ public class SouSuoSQActivity extends BaseActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            if(bundle.getString("sqrq")!=null){
+            if (bundle.getString("sqrq") != null) {
                 sqrq = bundle.getString("sqrq");
             }
             isShowZc = !TextUtils.isEmpty(bundle.getString("isShowZc")) ?
@@ -123,22 +124,22 @@ public class SouSuoSQActivity extends BaseActivity {
                 kongChoice = bundle.getInt("kongChoice");
                 mRegion = bundle.getString("mRegion");
                 delay_set = bundle.getString("delay_set");
-                flag_jh_f1=bundle.getBoolean("flag_jh_f1");
-                flag_jh_f2=bundle.getBoolean("flag_jh_f2");
-                btn_start=bundle.getBoolean("btn_start");
-                flag_tk=bundle.getBoolean("flag_tk");
+                flag_jh_f1 = bundle.getBoolean("flag_jh_f1");
+                flag_jh_f2 = bundle.getBoolean("flag_jh_f2");
+                btn_start = bundle.getBoolean("btn_start");
+                flag_tk = bundle.getBoolean("flag_tk");
                 weiChoice = bundle.getInt("weiChoice");
-                Log.e(TAG, "mRegion: "+mRegion );
-                Log.e(TAG, "paiChoice: "+paiChoice );
-                Log.e(TAG, "kongChoice: "+kongChoice );
-                Log.e(TAG,"weiChoice:" + weiChoice);
-                DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKongAndWei(mRegion, paiChoice,kongChoice,weiChoice);
-                Log.e(TAG, "denatorBaseinfo_choice: "+denatorBaseinfo_choice );
+                Log.e(TAG, "mRegion: " + mRegion);
+                Log.e(TAG, "paiChoice: " + paiChoice);
+                Log.e(TAG, "kongChoice: " + kongChoice);
+                Log.e(TAG, "weiChoice:" + weiChoice);
+                DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKongAndWei(mRegion, paiChoice, kongChoice, weiChoice);
+                Log.e(TAG, "denatorBaseinfo_choice: " + denatorBaseinfo_choice);
             }
         }
-        Log.e(TAG, "传递的值paiChoice: "+paiChoice);
-        Log.e(TAG, "传递的值mRegion: "+mRegion);
-        Log.e(TAG, "传递的值delay_set: "+delay_set);
+        Log.e(TAG, "传递的值paiChoice: " + paiChoice);
+        Log.e(TAG, "传递的值mRegion: " + mRegion);
+        Log.e(TAG, "传递的值delay_set: " + delay_set);
         // 适配器
         linearLayoutManager = new LinearLayoutManager(this);
         mAdapter2 = new DataAdapter(R.layout.item_shouquan, mList);//绑定视图和数据
@@ -185,7 +186,7 @@ public class SouSuoSQActivity extends BaseActivity {
         }
 //        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(1));
 
-        Log.e(TAG, "写返回参数: " );
+        Log.e(TAG, "写返回参数: ");
         Intent intentTemp = new Intent();
         intentTemp.putExtra("backString", "");
         setResult(2, intentTemp); // 设置结果码和返回数据
@@ -327,6 +328,11 @@ public class SouSuoSQActivity extends BaseActivity {
                     showUiToast(getResources().getString(R.string.text_error_tip1));
                     AppLogUtils.writeAppLog("管厂码不正确,注册异常");
                     break;
+                case 13:
+                    SoundPlayUtils.play(4);
+                    showUiToast("延时不能小于0ms");
+                    break;
+
                 default:
                     break;
             }
@@ -346,10 +352,12 @@ public class SouSuoSQActivity extends BaseActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
+
     private void setmOldTitle() {
         getSupportActionBar().setTitle(mOldTitle + "(共:" + mListData.size() + ")");
 
     }
+
     /**
      * 创建菜单
      */
@@ -431,6 +439,7 @@ public class SouSuoSQActivity extends BaseActivity {
     }
 
     private boolean isSelectAll = true;//是否全选
+
     @OnClick({R.id.tv_check_all, R.id.tv_input, R.id.tv_ture, R.id.ss_btn_ss, R.id.ss_btn_px})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -599,10 +608,11 @@ public class SouSuoSQActivity extends BaseActivity {
 
     /**
      * 注册雷管
+     *
      * @param db
-     * @param flag:true(单发雷管授权注册  需注册到对应孔或位) false(多发雷管授权注册  直接注册到列表最后即可)
+     * @param flag:true(单发雷管授权注册 需注册到对应孔或位) false(多发雷管授权注册  直接注册到列表最后即可)
      */
-    private void registerDetonator(ShouQuanData db,Boolean flag) {
+    private void registerDetonator(ShouQuanData db, Boolean flag) {
         boolean chongfu = false;
 //        int maxNo = getMaxNumberNo();
         Log.e("接收注册", "shellNo: " + db.getShellBlastNo());
@@ -660,8 +670,8 @@ public class SouSuoSQActivity extends BaseActivity {
 
         String duan = "1";
         int duanNUM = new GreenDaoMaster().getDuanNo(mRegion, duan);
-        Log.e("搜索", "duanNUM: "+duanNUM);
-        Log.e("搜索", "maxKong: "+maxKong);
+        Log.e("搜索", "duanNUM: " + duanNUM);
+        Log.e("搜索", "maxKong: " + maxKong);
         maxNo++;
         DenatorBaseinfo denator = new DenatorBaseinfo();
         denator.setBlastserial((maxKong + 1));
@@ -671,7 +681,7 @@ public class SouSuoSQActivity extends BaseActivity {
         denator.setZhu_yscs(yscs);
 //        denator.setDelay(Integer.parseInt(delay));//PT不更新延时
         if (!TextUtils.isEmpty(db.getQibao())) {
-            if (db.getQibao().equals("雷管正常")||db.getQibao().equals("已起爆")) {
+            if (db.getQibao().equals("雷管正常") || db.getQibao().equals("已起爆")) {
                 denator.setRegdate(db.getTime());
             } else {
                 denator.setRegdate(Utils.getDateFormat(new Date()));
@@ -688,7 +698,7 @@ public class SouSuoSQActivity extends BaseActivity {
         denator.setPiece(mRegion);
         denator.setDuanNo(1);
         denator.setDuan(Integer.parseInt(duan));
-        denator.setPai(paiChoice+"");
+        denator.setPai(paiChoice + "");
         denator.setAuthorization(version);//导入默认是02版
 
         int duanNo1 = new GreenDaoMaster().getPaiMaxDuanNo(maxKong, mRegion, paiChoice);//获取该区域 最大duanNo
@@ -708,14 +718,23 @@ public class SouSuoSQActivity extends BaseActivity {
             denator.setDuanNo((duanNo1));
             if (duanNo1 > 1) {
                 if (!flag_jh_f1) {//孔内是否递减
+                    if ((delay_min - Integer.parseInt(f2_delay_data)) < 0) {
+                        Log.e("扫码-单孔多发判断", "延时递减1: " + (delay_min - Integer.parseInt(f2_delay_data)));
+                        mHandler_UI.sendMessage(mHandler_UI.obtainMessage(13));
+                        return;
+                    }
                     denator.setDelay((delay_min - Integer.parseInt(f2_delay_data)));
                 } else {
                     denator.setDelay((delay_start + Integer.parseInt(f2_delay_data)));
                 }
             }
         }
-        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKongAndWei(mRegion, paiChoice,kongChoice,weiChoice);
-        Log.e(TAG, "flag: "+flag );
+        DenatorBaseinfo denatorBaseinfo_choice = new GreenDaoMaster().queryDetonatorPaiAndKongAndWei(mRegion, paiChoice, kongChoice, weiChoice);
+        Log.e(TAG, "flag: " + flag);
+        if(denator.getDelay()<0){
+            mHandler_UI.sendMessage(mHandler_UI.obtainMessage(13));
+            return;
+        }
         if (denatorBaseinfo_choice == null) {
             //向数据库插入数据
             getDaoSession().getDenatorBaseinfoDao().insert(denator);
@@ -735,6 +754,7 @@ public class SouSuoSQActivity extends BaseActivity {
         }
         updataPaiData();
     }
+
     int flag1 = 0;
     int flag2 = 0;
     boolean flag_t1 = true;//同孔标志
@@ -743,6 +763,7 @@ public class SouSuoSQActivity extends BaseActivity {
     boolean btn_start = false;//减号标志
     boolean flag_tk = false;//跳孔标志
     private String delay_set = "f1";//是f1还是f2
+
     private int getDelay(int maxNo, int delay_max, int start_delay, int f1, int tk_num, int f2, int delay_min, int duanNo2) {
         Log.e(TAG, "是否递减--flag_jh_f1: " + flag_jh_f1);
         Log.e(TAG, "孔间还是排间delay_set: " + delay_set);
@@ -840,6 +861,7 @@ public class SouSuoSQActivity extends BaseActivity {
         }
 
     }
+
     /**
      * 得到最大序号
      */
@@ -905,7 +927,7 @@ public class SouSuoSQActivity extends BaseActivity {
     private void setAllTureChecked() {
         if (mAdapter2 == null) return;
         for (int i = 0; i < mList.size(); i++) {
-            if(mList.get(i).getQibao().equals("雷管正常")){
+            if (mList.get(i).getQibao().equals("雷管正常")) {
                 mList.get(i).setSelect(true);
             }
         }
