@@ -728,19 +728,24 @@ public class XingbangMain extends BaseActivity {
             String currentUid = "";
             currentUid = ((String)MmkvUtils.getcode("upUuid",""));
             Log.e(TAG,"currentUid:" + currentUid);
-            if (TextUtils.isEmpty(currentUid)) {
-                currentUid = UsbUtils.getUsbDeviceIdentifier(this);
-//                currentUid = UsbUtils.getUsbSerialNumber(this,usbDevice);
-                MmkvUtils.savecode("upUuid",currentUid);
-                Log.e(TAG,"得到的u盘唯一标识:" + currentUid);
-            }
+//            if (TextUtils.isEmpty(currentUid)) {
+//                currentUid = UsbUtils.getUsbDeviceIdentifier(this);
+////                currentUid = UsbUtils.getUsbSerialNumber(this,usbDevice);
+//                MmkvUtils.savecode("upUuid",currentUid);
+//                Log.e(TAG,"得到的u盘唯一标识:" + currentUid);
+//            }
             device.init();
             FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
             Log.e(TAG, "U 盘文件系统: " + currentFs.getVolumeLabel());
             // 写入 CSV 文件到 U 盘根目录
             final String key = "jadl12345678912345678912";
-            String csvContent = "isCheckUpTrue:0,uuid:" + currentUid + ",pwd1:234561,pwd2:382691,pwd3:356892,pwd4:472581,pwd5:461372,pwd6:372581,";
-            String jmUpwd = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), csvContent.getBytes()));
+            //第一阶段分别往5个U盘中写入固定的密码  研发留了U盘2  其他U盘寄往总部
+            String csvContent1 = "isCheckUpTrue:0,uuid:" + currentUid + ",pwd1:123456,pwd2:138269,pwd3:235689,pwd4:147258,pwd5:246137,pwd6:137258,";
+            String csvContent2 = "isCheckUpTrue:0,uuid:" + currentUid + ",pwd1:234561,pwd2:382691,pwd3:356892,pwd4:472581,pwd5:461372,pwd6:372581,";
+            String csvContent3 = "isCheckUpTrue:0,uuid:" + currentUid + ",pwd1:456123,pwd2:269138,pwd3:689235,pwd4:258147,pwd5:137246,pwd6:258137,";
+            String csvContent4 = "isCheckUpTrue:0,uuid:" + currentUid + ",pwd1:561234,pwd2:691382,pwd3:892356,pwd4:581472,pwd5:372461,pwd6:581372,";
+            String csvContent5 = "isCheckUpTrue:0,uuid:" + currentUid + ",pwd1:612345,pwd2:913826,pwd3:923568,pwd4:814725,pwd5:724613,pwd6:813725,";
+            String jmUpwd = MyUtils.getBase64(MyUtils.encryptMode(key.getBytes(), csvContent2.getBytes()));
             boolean writeSuccess = UsbUtils.writeFileToUSB(currentFs.getRootDirectory(), "updata.csv", jmUpwd);
             if (writeSuccess) {
                 Log.e(TAG, "文件写入成功");
@@ -752,6 +757,7 @@ public class XingbangMain extends BaseActivity {
             String readContent = UsbUtils.readFileFromUSB(currentFs.getRootDirectory(), "updata.csv");
             upContent = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(readContent, Base64.DEFAULT)));
             Log.e(TAG, "读取的 CSV 文件内容: \n" + upContent);
+            Utils.writeRecord("U盘中的内容:" + upContent);
             if (!isReStart) {
                 if (!TextUtils.isEmpty(upContent)) {
                     show_Toast(getResources().getString(R.string.text_sbcg));

@@ -835,5 +835,5 @@
     <string name="text_crzqmy">Please insert the correct digital key</string>
     <string name="text_srszmm">Please enter a 6-digit password</string>
     <string name="text_sbcg">The digital key is successfully identified</string>
-    <string name="text_sbsb">Failed to identify the digital key</string>
+    <string name="text_sbsb">Digital key identification failed, please reinsert</string>
 </resources>

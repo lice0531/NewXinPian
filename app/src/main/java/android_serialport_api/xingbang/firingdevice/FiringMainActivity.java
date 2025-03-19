@@ -595,6 +595,7 @@ public class FiringMainActivity extends SerialPortActivity {
             String readContent = UsbUtils.readFileFromUSB(currentFs.getRootDirectory(), "updata.csv");
             upContent = new String(MyUtils.decryptMode(key.getBytes(), Base64.decode(readContent, Base64.DEFAULT)));
             Log.e(TAG, "读取的 CSV 文件内容: \n" + upContent);
+            Utils.writeRecord("U盘中的内容:" + upContent);
             if (isCheckUp) {
                 if (!TextUtils.isEmpty(upContent)) {
                     show_Toast(getResources().getString(R.string.text_sbcg));
