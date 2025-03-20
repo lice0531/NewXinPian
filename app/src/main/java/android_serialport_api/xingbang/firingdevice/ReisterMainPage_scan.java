@@ -4728,7 +4728,11 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
                 })
                 .setPositiveButton("确定", v -> {
-
+                    if(kongDelay.getText().toString().length()==0||startDelay.getText().toString().length()==0
+                            ||kongDelay.getText().toString().length()==0||neiDelay.getText().toString().length()==0){
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(16));
+                        return;
+                    }
 
 //                    Log.e("打印", "name: " + name.getText());
                     Log.e("新建排", "kongSun: " + kongSun.getText().toString());
