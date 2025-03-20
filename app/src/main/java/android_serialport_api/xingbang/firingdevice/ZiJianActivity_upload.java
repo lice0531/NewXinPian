@@ -128,6 +128,7 @@ public class ZiJianActivity_upload extends SerialPortActivity {
         // 保存区域参数
         SPUtils.put(this, Constants_SP.RegionCode, "1");
         deletaBeian();
+        //
     }
     private void deletaBeian() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
