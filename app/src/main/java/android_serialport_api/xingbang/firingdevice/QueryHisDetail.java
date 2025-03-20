@@ -913,21 +913,6 @@ public class QueryHisDetail extends BaseActivity {
         String url = Utils.httpurl_upload_dl;//丹灵上传
 //        String url = Utils.httpurl_upload_test;//丹灵上传
 
-        // 创建OkHttpClient.Builder对象
-//        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-//
-//        // 设置连接超时时间：50秒
-//        builder.connectTimeout(50, TimeUnit.SECONDS);
-//
-//        // 设置读取超时时间：50秒
-//        builder.readTimeout(50, TimeUnit.SECONDS);
-//
-//        // 设置写入超时时间：50秒
-//        builder.writeTimeout(50, TimeUnit.SECONDS);
-//
-//        // 创建OkHttpClient实例
-//        OkHttpClient client = builder.build();
-
         OkHttpClient client = OkhttpClientUtils.getInstance();
 
 //        OkHttpClient client = new OkHttpClient();
