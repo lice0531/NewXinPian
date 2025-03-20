@@ -580,11 +580,11 @@ public class FiringMainActivity extends SerialPortActivity {
             String currentUid = "";
             currentUid = ((String)MmkvUtils.getcode("upUuid",""));
             Log.e(TAG,"currentUid:" + currentUid);
-            if (TextUtils.isEmpty(currentUid)) {
-                currentUid = UsbUtils.getUsbDeviceIdentifier(this);
-                MmkvUtils.savecode("upUuid",currentUid);
-                Log.e(TAG,"得到的u盘唯一标识:" + currentUid);
-            }
+//            if (TextUtils.isEmpty(currentUid)) {
+//                currentUid = UsbUtils.getUsbDeviceIdentifier(this);
+//                MmkvUtils.savecode("upUuid",currentUid);
+//                Log.e(TAG,"得到的u盘唯一标识:" + currentUid);
+//            }
             device.init();
             FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
             Log.e(TAG, "U 盘文件系统: " + currentFs.getVolumeLabel());
