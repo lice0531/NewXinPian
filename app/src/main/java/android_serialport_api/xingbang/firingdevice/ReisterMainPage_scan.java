@@ -5495,7 +5495,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_scan, menu);
+//        getMenuInflater().inflate(R.menu.menu_scan, menu);
         return true;
     }
 
@@ -5512,95 +5512,95 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (checkDelay()) {
-            return true;
-        }
-        switch (item.getItemId()) {
-
-            case R.id.item_1://手动输入
-
-                clearText();
-                if (llStart.getVisibility() == View.GONE) {
-                    cd_title.setVisibility(View.GONE);
-                    llEnd.setVisibility(View.VISIBLE);
-                    llStart.setVisibility(View.VISIBLE);
-                    llNum.setVisibility(View.VISIBLE);
-                    btnReturn.setVisibility(View.VISIBLE);
-                    btnInputOk.setVisibility(View.VISIBLE);
-                    btnScanReister.setVisibility(View.GONE);
-                    lySetDelay.setVisibility(View.GONE);
-                    llSingle.setVisibility(View.VISIBLE);
-                    btnInput.setText(getResources().getString(R.string.text_return));
-                } else {
-                    cd_title.setVisibility(View.VISIBLE);
-                    llEnd.setVisibility(View.GONE);
-                    llStart.setVisibility(View.GONE);
-                    llNum.setVisibility(View.GONE);
-                    btnInputOk.setVisibility(View.GONE);
-                    llSingle.setVisibility(View.GONE);
-                    btnReturn.setVisibility(View.GONE);
-                    btnScanReister.setVisibility(View.VISIBLE);
-//                    lySetDelay.setVisibility(View.VISIBLE);
-                    btnInput.setText(getResources().getString(R.string.text_scan_sdsr));
-                }
-                return true;
-            case R.id.item_2://单发输入
-                hideInputKeyboard();
-                if (checkDelay()) {
-                    return true;
-                }
-
-                if (isSingleReisher) {
-                    show_Toast(getResources().getString(R.string.text_line_tip1));
-                    btnInputOk.setEnabled(false);
-                    btnSingleReister.setText(getResources().getString(R.string.text_singleReister_stop));
-                    isSingleReisher = false;
-                    lyXinxi.setVisibility(View.VISIBLE);
-                    closeThread();
-                    sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
-
-                } else {
-                    lyXinxi.setVisibility(View.GONE);
-                    btnInputOk.setEnabled(true);
-                    txtCurrentIC.setTextColor(Color.BLACK);
-                    isSingleReisher = true;
-                    // 13 退出注册模式
-                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
-                }
-
-                return true;
-            case R.id.item_3://授权注册
-                Intent intent = new Intent(this, SouSuoSQActivity.class);
-                Bundle bundle = new Bundle();
-
-                bundle.putInt("paiChoice", paiChoice);//用来判断是否需要展示注册功能
-                bundle.putString("mRegion", mRegion);//用来判断是否需要展示注册功能
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 1);
-
-                return true;
-            case R.id.item_4:
-                startActivity(new Intent(ReisterMainPage_scan.this, SetDelayTime_suidao.class));
-                return true;
-//            case R.id.item_5:
-//                // 区域 更新视图
-//                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//        if (checkDelay()) {
+//            return true;
+//        }
+//        switch (item.getItemId()) {
 //
-//                // 显示提示
-//                show_Toast(getResources().getString(R.string.text_show_1) + mRegion);
-//                // 延时选择重置
-//                resetView();
-//                delay_set = "0";
+//            case R.id.item_1://手动输入
 //
-//                duan_new = 1;
-//                MmkvUtils.savecode("duan", 1);
-//                btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
-//                AppLogUtils.writeAppLog("已选中区域" + mRegion);
+//                clearText();
+//                if (llStart.getVisibility() == View.GONE) {
+//                    cd_title.setVisibility(View.GONE);
+//                    llEnd.setVisibility(View.VISIBLE);
+//                    llStart.setVisibility(View.VISIBLE);
+//                    llNum.setVisibility(View.VISIBLE);
+//                    btnReturn.setVisibility(View.VISIBLE);
+//                    btnInputOk.setVisibility(View.VISIBLE);
+//                    btnScanReister.setVisibility(View.GONE);
+//                    lySetDelay.setVisibility(View.GONE);
+//                    llSingle.setVisibility(View.VISIBLE);
+//                    btnInput.setText(getResources().getString(R.string.text_return));
+//                } else {
+//                    cd_title.setVisibility(View.VISIBLE);
+//                    llEnd.setVisibility(View.GONE);
+//                    llStart.setVisibility(View.GONE);
+//                    llNum.setVisibility(View.GONE);
+//                    btnInputOk.setVisibility(View.GONE);
+//                    llSingle.setVisibility(View.GONE);
+//                    btnReturn.setVisibility(View.GONE);
+//                    btnScanReister.setVisibility(View.VISIBLE);
+////                    lySetDelay.setVisibility(View.VISIBLE);
+//                    btnInput.setText(getResources().getString(R.string.text_scan_sdsr));
+//                }
 //                return true;
-
-            default:
+//            case R.id.item_2://单发输入
+//                hideInputKeyboard();
+//                if (checkDelay()) {
+//                    return true;
+//                }
+//
+//                if (isSingleReisher) {
+//                    show_Toast(getResources().getString(R.string.text_line_tip1));
+//                    btnInputOk.setEnabled(false);
+//                    btnSingleReister.setText(getResources().getString(R.string.text_singleReister_stop));
+//                    isSingleReisher = false;
+//                    lyXinxi.setVisibility(View.VISIBLE);
+//                    closeThread();
+//                    sendCmd(FourStatusCmd.setToXbCommon_OpenPower_42_2("00"));//41 开启总线电源指令
+//
+//                } else {
+//                    lyXinxi.setVisibility(View.GONE);
+//                    btnInputOk.setEnabled(true);
+//                    txtCurrentIC.setTextColor(Color.BLACK);
+//                    isSingleReisher = true;
+//                    // 13 退出注册模式
+//                    sendCmd(OneReisterCmd.setToXbCommon_Reister_Exit12_4("00"));
+//                }
+//
+//                return true;
+//            case R.id.item_3://授权注册
+//                Intent intent = new Intent(this, SouSuoSQActivity.class);
+//                Bundle bundle = new Bundle();
+//
+//                bundle.putInt("paiChoice", paiChoice);//用来判断是否需要展示注册功能
+//                bundle.putString("mRegion", mRegion);//用来判断是否需要展示注册功能
+//                intent.putExtras(bundle);
+//                startActivityForResult(intent, 1);
+//
+//                return true;
+//            case R.id.item_4:
+//                startActivity(new Intent(ReisterMainPage_scan.this, SetDelayTime_suidao.class));
+//                return true;
+////            case R.id.item_5:
+////                // 区域 更新视图
+////                mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+////
+////                // 显示提示
+////                show_Toast(getResources().getString(R.string.text_show_1) + mRegion);
+////                // 延时选择重置
+////                resetView();
+////                delay_set = "0";
+////
+////                duan_new = 1;
+////                MmkvUtils.savecode("duan", 1);
+////                btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
+////                AppLogUtils.writeAppLog("已选中区域" + mRegion);
+////                return true;
+//
+//            default:
                 return super.onOptionsItemSelected(item);
-        }
+//        }
 
     }
 

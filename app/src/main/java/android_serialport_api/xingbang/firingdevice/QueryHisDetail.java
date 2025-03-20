@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -125,6 +126,8 @@ public class QueryHisDetail extends BaseActivity {
 
     private Handler mHandler_2 = new Handler();//显示进度条
     private Handler mHandler_tip = new Handler();//提示
+    private boolean danling_flag=false;
+    private boolean xingbang_flag=false;
     private Handler mHandler_update = new Handler();//更新状态
     private LoadingDialog tipDlg = null;
     private int pb_show = 0;
@@ -394,14 +397,25 @@ public class QueryHisDetail extends BaseActivity {
         });
         mHandler_update = new Handler(msg -> {
             Object result = msg.obj;
-            updataState(result + "");//更新上传状态
-            updataState_sq_dl(result + "");
-            int pos = msg.arg1;
-            list_savedate.get(pos).setUploadStatus("已上传");
-            hisAdapter.setDataSource(list_savedate);
-//            showLoadMore();
-            hisAdapter.notifyItemChanged(pos);
-//            mAdapter.notifyDataSetChanged();
+            switch (msg.what){
+                case 1:
+                    if (xingbang_flag && danling_flag) {
+                        updataState(result + "");//更新上传状态
+                        updataState_sq_dl(result + "");
+                        int pos = msg.arg1;
+                        list_savedate.get(pos).setUploadStatus("已上传");
+                        hisAdapter.setDataSource(list_savedate);
+                        hisAdapter.notifyItemChanged(pos);
+                        uploadIndex ++;
+                        xingbang_flag = false;
+                        danling_flag = false;
+                        uploadNext(dateList,uploadIndex);
+                    }
+                    break;
+                case 2:
+                    updataState(result + "");//更新上传状态
+                    break;
+            }
             return false;
         });
         hideInputKeyboard();
@@ -483,11 +497,13 @@ public class QueryHisDetail extends BaseActivity {
      * 更新丹灵网上传信息状态
      */
     public void updataState_sq_dl(String blastdate) {
-        Log.e("更新起爆状态-丹灵", "id: " + blastdate);
+        Log.e(TAG,"更新起爆状态-丹灵--id: " + blastdate);
         ContentValues values = new ContentValues();
         values.put("dl_state", "已上传");
         db.update(DatabaseHelper.TABLE_NAME_SHOUQUAN, values, "blastdate=?", new String[]{"" + blastdate});
         Utils.saveFile();//把软存中的数据存入磁盘中
+        danling_flag = false;
+        xingbang_flag = false;
     }
 
     /**
@@ -503,6 +519,7 @@ public class QueryHisDetail extends BaseActivity {
         Message message = new Message();
         message.obj = blastdate;
         message.arg1 = pos;
+        message.what=2;
         mHandler_update.sendMessage(message);
     }
 
@@ -897,21 +914,21 @@ public class QueryHisDetail extends BaseActivity {
 //        String url = Utils.httpurl_upload_test;//丹灵上传
 
         // 创建OkHttpClient.Builder对象
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+//        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+//
+//        // 设置连接超时时间：50秒
+//        builder.connectTimeout(50, TimeUnit.SECONDS);
+//
+//        // 设置读取超时时间：50秒
+//        builder.readTimeout(50, TimeUnit.SECONDS);
+//
+//        // 设置写入超时时间：50秒
+//        builder.writeTimeout(50, TimeUnit.SECONDS);
+//
+//        // 创建OkHttpClient实例
+//        OkHttpClient client = builder.build();
 
-        // 设置连接超时时间：50秒
-        builder.connectTimeout(50, TimeUnit.SECONDS);
-
-        // 设置读取超时时间：50秒
-        builder.readTimeout(50, TimeUnit.SECONDS);
-
-        // 设置写入超时时间：50秒
-        builder.writeTimeout(50, TimeUnit.SECONDS);
-
-        // 创建OkHttpClient实例
-        OkHttpClient client = builder.build();
-
-//        OkHttpClient client = OkhttpClientUtils.getInstance();
+        OkHttpClient client = OkhttpClientUtils.getInstance();
 
 //        OkHttpClient client = new OkHttpClient();
         JSONObject object = new JSONObject();
@@ -989,14 +1006,13 @@ public class QueryHisDetail extends BaseActivity {
             public void onFailure(Call call, IOException e) {
                 pb_show = 0;
                 Log.e("网络请求", "IOException: " + e);
-
+                updatalog(blastdate,"丹灵网络上传错误-返回结果:" + e);
                 mHandler_tip.sendMessage(mHandler_tip.obtainMessage(1));
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 JSONObject object;
-                isDlUploadSuccess = 200;
                 try {
                     if (!server_type2.equals("2")) {
                         pb_show = 0;
@@ -1004,10 +1020,18 @@ public class QueryHisDetail extends BaseActivity {
                     object = new JSONObject(response.body().string());
                     Log.e("上传", "丹灵返回: " + object.toString());
                     String success = object.getString("success");
+//                    Message message = new Message();
+//                    message.obj = blastdate;
+//                    message.arg1 = pos;
+//                    message.what = 1;
+//                    danling_flag = true;
+//                    mHandler_update.sendMessage(message);
                     if (success.equals("true")) {
                         Message message = new Message();
                         message.obj = blastdate;
                         message.arg1 = pos;
+                        message.what = 1;
+                        danling_flag = true;
                         mHandler_update.sendMessage(message);
                         if (!server_type2.equals("2")) {
                             pb_show = 0;
@@ -1016,39 +1040,38 @@ public class QueryHisDetail extends BaseActivity {
 
                     } else if (success.equals("fail")) {
                         String cwxx = object.getString("cwxx");
-                        Message msg = new Message();
-                        msg.what = 5;
-                        msg.obj = cwxx;
-                        mHandler_tip.sendMessage(msg);
-//                        if (cwxx.equals("1")) {
-//                            Message msg = new Message();
-//                            msg.what=3;
-//                            msg.obj=cwxx;
-//                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(3));
-//                        } else if (cwxx.equals("2")) {
-//                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
-//                        } else {
-//                            Message msg = new Message();
-//                            msg.what=5;
-//                            msg.obj=cwxx;
-//                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(5));
-//                        }
-                    }
-                    if(upload_all){
-                        //等待一段时间
-                        // 延时3秒后执行的操作
-                        openHandler.postDelayed(() -> {
+                        Log.e(TAG,"丹灵返回出错" + cwxx);
+                        if (cwxx.equals("1")) {
+                            Log.e(TAG,"丹灵返回错误信息1，去toast");
                             Message msg = new Message();
-                            msg.what = 6;
-                            UploadResult result = new UploadResult();
-                            msg.obj = result;
+                            msg.what = 3;
+                            String errorMsg = "";
+                            if (TextUtils.isEmpty(object.getString("cwxxms"))) {
+                                errorMsg = cwxx;
+                            } else {
+                                errorMsg = object.getString("cwxxms");
+                            }
+                            msg.obj = errorMsg;
                             mHandler_tip.sendMessage(msg);
-                        }, 500);
+                            Log.e(TAG,"丹灵返回出错，去toast");
+                            updatalog(blastdate, "丹灵上传错误-返回结果:" + object.getString("cwxxms"));
+                        } else if (cwxx.equals("2")) {
+                            Log.e(TAG,"丹灵返回错误信息2，去toast");
+                            mHandler_tip.sendMessage(mHandler_tip.obtainMessage(4));
+                            updatalog(blastdate, "丹灵上传错误-返回结果:" + "起爆器未备案或未设置作业任务");
+                        } else {
+                            Log.e(TAG,"丹灵返回错误信息了，去toast");
+                            Message msg = new Message();
+                            msg.what = 5;
+                            msg.obj = object.getString("cwxxms");
+                            mHandler_tip.sendMessage(msg);
+                            updatalog(blastdate, "丹灵上传错误-返回结果:" + object.getString("cwxxms"));
+
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         });
     }
@@ -1141,8 +1164,46 @@ public class QueryHisDetail extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.e("上传", "返回: " + response.toString());
+                JSONObject object;
+                try {
+                    object = new JSONObject(response.body().string());
+                    Log.e("上传", "煋邦返回: " + object.toString());
+                    if (object.toString().contains("success")) {
+                        String success = object.getString("success");
+                        Log.e(TAG,"煋邦返回:" + success);
+                        if (success.equals("1")) {
+                            Message message = new Message();
+                            message.obj = blastdate;
+                            message.arg1 = pos;
+                            message.what = 1;
+                            xingbang_flag = true;
+                            mHandler_update.sendMessage(message);
+                        } else {
+                            Log.e("上传", "更新错误状态: ");
+                            Message msg = new Message();
+                            msg.what = 5;
+                            msg.obj = "煋邦后台上传失败";
+                            mHandler_tip.sendMessage(msg);
+                            updatalog(blastdate, "煋邦网络上传错误-返回结果:" + object.toString());
+                        }
+                    } else {
+                        Log.e("上传", "更新错误状态: ");
+                        Message msg = new Message();
+                        msg.what = 5;
+                        msg.obj = "煋邦后台上传失败";
+                        mHandler_tip.sendMessage(msg);
+                        updatalog(blastdate, "煋邦网络上传错误-返回结果:" + object.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 pb_show = 0;
-                isXbUploadSuccess = 200;
+//                Message message = new Message();
+//                message.obj = blastdate;
+//                message.arg1 = pos;
+//                message.what = 1;
+//                xingbang_flag = true;
+//                mHandler_update.sendMessage(message);
             }
         });
     }
