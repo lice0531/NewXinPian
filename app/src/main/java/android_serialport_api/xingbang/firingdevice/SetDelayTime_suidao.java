@@ -671,6 +671,10 @@ public class SetDelayTime_suidao extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_setDelayTime_inputOK:
+                if(paiChoice!=1){
+                   show_Toast("请将所有雷管注册到第一排后,再用隧道模式分配到各排。");
+                   return;
+                }
                 if(getTotalNum()<mListData.size()){
                     TextView view2 = new TextView(this);
                     view2.setTextSize(25);

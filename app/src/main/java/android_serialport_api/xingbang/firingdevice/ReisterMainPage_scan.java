@@ -1009,6 +1009,8 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     btnAddDelay.setText(getResources().getString(R.string.text_reister_dw) + duan_new);
                     break;
                 case 1007:
+
+                    groupList = new GreenDaoMaster().queryPaiSelect(mRegion);
                     for (int a = 0; a < groupList.size(); a++) {
                         int paiId = groupList.get(a).getPaiId();
                         GreenDaoMaster master3 = new GreenDaoMaster();
@@ -1113,7 +1115,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
             } else if (msg.what == 15) {
                 SoundPlayUtils.play(4);
                 show_Toast("请注册雷管后,再修改延时");
-            } else if (msg.what == 20) {
+            }  else if (msg.what == 16) {
+                SoundPlayUtils.play(4);
+                show_Toast("请数据填写完整后,再修改延时");
+            }else if (msg.what == 20) {
                 SoundPlayUtils.play(4);
                 show_Toast("共有" + xiangHao_errNum + "盒重复");
                 xiangHao_errNum = 0;
@@ -2296,6 +2301,10 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     String holeinDelayStr = neiDelay.getText().toString();
                     //孔间延时
                     String holeBetweentStr = kongDelay.getText().toString();
+                    if(holeDeAmoStr.length()==0||startDelayStr.length()==0||holeinDelayStr.length()==0||holeBetweentStr.length()==0){
+                        mHandler_tip.sendMessage(mHandler_tip.obtainMessage(16));
+                        return;
+                    }
 
                     //递减,开始序号,结束序号,孔内雷管数,开始延时,孔内延时,孔间延时
 
