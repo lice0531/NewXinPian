@@ -1357,7 +1357,7 @@ public class XingbangMain extends SerialPortActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -1376,25 +1376,25 @@ public class XingbangMain extends SerialPortActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         mRegion = String.valueOf(item.getOrder());
 
-        switch (item.getItemId()) {
-
-            case R.id.item_1:
-            case R.id.item_2:
-            case R.id.item_3:
-            case R.id.item_4:
-            case R.id.item_5:
-                // 设置标题区域
-                setTitleRegion();
-                // 显示提示
-                show_Toast(getString(R.string.text_show_1) + mRegion);
-                // 延时选择重置
-//                resetView();
-//                delay_set = "0";
-                return true;
-
-            default:
+//        switch (item.getItemId()) {
+//
+//            case R.id.item_1:
+//            case R.id.item_2:
+//            case R.id.item_3:
+//            case R.id.item_4:
+//            case R.id.item_5:
+//                // 设置标题区域
+//                setTitleRegion();
+//                // 显示提示
+//                show_Toast(getString(R.string.text_show_1) + mRegion);
+//                // 延时选择重置
+////                resetView();
+////                delay_set = "0";
+//                return true;
+//
+//            default:
                 return super.onOptionsItemSelected(item);
-        }
+//        }
 
     }
 
