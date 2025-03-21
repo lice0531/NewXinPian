@@ -8,13 +8,17 @@ import com.github.yuweiguocn.library.greendao.MigrationHelper;
 import org.greenrobot.greendao.database.Database;
 
 import android_serialport_api.xingbang.db.greenDao.DaoMaster;
+import android_serialport_api.xingbang.db.greenDao.DefactoryDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorBaseinfoDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_DetailDao;
 import android_serialport_api.xingbang.db.greenDao.DenatorHis_MainDao;
+import android_serialport_api.xingbang.db.greenDao.Denator_typeDao;
 import android_serialport_api.xingbang.db.greenDao.DetonatorTypeNewDao;
+import android_serialport_api.xingbang.db.greenDao.ErrLogDao;
 import android_serialport_api.xingbang.db.greenDao.MessageBeanDao;
 import android_serialport_api.xingbang.db.greenDao.ProjectDao;
 import android_serialport_api.xingbang.db.greenDao.ShouQuanDao;
+import android_serialport_api.xingbang.db.greenDao.SysLogDao;
 import android_serialport_api.xingbang.db.greenDao.UserMainDao;
 
 /**
@@ -54,7 +58,13 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
                 ShouQuanDao.class,
                 DenatorHis_MainDao.class,
                 DenatorHis_DetailDao.class,
-                DetonatorTypeNewDao.class);
+                DetonatorTypeNewDao.class,
+                DefactoryDao.class,
+                Denator_typeDao.class,
+                ErrLogDao.class,
+                MessageBeanDao.class,
+                SysLogDao.class,
+                UserMainDao.class);
     }
 
 
