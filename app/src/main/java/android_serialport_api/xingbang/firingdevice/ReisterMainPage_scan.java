@@ -2273,21 +2273,7 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     }
 
 
-//                    Log.e("打印", "name: " + name.getText());
-                    Log.e("更新排", "kongSun: " + kongSum.getText().toString());
-                    Log.e("更新排", "startDelay: " + startDelay.getText().toString());
-                    Log.e("更新排", "kongDelay: " + kongDelay.getText().toString());
-                    Log.e("更新排", "neiDelay: " + neiDelay.getText().toString());
-                    Log.e("更新排", "sw_dijian: " + sw_dijian.isChecked());
-                    Log.e("更新排", "paiChoice: " + paiChoice);
-//                    paiData.setPaiId((maxPai + 1));
-                    paiData.setQyid(Integer.parseInt(mRegion));
-                    paiData.setStartDelay(startDelay.getText().toString());
-                    paiData.setKongNum(Integer.parseInt(kongSum.getText().toString()));
-                    paiData.setKongDelay(kongDelay.getText().toString());
-                    paiData.setNeiDelay(neiDelay.getText().toString());
-                    paiData.setDiJian(sw_dijian.isChecked());
-                    getDaoSession().getPaiDataDao().update(paiData);
+
                     //起始序号
                     int startNoStr = new GreenDaoMaster().getPieceAndPaiMinKong(mRegion, paiData.getPaiId());
                     //终点序号
@@ -2311,6 +2297,22 @@ public class ReisterMainPage_scan extends SerialPortActivity implements LoaderCa
                     Log.e(TAG, "是否递减: " + sw_dijian.isChecked());
                     setDalay(!sw_dijian.isChecked(), startNoStr, endNoStr, holeDeAmoStr, startDelayStr, holeinDelayStr, holeBetweentStr);
 
+
+                    //                    Log.e("打印", "name: " + name.getText());
+                    Log.e("更新排", "kongSun: " + kongSum.getText().toString());
+                    Log.e("更新排", "startDelay: " + startDelay.getText().toString());
+                    Log.e("更新排", "kongDelay: " + kongDelay.getText().toString());
+                    Log.e("更新排", "neiDelay: " + neiDelay.getText().toString());
+                    Log.e("更新排", "sw_dijian: " + sw_dijian.isChecked());
+                    Log.e("更新排", "paiChoice: " + paiChoice);
+//                    paiData.setPaiId((maxPai + 1));
+                    paiData.setQyid(Integer.parseInt(mRegion));
+                    paiData.setStartDelay(startDelay.getText().toString());
+                    paiData.setKongNum(Integer.parseInt(kongSum.getText().toString()));
+                    paiData.setKongDelay(kongDelay.getText().toString());
+                    paiData.setNeiDelay(neiDelay.getText().toString());
+                    paiData.setDiJian(sw_dijian.isChecked());
+                    getDaoSession().getPaiDataDao().update(paiData);
                     //更新排数据
                     updataPaiData();
                     mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));// 区域 更新视图
