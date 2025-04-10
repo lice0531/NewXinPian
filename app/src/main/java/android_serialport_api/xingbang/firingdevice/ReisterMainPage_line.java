@@ -296,6 +296,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         Log.e("检测桥丝", "qiaosi_set: " + qiaosi_set);
 
 //        sendCmd(FourStatusCmd.send46("00", lg_ver));//46
+
+
     }
 
     private void open() {
@@ -1667,6 +1669,9 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
      * 扫码注册方法
      */
     private void insertSingleDenator_2(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
+        Log.e("解析", "解析前denatorId: " + denatorId);
+        denatorId=fenxiXPM(denatorId);
+        Log.e("解析", "解析后denatorId: " + denatorId);
         Log.e("检查管厂码", "factoryCode: " + factoryCode);
         Log.e("检查管厂码", "shellNo.substring(0,2): " + shellNo.substring(0, 2));
         if (factoryCode != null && factoryCode.trim().length() > 0 && !factoryCode.equals(shellNo.substring(0, 2))) {
@@ -1749,6 +1754,39 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //        send16(denatorId, version);//
 
         return;
+    }
+
+    private String fenxiXPM(String denatorId) {
+        //A621000abcdef
+        String denatorId1=denatorId.substring(7,9);
+        String denatorId2=denatorId.substring(9,11);
+        String denatorId3=denatorId.substring(11,13);
+
+
+
+        int valueFromHexString1 = Integer.parseInt(denatorId1, 16); // 结果为26
+        int valueFromHexString2 = Integer.parseInt(denatorId2, 16); // 结果为26
+        int valueFromHexString3 = Integer.parseInt(denatorId3, 16); // 结果为26
+
+        int valueFromHexStringff = Integer.parseInt("FF", 16); // 最大值
+        int valueFromHexString4 =valueFromHexStringff-valueFromHexString1;//密码
+        int valueFromHexString5 =valueFromHexStringff-valueFromHexString2;//解析
+        int valueFromHexString6 =valueFromHexStringff-valueFromHexString3;//解析
+
+        Log.e("实验", "valueFromHexString1: "+valueFromHexString1 );
+        Log.e("实验", "valueFromHexString2: "+valueFromHexString2 );
+        Log.e("实验", "valueFromHexString3: "+valueFromHexString3 );
+        Log.e("实验", "valueFromHexString4: "+valueFromHexString4 );
+        Log.e("实验", "valueFromHexString5: "+valueFromHexString5 );
+        Log.e("实验", "valueFromHexString6: "+valueFromHexString6 );
+
+        String hexStringFromNumber1 = Integer.toHexString(valueFromHexString4);
+        String hexStringFromNumber2 = Integer.toHexString(valueFromHexString5);
+        String hexStringFromNumber3 = Integer.toHexString(valueFromHexString6);
+        Log.e("实验", "hexStringFromNumber: "+hexStringFromNumber1 );
+        Log.e("实验", "hexStringFromNumber2: "+hexStringFromNumber2 );
+        Log.e("实验", "hexStringFromNumber2: "+hexStringFromNumber3 );
+        return (denatorId.substring(0,7)+hexStringFromNumber1+hexStringFromNumber2+hexStringFromNumber3).toUpperCase();
     }
 
 
