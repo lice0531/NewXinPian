@@ -1783,6 +1783,15 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
         String hexStringFromNumber1 = Integer.toHexString(valueFromHexString4);
         String hexStringFromNumber2 = Integer.toHexString(valueFromHexString5);
         String hexStringFromNumber3 = Integer.toHexString(valueFromHexString6);
+        if(hexStringFromNumber1.length()==1){
+            hexStringFromNumber1="0"+hexStringFromNumber1;
+        }
+        if(hexStringFromNumber2.length()==1){
+            hexStringFromNumber2="0"+hexStringFromNumber2;
+        }
+        if(hexStringFromNumber3.length()==1){
+            hexStringFromNumber3="0"+hexStringFromNumber3;
+        }
         Log.e("实验", "hexStringFromNumber: "+hexStringFromNumber1 );
         Log.e("实验", "hexStringFromNumber2: "+hexStringFromNumber2 );
         Log.e("实验", "hexStringFromNumber2: "+hexStringFromNumber3 );
