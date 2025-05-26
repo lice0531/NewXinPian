@@ -2406,4 +2406,113 @@ public class Utils {
         lastClickTime = time;
         return false;
     }
+
+    /**
+     * 新UID转芯片码
+     *
+     * @return*/
+    public static String jiexiUID(String str) {
+        Log.e("新UID-解析", "str: "+str );
+        //1.取反
+        String strqf = invertHex(str).replace("F","0");
+        Log.e("新UID-解析", "strqf: "+strqf );
+        //2.转10进制
+        int a = Integer.parseInt(strqf);
+        Log.e("新UID-解析", "a: "+a );
+        //3.转16进制
+        String str16 = decimalStringToHex(a+"");
+        Log.e("新UID-解析", "str16: "+str16 );
+        return str16.substring(2);
+    }
+    /**
+     * 芯片码转新UID
+     *
+     * @return*/
+    public static String jiamiUID(String str) {
+        //3AAA4F19
+        //A62167BCC99AA
+        Log.e("新UID-加密", "str: "+str );
+        //1.转10进制
+        int decimal = Integer.parseInt("3A"+str, 16);
+        Log.e("新UID-加密", "decimal: "+decimal );
+        //2.转16进制
+        String a =decimal+"";
+        Log.e("新UID-加密", "a1: "+a );
+//        a=addF(a,10);
+//        Log.e("新UID-加密", "a2: "+a );
+        String strqf = invertHex(a);
+        Log.e("新UID-加密", "strqf: "+strqf );
+        return strqf.substring(1);
+    }
+
+    /**
+     * 对16进制字符串进行按位取反
+     *
+     * @param hexString 输入的16进制字符串
+     * @return 取反后的16进制字符串
+     * @throws IllegalArgumentException 如果输入不是有效的16进制字符串
+     */
+    public static String invertHex(String hexString) {
+        // 验证输入是否为有效的16进制字符串
+        if (hexString == null || !hexString.matches("^[0-9A-Fa-f]+$")) {
+            throw new IllegalArgumentException("输入必须是有效的16进制字符串");
+        }
+        // 去除可能的前导0x或0X
+        hexString = hexString.replaceFirst("^0[xX]", "");
+        // 将16进制字符串转换为字节数组
+        byte[] bytes = hexStringToByteArray(hexString);
+        // 对每个字节进行按位取反
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) ~bytes[i];
+        }
+        // 将字节数组转换回16进制字符串
+        return byteArrayToHexString(bytes);
+    }
+    /**
+     * 将16进制字符串转换为字节数组
+     */
+    private static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[(len + 1) / 2];
+
+        // 处理奇数长度的字符串
+        int start = 0;
+        if (len % 2 != 0) {
+            data[0] = (byte) Character.digit(s.charAt(0), 16);
+            start = 1;
+        }
+
+        for (int i = start; i < len; i += 2) {
+            data[(i + 1) / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
+    /**
+     * 将字节数组转换为16进制字符串
+     */
+    private static String byteArrayToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X", b & 0xFF));
+        }
+        Log.e("解析", "sb.toString(): "+sb.toString() );
+        return sb.toString();
+    }
+
+    // 公共方法：将十进制字符串转换为16进制
+    public static String decimalStringToHex(String decimalStr) {
+        try {
+            // 将十进制字符串转换为long类型
+            long decimal = Long.parseLong(decimalStr);
+            // 将十进制数转换为16进制
+            String hexString = Long.toHexString(decimal);
+            // 将16进制结果转换为大写
+            return hexString.toUpperCase();
+        } catch (NumberFormatException e) {
+            // 如果输入的字符串无法转换为long，抛出异常
+//            Log.e("解析", "Invalid decimal string: " + decimalStr);
+            return decimalStr;
+        }
+    }
 }

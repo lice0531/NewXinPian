@@ -425,19 +425,37 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
 
                     } else {
-                        //1530924217014 000FA546C F203 1 0
-                        barCode = data.substring(0, 13);
-                        String a = data.substring(13, 22);
-                        yscs = data.substring(22, 26);
-                        version = "0" + data.substring(26, 27);
-                        denatorId = "A621" + a;
-                        String duan = data.substring(27, 28);
+                        Log.e("海科", "data.charAt(14): " + data.charAt(14));
+                        if (data.charAt(14) == 'N') {
+                            //5620722H12345N002167BCC99AA0
+                            barCode = data.substring(0, 13);
+                            String xpm = data.substring(18, 27);
+                            String jxxpm = Utils.jiexiUID(xpm);
+                            Log.e("海科", "xpm: " + xpm);
+                            Log.e("海科", "解析芯片码: " +jxxpm );
+                            // 获取最后3位字符串
+                            String nian = data.substring(16, 17);
+                            version = data.substring(17, 18);
+                            String duan = data.substring(28);
+                            denatorId = "A6" + nian + version + xpm;
+                            yscs = "";
+                            insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
+                        }else {
+                            //1530924217014 000FA546C F203 1 0
+                            barCode = data.substring(0, 13);
+                            String a = data.substring(13, 22);
+                            yscs = data.substring(22, 26);
+                            version = "0" + data.substring(26, 27);
+                            denatorId = "A621" + a;
+                            String duan = data.substring(27, 28);
 //                        denatorId = a.substring(0, 2) + "2" + a.substring(2, 4) + "00" + a.substring(4);
-                        Log.e("扫码", "barCode: " + barCode);
-                        Log.e("扫码", "denatorId: " + denatorId);
-                        Log.e("扫码", "yscs: " + yscs);
-                        Log.e("扫码", "version: " + version);
-                        insertSingleDenator_2(barCode, denatorId, yscs,version, duan);//同时注册管壳码和芯片码
+                            Log.e("扫码", "barCode: " + barCode);
+                            Log.e("扫码", "denatorId: " + denatorId);
+                            Log.e("扫码", "yscs: " + yscs);
+                            Log.e("扫码", "version: " + version);
+                            insertSingleDenator_2(barCode, denatorId, yscs,version, duan);//同时注册管壳码和芯片码
+                        }
+
                     }
 
                 }
