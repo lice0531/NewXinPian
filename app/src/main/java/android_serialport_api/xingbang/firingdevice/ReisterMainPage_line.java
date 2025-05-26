@@ -425,8 +425,8 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
 
                     } else {
-                        Log.e("海科", "data.charAt(14): " + data.charAt(14));
-                        if (data.charAt(14) == 'N') {
+                        Log.e("海科", "data.charAt(13): " + data.charAt(13));
+                        if (data.charAt(13) == 'N') {
                             //5620722H12345N002167BCC99AA0
                             barCode = data.substring(0, 13);
                             String xpm = data.substring(18, 27);
@@ -438,6 +438,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                             version = data.substring(17, 18);
                             String duan = data.substring(28);
                             denatorId = "A6" + nian + version + xpm;
+                            denatorId = "A621000" +jxxpm;//A6210000B8C64
                             yscs = "";
                             insertSingleDenator_2(barCode, denatorId, yscs, version, duan);//同时注册管壳码和芯片码
                         }else {
@@ -766,32 +767,32 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 //        List<denatorBaseinfo> list = LitePal.findAll(denatorBaseinfo.class);
 //        int serNum =list.size();//得到数据的总条数
 
-        regkm.setOnClickListener(v -> {
-            int a;
-            if (switchUid) {
-                a = 6;
-                switchUid = false;
-                text_uid.setTextColor(Color.GREEN);
-                text_gkm.setTextColor(Color.BLACK);
-            } else {
-                a = 4;
-                switchUid = true;
-                text_uid.setTextColor(Color.BLACK);
-                text_gkm.setTextColor(Color.GREEN);
-            }
-            mAdapter = new DetonatorAdapter_Paper<>(ReisterMainPage_line.this, a);
-            mListView.setLayoutManager(linearLayoutManager);
-            mListView.setAdapter(mAdapter);
-            mAdapter.setOnItemLongClick(position -> {
-                DenatorBaseinfo info = mListData.get(position);
-                int no = info.getBlastserial();
-                int delay = info.getDelay();
-                String shellBlastNo = info.getShellBlastNo();
-                // 序号 延时 管壳码
-                modifyBlastBaseInfo(no, delay, shellBlastNo, info.getDenatorId());
-            });
-            mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
-        });
+//        regkm.setOnClickListener(v -> {
+//            int a;
+//            if (switchUid) {
+//                a = 6;
+//                switchUid = false;
+//                text_uid.setTextColor(Color.GREEN);
+//                text_gkm.setTextColor(Color.BLACK);
+//            } else {
+//                a = 4;
+//                switchUid = true;
+//                text_uid.setTextColor(Color.BLACK);
+//                text_gkm.setTextColor(Color.GREEN);
+//            }
+//            mAdapter = new DetonatorAdapter_Paper<>(ReisterMainPage_line.this, a);
+//            mListView.setLayoutManager(linearLayoutManager);
+//            mListView.setAdapter(mAdapter);
+//            mAdapter.setOnItemLongClick(position -> {
+//                DenatorBaseinfo info = mListData.get(position);
+//                int no = info.getBlastserial();
+//                int delay = info.getDelay();
+//                String shellBlastNo = info.getShellBlastNo();
+//                // 序号 延时 管壳码
+//                modifyBlastBaseInfo(no, delay, shellBlastNo, info.getDenatorId());
+//            });
+//            mHandler_0.sendMessage(mHandler_0.obtainMessage(1001));
+//        });
     }
 
 
@@ -1688,7 +1689,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
      */
     private void insertSingleDenator_2(String shellNo, String denatorId, String yscs, String version, String duan_scan) {
         Log.e("解析", "解析前denatorId: " + denatorId);
-        denatorId=fenxiXPM(denatorId);
+//        denatorId=fenxiXPM(denatorId);
         Log.e("解析", "解析后denatorId: " + denatorId);
         Log.e("检查管厂码", "factoryCode: " + factoryCode);
         Log.e("检查管厂码", "shellNo.substring(0,2): " + shellNo.substring(0, 2));
