@@ -1502,7 +1502,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
 
                     zhuce_Flag = 0;
                 }
-                Log.e("40判断", "tip_show: " + tip_show+"  send12_show:"+send12_show);
+                Log.e("40结果", "busInfo:"+busInfo.toString());
                 if (busInfo.getBusCurrentIa() <= 2 && tip_show && send12_show) {//判断当前电流是否断路
                     tip_show = false;
                     send12_show = false;
