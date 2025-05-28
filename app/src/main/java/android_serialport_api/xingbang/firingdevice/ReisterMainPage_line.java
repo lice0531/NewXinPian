@@ -587,7 +587,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                     } else {
                         txt_currentIC.setTextColor(Color.GREEN);
                     }
-                    if (busInfo.getBusVoltage() < 6.3) {
+                    if (busInfo.getBusVoltage() < 7) {
                         Utils.writeRecord("--起爆测试--:总线短路");
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
@@ -608,7 +608,7 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                             dialog.show();
                         }
                     }
-                    if (busInfo.getBusCurrentIa() > 5000) {
+                    if (busInfo.getBusCurrentIa() > 1000) {
                         Utils.writeRecord("--起爆测试--:总线短路");
                         closeThread();
                         AlertDialog dialog = new AlertDialog.Builder(ReisterMainPage_line.this)
@@ -1424,13 +1424,13 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
             if (fromCommad.length() == "C000120AF201109CA7007DA6C60AD4A6C0".length()) {
                 zhuce_form = OneReisterCmd.decode14_newXinPian("00", cmdBuf, qiaosi_set);//桥丝检测
                 Log.e("12指令", "fromCommad: " + fromCommad);
+                Log.e("12指令", "zhuce_form.getReadStatus(): " + zhuce_form.getReadStatus());
                 String fromCommad2 = Utils.bytesToHexFun(cmdBuf);//fromCommad为返回的16进制命令
-                Log.e("12指令", "fromCommad2: " + fromCommad2);
-                Log.e("12指令", "zhuce_form.getDenaId(): " + zhuce_form.getDenaId());
-                Log.e("12指令", "zhuce_form: " + zhuce_form.toString());
+//                Log.e("12指令", "zhuce_form.getDenaId(): " + zhuce_form.getDenaId());
+//                Log.e("12指令", "zhuce_form: " + zhuce_form.toString());
                 String detonatorId = Utils.GetShellNoById_newXinPian(zhuce_form.getFacCode(), zhuce_form.getFeature(), zhuce_form.getDenaId());
-                Log.e("桥丝", "qiaosi_set: " + qiaosi_set);
-                Log.e("桥丝", "zhuce_form.getWire(): " + zhuce_form.getWire());
+//                Log.e("桥丝", "qiaosi_set: " + qiaosi_set);
+//                Log.e("桥丝", "zhuce_form.getWire(): " + zhuce_form.getWire());
                 if (!zhuce_form.getReadStatus().equals("00")) {
                     if (qiaosi_set.equals("true") && zhuce_form.getWire().equals("无")) {
                         tipInfoFlag = 5;//提示类型桥丝不正常
@@ -1446,12 +1446,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         // 获取 管壳码
                         insertSingleDenator(detonatorId, zhuce_form);//单发注册
                     }
+                } else if (zhuce_form.getReadStatus().equals("00") ) {//断路提示//&& busInfo.getBusCurrentIa() == 0
+                    Log.e("错误命令", "zhuce_form.getDenaId(): " + zhuce_form.getDenaId());
+                    tipInfoFlag = 12;//断路
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 }
-//                else if (zhuce_form.getReadStatus().equals("00")&&!zhuce_form.getDenaId().equals("00000000") && busInfo.getBusCurrentIa() == 0) {//断路提示
-//                    Log.e("错误命令", "zhuce_form.getDenaId(): " + zhuce_form.getDenaId());
-//                    tipInfoFlag = 10;//断路
-//                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
-//                }
             } else {
                 if(tip_show){
                     send12_show = true;
