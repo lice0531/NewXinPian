@@ -1446,8 +1446,11 @@ public class ReisterMainPage_line extends SerialPortActivity implements LoaderCa
                         // 获取 管壳码
                         insertSingleDenator(detonatorId, zhuce_form);//单发注册
                     }
-                } else if (zhuce_form.getReadStatus().equals("00") ) {//断路提示//&& busInfo.getBusCurrentIa() == 0
+                } else if (zhuce_form.getReadStatus().equals("00") && busInfo.getBusCurrentIa() == 0) {//断路提示//
                     Log.e("错误命令", "zhuce_form.getDenaId(): " + zhuce_form.getDenaId());
+                    tipInfoFlag = 10;//断路
+                    mHandler_1.sendMessage(mHandler_1.obtainMessage());
+                }else {
                     tipInfoFlag = 12;//断路
                     mHandler_1.sendMessage(mHandler_1.obtainMessage());
                 }
