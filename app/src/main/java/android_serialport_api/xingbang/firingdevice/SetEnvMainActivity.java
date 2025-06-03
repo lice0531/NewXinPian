@@ -2,6 +2,7 @@ package android_serialport_api.xingbang.firingdevice;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -336,7 +338,8 @@ public class SetEnvMainActivity extends BaseActivity {
                 show_Toast(getString(R.string.text_error_tip57));
                 break;
             case R.id.btn_set_dechip://雷管芯片
-                startActivity(new Intent(SetEnvMainActivity.this, SetDenatorTypeActivity.class));
+                loginToSetEnv();
+
                 break;
             case R.id.btn_set_facCode:
                 String str2 = new String(getString(R.string.text_lgxp_setFac));//"厂家设置"
@@ -371,7 +374,41 @@ public class SetEnvMainActivity extends BaseActivity {
         }
     }
 
-    @OnClick()
-    public void onViewClicked() {
+    private void loginToSetEnv() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SetEnvMainActivity.this);
+        //  builder.setIcon(R.drawable.ic_launcher);
+        builder.setTitle("提示");//"请输入用户名和密码"
+        //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
+        View view = LayoutInflater.from(SetEnvMainActivity.this).inflate(R.layout.settimedialog, null);
+        //    设置我们自己定义的布局文件作为弹出框的Content
+        builder.setView(view);
+        final EditText password = (EditText) view.findViewById(R.id.password);
+        builder.setCancelable(true);
+        builder.setPositiveButton(getString(R.string.text_alert_sure), (dialog, which) -> {
+            String b = password.getText().toString().trim();
+            if (b.trim().length() < 1) {
+                show_Toast(getString(R.string.text_alert_password));
+//                    dialogOn(dialog);
+                return;
+            }
+            if (b.equals("4t8m1x6p")) {
+                startActivity(new Intent(SetEnvMainActivity.this, SetDenatorTypeActivity.class));
+                dialog.dismiss();
+                // 获取InputMethodManager实例
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                // 隐藏软键盘
+                imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+
+            } else {
+                show_Toast(getString(R.string.text_main_mmcw));
+            }
+
+        });
+        builder.setNeutralButton(getString(R.string.text_alert_cancel), (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
     }
+
 }
