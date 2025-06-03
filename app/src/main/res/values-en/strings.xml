@@ -836,4 +836,5 @@
     <string name="text_srszmm">Please enter a 6-digit password</string>
     <string name="text_sbcg">The digital key is successfully identified</string>
     <string name="text_sbsb">Digital key identification failed, please reinsert</string>
+    <string name="dialog_text_xymm">This operation requires a password</string>
 </resources>

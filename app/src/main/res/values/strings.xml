@@ -837,4 +837,5 @@
     <string name="app_version" translatable="false">KT50_3.25_MX_250603_en</string>
     <string name="text_sbcg">数字秘钥识别成功</string>
     <string name="text_sbsb">数字秘钥识别失败,请重新插入</string>
+    <string name="dialog_text_xymm">该操作需要密码</string>
 </resources>

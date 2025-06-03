@@ -378,7 +378,7 @@ public class SetEnvMainActivity extends BaseActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(SetEnvMainActivity.this);
         //  builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle("提示");//"请输入用户名和密码"
+        builder.setTitle(getString(R.string.text_alert_tip));//"请输入用户名和密码" text_alert_tip
         //    通过LayoutInflater来加载一个xml的布局文件作为一个View对象
         View view = LayoutInflater.from(SetEnvMainActivity.this).inflate(R.layout.settimedialog, null);
         //    设置我们自己定义的布局文件作为弹出框的Content
